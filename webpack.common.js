@@ -11,14 +11,10 @@ module.exports = {
     context: __dirname,
 
     entry: {
-        polyfill: './src/polyfill.js',
-        maplibre: 'maplibre-gl',
-        maplibreStyle: 'maplibre-gl/dist/mapbox-gl.css',
+        maplibreStyle: 'maplibre-gl/dist/maplibre-gl.css',
         style: './src/styles/main.scss',
-        app: {
-            import: './src/app.tsx',
-            dependOn: 'maplibre'
-        }
+        polyfill: './src/polyfill.js',
+        app: './src/app.tsx'
     },
 
     output: {

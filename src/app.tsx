@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 import Container from '@material-ui/core/Container';
 
@@ -11,9 +11,11 @@ import Loading from './components/Loading';
 const App = (): JSX.Element => (
     <Container className="fillContainer" disableGutters maxWidth={false}>
         <Suspense fallback={<Loading />}>
-            {Object.entries(routes).map(([path, props]) => (
-                <Route key={path} path={`${PUBLIC_PATH}${path}`} {...props} />
-            ))}
+            <Switch>
+                {Object.entries(routes).map(([path, props]) => (
+                    <Route key={path} path={`${PUBLIC_PATH}${path}`} {...props} />
+                ))}
+            </Switch>
         </Suspense>
     </Container>
 );

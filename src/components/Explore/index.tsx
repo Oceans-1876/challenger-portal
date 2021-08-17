@@ -147,7 +147,15 @@ const Explore = (): JSX.Element => {
     }, [selectedSpecies]);
 
     return (
-        <Grid className={classes.main} container item xs={12} justify="center" alignContent="space-around" spacing={5}>
+        <Grid
+            className={classes.main}
+            container
+            item
+            xs={12}
+            justifyContent="center"
+            alignContent="space-around"
+            spacing={5}
+        >
             <div className={classes.mapContainer} ref={mapContainerRef} />
             <Grid className={`hidden ${classes.sidebar}`} ref={sidebarRef}>
                 <Grid item>
