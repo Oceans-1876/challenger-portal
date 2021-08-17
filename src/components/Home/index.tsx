@@ -38,7 +38,7 @@ const Home = (): JSX.Element => (
                         color="secondary"
                         startIcon={<SearchIcon />}
                         component={Link}
-                        to={`${PUBLIC_PATH}explore`}
+                        to="/explore"
                     >
                         Explore
                     </Button>

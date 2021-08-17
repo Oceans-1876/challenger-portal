@@ -54,7 +54,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
             <Grid item xs={12}>
                 <AppBar className={classes.header} position="relative" elevation={1} color="transparent">
                     <Toolbar className={classes.headerToolbar}>
-                        <Typography variant="h4" component={Link} to={PUBLIC_PATH}>
+                        <Typography variant="h4" component={Link} to="/">
                             Oceans 1876 Portal
                         </Typography>
                         <Button
@@ -62,7 +62,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                             color="secondary"
                             startIcon={<SearchIcon />}
                             component={Link}
-                            to={`${PUBLIC_PATH}explore`}
+                            to="/explore"
                         >
                             Explore
                         </Button>
