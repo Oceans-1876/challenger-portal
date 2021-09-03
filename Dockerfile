@@ -10,13 +10,13 @@ WORKDIR /usr/src/app
 ARG MAPBOX_TOKEN=""
 ENV MAPBOX_TOKEN=${MAPBOX_TOKEN}
 
-# copy only package for caching purposes
-COPY package*.json /usr/src/app/
-RUN npm install
+# Public Path when building application
+ARG PUBLIC_PATH=""
+ENV PUBLIC_PATH=${PUBLIC_PATH}
 
-# copy rest of application
-COPY .eslintrc .prettierrc .lintstagedrc .huskyrc typedoc.json tsconfig.json babel.config.json *.js /usr/src/app/
-COPY src /usr/src/app/src/
+# Copy application and install dependencies
+COPY . /usr/src/app/
+RUN npm install
 
 # build application
 RUN npm run build
