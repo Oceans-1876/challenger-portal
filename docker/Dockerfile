@@ -15,7 +15,7 @@ ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}
 
 # Copy application and install dependencies
-COPY . /usr/src/app/
+COPY .. /usr/src/app/
 RUN npm install
 
 # build application
@@ -28,4 +28,4 @@ RUN npm run build
 FROM nginx:alpine
 
 COPY --from=builder /usr/src/app/build/ /usr/share/nginx/html/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
