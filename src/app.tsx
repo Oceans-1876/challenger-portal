@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/styles';
-import Container from '@material-ui/core/Container';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
 
 import { theme } from './theme';
 import routes from './routes';
@@ -22,9 +22,11 @@ const App = (): JSX.Element => (
 
 ReactDOM.render(
     <Router>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
+        </StyledEngineProvider>
     </Router>,
     document.getElementById('root')
 );

@@ -1,6 +1,6 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Box from '@material-ui/core/Box';
 import React from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const Loading = (): JSX.Element => (
     <Box className="fillContainer" display="flex" justifyContent="center" alignItems="center">

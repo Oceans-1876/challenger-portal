@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import maplibre from 'maplibre-gl';
-import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CloseIcon from '@material-ui/icons/Close';
+import makeStyles from '@mui/styles/makeStyles';
+import Autocomplete from '@mui/material/Autocomplete';
+import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { MapControl } from '../Map/Control';
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import SearchIcon from '@material-ui/icons/Search';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import SearchIcon from '@mui/icons-material/Search';
 
 import mapImage from '../../images/map_sm.png';
 

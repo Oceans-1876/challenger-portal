@@ -1,6 +1,7 @@
 const path = require('path');
 const Webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -30,16 +31,7 @@ module.exports = {
                 // Use babel-loader for ts, tsx, js, and jsx files
                 test: /\.[tj]sx?$/,
                 exclude: /node_modules/,
-                use: [
-                    'babel-loader',
-                    {
-                        // Show eslint messages in the output
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true
-                        }
-                    }
-                ]
+                use: 'babel-loader'
             },
             {
                 test: /\.(s[ac]ss|css)$/,
@@ -61,6 +53,9 @@ module.exports = {
             {
                 type: 'javascript/auto',
                 test: /\.(geo)?json$/,
+                // This is to prevent an issue with how `package.json` is loaded by axios.
+                // TODO We can drop this when the issue is resolved in axios.
+                exclude: [path.resolve(__dirname, 'node_modules/axios/package.json')],
                 use: [
                     {
                         loader: 'file-loader',
@@ -99,7 +94,7 @@ module.exports = {
                       // get the name. E.g. node_modules/packageName/not/this/part.js
                       // or node_modules/packageName
                       const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-          
+
                       // npm package names are URL-safe, but some servers don't like @ symbols
                       return `npm.${packageName.replace('@', '')}`;
                     },
@@ -141,6 +136,10 @@ module.exports = {
             }
         }),
         new MiniCssExtractPlugin({ filename: 'css/[name]-[fullhash].css' }),
+        new ESLintPlugin({
+            emitWarning: true,
+            failOnError: false
+        }),
         new CleanWebpackPlugin()
     ]
 };
