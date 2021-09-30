@@ -11,9 +11,6 @@ on:
 
   pull_request:
 
-env:
-  MAIN_REPO: Oceans-1876/challenger-portal
-
 jobs:
 
 # ----------------------------------------------------------------------
@@ -23,10 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         node:
-          - "12"
           - "14"
           - "16"
     steps:
@@ -85,6 +81,7 @@ jobs:
           echo "VERSION=testing" >> $GITHUB_ENV
           echo "TAGS=${BRANCH}" >> $GITHUB_ENV
         fi
+
     # build image
     - name: Build image
       uses: elgohr/Publish-Docker-Github-Action@3.04
@@ -93,9 +90,15 @@ jobs:
         VERSION: ${{ env.VERSION }}
         BUILDNUMBER: ${{ github.run_number }}
         GITSHA1: ${{ github.sha }}
+        MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+        # This works for setting PUBLIC_PATH for node build
+        PUBLIC_PATH: ${{ env.REACT_PATH }}
+        # This doesn't work
+        # PUBLIC_PATH: ${{ env.PUBLIC_PATH }}
+
       with:
         name: oceans-1876/frontend
         tags: "${{ env.TAGS }}"
-        buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1
+        buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1,MAPBOX_TOKEN,PUBLIC_PATH
         no_push: true
 
