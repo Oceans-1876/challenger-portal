@@ -53,9 +53,6 @@ module.exports = {
             {
                 type: 'javascript/auto',
                 test: /\.(geo)?json$/,
-                // This is to prevent an issue with how `package.json` is loaded by axios.
-                // TODO We can drop this when the issue is resolved in axios.
-                exclude: [path.resolve(__dirname, 'node_modules/axios/package.json')],
                 use: [
                     {
                         loader: 'file-loader',
