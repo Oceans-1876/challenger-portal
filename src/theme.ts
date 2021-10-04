@@ -1,9 +1,4 @@
-import { createTheme, Theme } from '@mui/material/styles';
-
-declare module '@mui/material/styles' {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface DefaultTheme extends Theme {}
-}
+import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
     palette: {
