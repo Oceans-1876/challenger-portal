@@ -120,12 +120,15 @@ const Explore = (): JSX.Element => {
 
     return (
         <Grid
-            sx={{ height: '100%', m: 0 }}
+            sx={{
+                height: '100%',
+                m: 0,
+                justifyContent: 'center',
+                alignContent: 'space-around'
+            }}
             container
             item
             xs={12}
-            justifyContent="center"
-            alignContent="space-around"
             spacing={5}
         >
             <Box sx={{ width: '100%', height: '100%' }} ref={mapContainerRef} />

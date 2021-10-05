@@ -64,11 +64,14 @@ const Layout: React.FC<Props> = ({ children }: Props) => (
         </Grid>
 
         <Grid
-            sx={{ position: 'relative', height: `calc(100vh - ${headerHeight})` }}
+            sx={{
+                position: 'relative',
+                height: `calc(100vh - ${headerHeight})`,
+                alignItems: 'center'
+            }}
             container
             item
             xs={12}
-            alignItems="center"
         >
             {children}
         </Grid>

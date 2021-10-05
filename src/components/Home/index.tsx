@@ -10,7 +10,7 @@ import mapImage from '../../images/map_sm.png';
 const Home = (): JSX.Element => (
     <Container>
         <Grid container direction="column">
-            <Grid container item justifyContent="center">
+            <Grid sx={{ justifyContent: 'center' }} container item>
                 <img src={mapImage} alt="World Map" />
             </Grid>
             <Grid container item>
@@ -30,7 +30,7 @@ const Home = (): JSX.Element => (
                     leo suscipit efficitur. Nulla et mollis sapien.
                 </p>
             </Grid>
-            <Grid container item justifyContent="center" spacing={2}>
+            <Grid sx={{ justifyContent: 'center' }} container item spacing={2}>
                 <Grid item>
                     <Button
                         variant="contained"
