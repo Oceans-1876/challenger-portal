@@ -1,5 +1,5 @@
 body {
-  font-family: "Roboto Light", Helvetica Neue, Arial, sans-serif;
+  background: #95d9de;
 }
 
 html, body, #root {
@@ -40,15 +40,4 @@ html, body, #root {
 
 .hidden {
   display: none !important;
-}
-
-// MUI overrides
-.MuiButton-root {
-  box-shadow: none !important;
-  border-radius: 2px !important;
-}
-
-[class^="MuiDivider"] {
-  margin-bottom: 10px !important;
-  margin-top: 10px !important;
 }

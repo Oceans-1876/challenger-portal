@@ -16,6 +16,6 @@ export const theme = createTheme({
         }
     },
     typography: {
-        fontFamily: ['Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'].join(',')
+        fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(',')
     }
 });

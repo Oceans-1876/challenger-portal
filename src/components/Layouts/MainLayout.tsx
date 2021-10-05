@@ -4,10 +4,9 @@ import makeStyles from '@mui/styles/makeStyles';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import Icon from '@mui/material/Icon';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import SearchIcon from '@mui/icons-material/Search';
-import BarChartIcon from '@mui/icons-material/BarChart';
 
 export const headerHeight = '75px';
 
@@ -60,13 +59,13 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         <Button
                             variant="contained"
                             color="secondary"
-                            startIcon={<SearchIcon />}
+                            startIcon={<Icon>search</Icon>}
                             component={Link}
                             to="/explore"
                         >
                             Explore
                         </Button>
-                        <Button variant="contained" startIcon={<BarChartIcon />} disabled>
+                        <Button variant="contained" startIcon={<Icon>bar_chart</Icon>} disabled>
                             Compare
                         </Button>
                     </Toolbar>

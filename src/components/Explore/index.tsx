@@ -5,10 +5,10 @@ import makeStyles from '@mui/styles/makeStyles';
 import Autocomplete from '@mui/material/Autocomplete';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
+import Icon from '@mui/material/Icon';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { MapControl } from '../Map/Control';
 
@@ -187,7 +187,7 @@ const Explore = (): JSX.Element => {
                                 updateSelectedStation(undefined);
                             }}
                         >
-                            <CloseIcon />
+                            <Icon>close</Icon>
                         </Fab>
                         <List>
                             <ListItem>

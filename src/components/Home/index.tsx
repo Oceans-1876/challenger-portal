@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import SearchIcon from '@mui/icons-material/Search';
+import Icon from '@mui/material/Icon';
 
 import mapImage from '../../images/map_sm.png';
 
@@ -36,7 +35,7 @@ const Home = (): JSX.Element => (
                     <Button
                         variant="contained"
                         color="secondary"
-                        startIcon={<SearchIcon />}
+                        startIcon={<Icon>search</Icon>}
                         component={Link}
                         to="/explore"
                     >
@@ -44,7 +43,7 @@ const Home = (): JSX.Element => (
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" startIcon={<BarChartIcon />} disabled>
+                    <Button variant="contained" startIcon={<Icon>bar_chart</Icon>} disabled>
                         Compare
                     </Button>
                 </Grid>
