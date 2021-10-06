@@ -15,7 +15,7 @@ ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}
 
 # Copy application and install dependencies
-COPY .. /usr/src/app/
+COPY . /usr/src/app/
 RUN npm install
 
 # build application

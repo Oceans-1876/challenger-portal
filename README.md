@@ -13,7 +13,7 @@
 There are two environment variables you can set. You can specify the `MAPBOX_TOKEN` using the instructions in **Setup** and you can optionally set the
 PUBLIC_PATH when building the application. Once that is done, build the container using the following:
 
-`sh docker.sh`
+`sh docker/docker.sh`
 
 ### Run Docker
 

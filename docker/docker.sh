@@ -10,4 +10,4 @@ export PUBLIC_PATH=${PUBLIC_PATH:-""}
 
 
 # Build docker image
-$DEBUG docker build --build-arg MAPBOX_TOKEN="${MAPBOX_TOKEN}" --build-arg PUBLIC_PATH="${PUBLIC_PATH}" -t oceans-1876/frontend -f ./Dockerfile ..
+$DEBUG docker build --build-arg MAPBOX_TOKEN="${MAPBOX_TOKEN}" --build-arg PUBLIC_PATH="${PUBLIC_PATH}" -t oceans-1876/frontend -f ./docker/Dockerfile .
