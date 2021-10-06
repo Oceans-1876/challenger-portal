@@ -101,4 +101,4 @@ jobs:
         tags: "${{ env.TAGS }}"
         buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1,MAPBOX_TOKEN,PUBLIC_PATH
         no_push: true
-
+        dockerfile: docker/Dockerfile
