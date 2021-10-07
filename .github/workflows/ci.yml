@@ -91,11 +91,6 @@ jobs:
         BUILDNUMBER: ${{ github.run_number }}
         GITSHA1: ${{ github.sha }}
         MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
-        # This works for setting PUBLIC_PATH for node build
-        PUBLIC_PATH: ${{ env.REACT_PATH }}
-        # This doesn't work
-        # PUBLIC_PATH: ${{ env.PUBLIC_PATH }}
-
       with:
         name: oceans-1876/frontend
         tags: "${{ env.TAGS }}"
