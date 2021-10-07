@@ -1,15 +1,16 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/styles';
-import Container from '@material-ui/core/Container';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
 
 const App = (): JSX.Element => (
-    <Container className="fillContainer" disableGutters maxWidth={false}>
+    <Container disableGutters maxWidth={false}>
         <Suspense fallback={<Loading />}>
             <Switch>
                 {Object.entries(routes).map(([path, props]) => (
@@ -22,9 +23,12 @@ const App = (): JSX.Element => (
 
 ReactDOM.render(
     <Router>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
+        <StyledEngineProvider injectFirst>
+            <CssBaseline />
+            <ThemeProvider theme={theme}>
+                <App />
+            </ThemeProvider>
+        </StyledEngineProvider>
     </Router>,
     document.getElementById('root')
 );

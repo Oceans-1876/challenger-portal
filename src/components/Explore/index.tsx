@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import maplibre from 'maplibre-gl';
-import { makeStyles } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import CloseIcon from '@material-ui/icons/Close';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
+import Icon from '@mui/material/Icon';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import TextField from '@mui/material/TextField';
 
 import { MapControl } from '../Map/Control';
 
@@ -16,32 +16,6 @@ import speciesJSON from '../../files/species.json';
 import stationsGeoJSON from '../../files/stations.geojson';
 
 maplibre.accessToken = MAPBOX_TOKEN || '';
-
-const useStyle = makeStyles((theme) => ({
-    main: {
-        height: '100%',
-        margin: 0
-    },
-    mapContainer: {
-        width: '100%',
-        height: '100%'
-    },
-    sidebar: {
-        background: '#fff',
-        width: 350,
-        padding: theme.spacing(1)
-    },
-    searchInput: {
-        marginLeft: theme.spacing(1),
-        flex: 1
-    },
-    stationCloseButton: {
-        position: 'absolute',
-        top: 50,
-        right: 20,
-        zIndex: 10
-    }
-}));
 
 interface StationProperties {
     station_id: number;
@@ -58,8 +32,6 @@ interface StationProperties {
 }
 
 const Explore = (): JSX.Element => {
-    const classes = useStyle();
-
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibre.Map>();
 
@@ -148,16 +120,19 @@ const Explore = (): JSX.Element => {
 
     return (
         <Grid
-            className={classes.main}
+            sx={{
+                height: '100%',
+                m: 0,
+                justifyContent: 'center',
+                alignContent: 'space-around'
+            }}
             container
             item
             xs={12}
-            justifyContent="center"
-            alignContent="space-around"
             spacing={5}
         >
-            <div className={classes.mapContainer} ref={mapContainerRef} />
-            <Grid className={`hidden ${classes.sidebar}`} ref={sidebarRef}>
+            <Box sx={{ width: '100%', height: '100%' }} ref={mapContainerRef} />
+            <Grid sx={{ background: '#fff', width: 350, p: 1 }} ref={sidebarRef}>
                 <Grid item>
                     <Autocomplete
                         multiple
@@ -179,7 +154,7 @@ const Explore = (): JSX.Element => {
                 {selectedStation ? (
                     <Grid item>
                         <Fab
-                            className={classes.stationCloseButton}
+                            sx={{ position: 'absolute', top: 50, right: 20, zIndex: 10 }}
                             color="primary"
                             size="small"
                             onClick={() => {
@@ -187,7 +162,7 @@ const Explore = (): JSX.Element => {
                                 updateSelectedStation(undefined);
                             }}
                         >
-                            <CloseIcon />
+                            <Icon>close</Icon>
                         </Fab>
                         <List>
                             <ListItem>

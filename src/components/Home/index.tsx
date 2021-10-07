@@ -1,17 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import SearchIcon from '@material-ui/icons/Search';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Icon from '@mui/material/Icon';
 
 import mapImage from '../../images/map_sm.png';
 
 const Home = (): JSX.Element => (
     <Container>
         <Grid container direction="column">
-            <Grid container item justifyContent="center">
+            <Grid sx={{ justifyContent: 'center' }} container item>
                 <img src={mapImage} alt="World Map" />
             </Grid>
             <Grid container item>
@@ -31,12 +30,12 @@ const Home = (): JSX.Element => (
                     leo suscipit efficitur. Nulla et mollis sapien.
                 </p>
             </Grid>
-            <Grid container item justifyContent="center" spacing={2}>
+            <Grid sx={{ justifyContent: 'center' }} container item spacing={2}>
                 <Grid item>
                     <Button
                         variant="contained"
                         color="secondary"
-                        startIcon={<SearchIcon />}
+                        startIcon={<Icon>search</Icon>}
                         component={Link}
                         to="/explore"
                     >
@@ -44,7 +43,7 @@ const Home = (): JSX.Element => (
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Button variant="contained" startIcon={<BarChartIcon />} disabled>
+                    <Button variant="contained" startIcon={<Icon>bar_chart</Icon>} disabled>
                         Compare
                     </Button>
                 </Grid>

@@ -3,8 +3,8 @@ declare const PUBLIC_PATH: string;
 declare const MAPBOX_TOKEN: string;
 
 declare module '*.json' {
-    const value: string;
-    export default value;
+    const src: string;
+    export default src;
 }
 
 declare module '*.geojson' {
