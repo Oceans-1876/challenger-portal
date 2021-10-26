@@ -1,35 +1,20 @@
 import React from 'react';
 import axios from 'axios';
 import maplibre from 'maplibre-gl';
-import Autocomplete from '@mui/material/Autocomplete';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
-import Grid from '@mui/material/Grid';
-import Icon from '@mui/material/Icon';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import TextField from '@mui/material/TextField';
+import Toolbar from '@mui/material/Toolbar';
 
 import { MapControl } from '../Map/Control';
 
 import speciesJSON from '../../files/species.json';
 import stationsGeoJSON from '../../files/stations.geojson';
 
+import Sidebar from './Sidebar';
+
 maplibre.accessToken = MAPBOX_TOKEN || '';
 
-interface StationProperties {
-    station_id: number;
-    station: string;
-    name: string;
-    species: string;
-    date: string;
-    air_temperature_noon: number;
-    air_temperature_daily_mean: number;
-    water_temperature_bottom: number;
-    water_temperature_surface: number;
-    water_density_bottom_60f: number;
-    water_density_surface_60f: number;
-}
+const filterBarHeight = 65;
 
 const Explore = (): JSX.Element => {
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
@@ -40,7 +25,7 @@ const Explore = (): JSX.Element => {
     const [allSpecies, updateAllSpecies] = React.useState<string[]>([]);
     const [selectedSpecies, updateSelectedSpecies] = React.useState<string[]>([]);
 
-    const [selectedStation, updateSelectedStation] = React.useState<StationProperties>();
+    const [selectedStation, updateSelectedStation] = React.useState<StationProperties | null>(null);
 
     React.useEffect(() => {
         if (mapContainerRef.current && maplibre.accessToken) {
@@ -119,84 +104,43 @@ const Explore = (): JSX.Element => {
     }, [selectedSpecies]);
 
     return (
-        <Grid
+        <Box
             sx={{
                 height: '100%',
                 m: 0,
                 justifyContent: 'center',
                 alignContent: 'space-around'
             }}
-            container
-            item
-            xs={12}
-            spacing={5}
         >
-            <Box sx={{ width: '100%', height: '100%' }} ref={mapContainerRef} />
-            <Grid sx={{ background: '#fff', width: 350, p: 1 }} ref={sidebarRef}>
-                <Grid item>
-                    <Autocomplete
-                        multiple
-                        disableCloseOnSelect
-                        includeInputInList
-                        fullWidth
-                        limitTags={2}
-                        ChipProps={{
-                            size: 'small'
-                        }}
-                        options={allSpecies}
-                        value={selectedSpecies}
-                        renderInput={(params) => <TextField {...params} placeholder="Select species" />}
-                        onChange={(_e, selectedOptions) => {
-                            updateSelectedSpecies(selectedOptions);
-                        }}
-                    />
-                </Grid>
-                {selectedStation ? (
-                    <Grid item>
-                        <Fab
-                            sx={{ position: 'absolute', top: 50, right: 20, zIndex: 10 }}
-                            color="primary"
-                            size="small"
-                            onClick={() => {
-                                mapRef.current?.setFilter('selected-station', ['==', 'station_id', '']);
-                                updateSelectedStation(undefined);
-                            }}
-                        >
-                            <Icon>close</Icon>
-                        </Fab>
-                        <List>
-                            <ListItem>
-                                {selectedStation.station} - {selectedStation.name}
-                            </ListItem>
-                            <ListItem>Air temperature (noon): {selectedStation.air_temperature_noon}&deg;</ListItem>
-                            <ListItem>
-                                Air temperature (daily mean): {selectedStation.air_temperature_daily_mean}&deg;
-                            </ListItem>
-                            <ListItem>
-                                Water temperature (bottom): {selectedStation.water_temperature_bottom}&deg;
-                            </ListItem>
-                            <ListItem>
-                                Water temperature (surface): {selectedStation.water_temperature_surface}&deg;
-                            </ListItem>
-                            <ListItem>
-                                Water density (bottom - 60F): {selectedStation.water_density_bottom_60f}&deg;
-                            </ListItem>
-                            <ListItem>
-                                Water density (surface - 60F): {selectedStation.water_density_surface_60f}&deg;
-                            </ListItem>
-                            <ListItem>
-                                Species:&nbsp;
-                                <List>
-                                    {JSON.parse(selectedStation.species).map((sp: string) => (
-                                        <ListItem key={sp}>{sp}</ListItem>
-                                    ))}
-                                </List>
-                            </ListItem>
-                        </List>
-                    </Grid>
-                ) : null}
-            </Grid>
-        </Grid>
+            <AppBar
+                sx={{
+                    'height': filterBarHeight,
+                    'color': 'primary.main',
+                    'justifyContent': 'center',
+                    '& a': {
+                        textDecoration: 'none',
+                        color: 'primary.main'
+                    }
+                }}
+                position="relative"
+                elevation={0}
+                color="transparent"
+            >
+                <Toolbar>[TODO] FILTER BAR</Toolbar>
+            </AppBar>
+            <Box sx={{ width: '100%', height: `calc(100% - ${filterBarHeight}px)` }} ref={mapContainerRef} />
+            {mapRef.current ? (
+                <Sidebar
+                    sidebarRef={sidebarRef}
+                    map={mapRef.current}
+                    allSpecies={allSpecies}
+                    selectedSpecies={selectedSpecies}
+                    selectedStation={selectedStation}
+                    updateSelectedSpecies={updateSelectedSpecies}
+                    updateSelectedStation={updateSelectedStation}
+                />
+            ) : null}
+        </Box>
     );
 };
 

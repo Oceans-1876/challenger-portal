@@ -1,82 +1,140 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 import Icon from '@mui/material/Icon';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-export const headerHeight = '75px';
+export const headerHeight = 75;
 
 type Props = {
     children?: React.ReactNode;
 };
 
-const Layout: React.FC<Props> = ({ children }: Props) => (
-    <Grid sx={{ flexGrow: 1 }} container component="main">
-        <Grid item xs={12}>
+const Layout: React.FC<Props> = ({ children }: Props) => {
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<HTMLElement | null>(null);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+    };
+
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setMobileMoreAnchorEl(event.currentTarget);
+    };
+
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%'
+            }}
+        >
             <AppBar
                 sx={{
                     'height': headerHeight,
-                    'minHeight': headerHeight,
-                    'border': '1px solid #555',
                     'color': 'primary.main',
-                    'textDecoration': 'none',
-                    'textTransform': 'uppercase',
+                    'justifyContent': 'center',
                     '& a': {
                         textDecoration: 'none',
                         color: 'primary.main'
                     }
                 }}
                 position="relative"
-                elevation={1}
+                elevation={0}
                 color="transparent"
             >
-                <Toolbar
-                    sx={{
-                        'minHeight': headerHeight,
-                        '& > :first-child': {
-                            flexGrow: 1
-                        },
-                        '& > *': {
-                            marginLeft: 2
-                        }
-                    }}
-                >
-                    <Typography variant="h4" component={Link} to="/">
-                        Oceans 1876 Portal
+                <Toolbar>
+                    <Typography sx={{ marginRight: 2 }} variant="h4" component={Link} to="/">
+                        Oceans 1876
                     </Typography>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<Icon>search</Icon>}
-                        component={Link}
-                        to="/explore"
-                    >
-                        Explore
-                    </Button>
-                    <Button variant="contained" startIcon={<Icon>bar_chart</Icon>} disabled>
-                        Compare
-                    </Button>
+                    <Typography variant="h5">HMS Challenger Journey</Typography>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ display: { xs: 'none', md: 'flex' } }} component={Stack} direction="row" spacing={1}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<Icon>search</Icon>}
+                            component={Link}
+                            to="/explore"
+                        >
+                            Explore
+                        </Button>
+                        <Button
+                            disabled
+                            variant="outlined"
+                            startIcon={<Icon>bar_chart</Icon>}
+                            size="small"
+                            component={Link}
+                            to="/analysis"
+                        >
+                            Analysis
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<Icon>data_exploration</Icon>}
+                            size="small"
+                            href={`${API_PATH}/docs`}
+                            target="_blank"
+                        >
+                            API
+                        </Button>
+                    </Box>
+                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton onClick={handleMobileMenuOpen}>
+                            <Icon>more_vert</Icon>
+                        </IconButton>
+
+                        <Menu
+                            anchorEl={mobileMoreAnchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                            }}
+                            open={isMobileMenuOpen}
+                            onClose={handleMobileMenuClose}
+                        >
+                            <MenuItem dense component={Link} to="/explore">
+                                <IconButton size="small">
+                                    <Icon>search</Icon>
+                                </IconButton>
+                                <p>Explore</p>
+                            </MenuItem>
+                            <MenuItem dense disabled component={Link} to="/analysis">
+                                <IconButton size="small">
+                                    <Icon>bar_chart</Icon>
+                                </IconButton>
+                                <p>Analysis</p>
+                            </MenuItem>
+                            <MenuItem dense component="a" href={`${API_PATH}/docs`} target="_blank">
+                                <IconButton size="small">
+                                    <Icon>data_exploration</Icon>
+                                </IconButton>
+                                <p>API</p>
+                            </MenuItem>
+                        </Menu>
+                    </Box>
                 </Toolbar>
             </AppBar>
-        </Grid>
 
-        <Grid
-            sx={{
-                position: 'relative',
-                height: `calc(100vh - ${headerHeight})`,
-                alignItems: 'center'
-            }}
-            container
-            item
-            xs={12}
-        >
-            {children}
-        </Grid>
-    </Grid>
-);
+            <Box sx={{ border: 40, borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
+                {children}
+            </Box>
+        </Box>
+    );
+};
 
 Layout.defaultProps = {
     children: undefined

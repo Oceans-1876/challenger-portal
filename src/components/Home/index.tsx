@@ -4,27 +4,35 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
 
+import type { SxProps } from '@mui/system';
+
 import mapImage from '../../images/map_sm.png';
 
+const styles: { [k: string]: SxProps } = {
+    actionCard: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        width: { xs: 130, md: 225, lg: 250 },
+        height: 200
+    },
+    actionCardIcon: {
+        fontSize: { xs: '4rem', md: '6rem' }
+    }
+};
+
 const Home = (): JSX.Element => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70%', m: 'auto' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-evenly', width: '75%', mb: 3 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 'auto' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-evenly', mb: 3, width: '100%' }}>
             <Card raised>
                 <CardActionArea component={Link} to="/explore">
-                    <CardContent
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center',
-                            width: 275,
-                            height: 200
-                        }}
-                    >
-                        <Icon sx={{ fontSize: '6rem' }} baseClassName="icons">
+                    <CardContent sx={styles.actionCard}>
+                        <Icon sx={styles.actionCardIcon} baseClassName="icons">
                             search
                         </Icon>
                         <Typography variant="h6" align="center">
@@ -34,18 +42,9 @@ const Home = (): JSX.Element => (
                 </CardActionArea>
             </Card>
             <Card raised>
-                <CardActionArea disabled component={Link} to="/explore">
-                    <CardContent
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center',
-                            width: 275,
-                            height: 200
-                        }}
-                    >
-                        <Icon sx={{ fontSize: '6rem' }} baseClassName="icons">
+                <CardActionArea disabled component={Link} to="/analysis">
+                    <CardContent sx={styles.actionCard}>
+                        <Icon sx={styles.actionCardIcon} baseClassName="icons">
                             bar_chart
                         </Icon>
                         <Typography variant="h6" align="center">
@@ -54,8 +53,22 @@ const Home = (): JSX.Element => (
                     </CardContent>
                 </CardActionArea>
             </Card>
+            <Card raised>
+                <CardActionArea href={`${API_PATH}/docs`} target="_blank">
+                    <CardContent sx={styles.actionCard}>
+                        <Icon sx={styles.actionCardIcon} baseClassName="icons">
+                            data_exploration
+                        </Icon>
+                        <Typography variant="h6" align="center">
+                            HMS Challenger Data API
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
         </Box>
-        <img src={mapImage} alt="World Map" />
+        <Card sx={{ mb: 2 }}>
+            <CardMedia component="img" image={mapImage} alt="World Map" />
+        </Card>
         <Typography variant="body1">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tincidunt risus quis vestibulum congue.
             Phasellus auctor a ipsum at sollicitudin. Vivamus cursus fringilla dolor ut pharetra. Aenean Aenean viverra

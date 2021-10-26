@@ -6,7 +6,7 @@ import Divider from '@mui/material/Divider';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-export const headerHeight = '75px';
+export const headerHeight = 100;
 
 type Props = {
     children?: React.ReactNode;
@@ -24,8 +24,8 @@ const Layout: React.FC<Props> = ({ children }: Props) => (
         <AppBar
             sx={{
                 'height': headerHeight,
-                'minHeight': headerHeight,
                 'color': 'primary.main',
+                'justifyContent': 'center',
                 '& a': {
                     textDecoration: 'none',
                     color: 'primary.main'
@@ -37,7 +37,6 @@ const Layout: React.FC<Props> = ({ children }: Props) => (
         >
             <Toolbar
                 sx={{
-                    'minHeight': headerHeight,
                     '& > :first-child': {
                         flexGrow: 1
                     },

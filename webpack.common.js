@@ -12,7 +12,8 @@ module.exports = {
     context: __dirname,
 
     entry: {
-        style: './src/styles/main.scss',
+        maplibre: 'maplibre-gl/dist/maplibre-gl.css',
+        appStyle: './src/styles/main.scss',
         polyfill: './src/polyfill.js',
         app: './src/app.tsx'
     },
@@ -86,6 +87,7 @@ module.exports = {
         }),
         new Webpack.DefinePlugin({
             PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
+            API_PATH: JSON.stringify(process.env.API_PATH),
             MAPBOX_TOKEN: JSON.stringify(process.env.MAPBOX_TOKEN)
         }),
         new FaviconsWebpackPlugin({
