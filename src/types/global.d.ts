@@ -61,17 +61,3 @@ declare module '*.module.scss' {
     const classes: { readonly [key: string]: string };
     export default classes;
 }
-
-interface StationProperties {
-    station_id: number;
-    station: string;
-    name: string;
-    species: string;
-    date: string;
-    air_temperature_noon: number;
-    air_temperature_daily_mean: number;
-    water_temperature_bottom: number;
-    water_temperature_surface: number;
-    water_density_bottom_60f: number;
-    water_density_surface_60f: number;
-}

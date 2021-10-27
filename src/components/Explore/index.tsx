@@ -1,15 +1,13 @@
 import React from 'react';
-import axios from 'axios';
 import maplibre from 'maplibre-gl';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
+import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { MapControl } from '../Map/Control';
 
-import speciesJSON from '../../files/species.json';
-import stationsGeoJSON from '../../files/stations.geojson';
-
+import Filters from './Filters';
 import Sidebar from './Sidebar';
 
 maplibre.accessToken = MAPBOX_TOKEN || '';
@@ -17,15 +15,14 @@ maplibre.accessToken = MAPBOX_TOKEN || '';
 const filterBarHeight = 65;
 
 const Explore = (): JSX.Element => {
+    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
+    const { stations, selectedSpecies } = React.useContext(DataStateContext);
+
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibre.Map>();
+    const [isMapLoaded, updateIsMapLoaded] = React.useState(false);
 
     const sidebarRef = React.useRef<HTMLDivElement>(null);
-
-    const [allSpecies, updateAllSpecies] = React.useState<string[]>([]);
-    const [selectedSpecies, updateSelectedSpecies] = React.useState<string[]>([]);
-
-    const [selectedStation, updateSelectedStation] = React.useState<StationProperties | null>(null);
 
     React.useEffect(() => {
         if (mapContainerRef.current && maplibre.accessToken) {
@@ -38,7 +35,10 @@ const Explore = (): JSX.Element => {
             map.on('load', () => {
                 map.addSource('stations', {
                     type: 'geojson',
-                    data: stationsGeoJSON
+                    data: {
+                        type: 'FeatureCollection',
+                        features: []
+                    }
                 });
                 map.addLayer({
                     id: 'stations',
@@ -58,14 +58,14 @@ const Explore = (): JSX.Element => {
                         'circle-color': 'red',
                         'circle-opacity': 0.5
                     },
-                    filter: ['==', 'station_id', '']
+                    filter: ['==', 'name', '']
                 });
 
                 map.on('click', 'stations', (e) => {
                     if (e.features && e.features[0]) {
                         const stationProperties = e.features[0].properties as StationProperties;
-                        updateSelectedStation(stationProperties);
-                        map.setFilter('selected-station', ['==', 'station_id', stationProperties.station_id]);
+                        dataActionDispatcher({ type: 'updateSelectedStation', station: stationProperties });
+                        map.setFilter('selected-station', ['==', 'name', stationProperties.name]);
                     }
                 });
 
@@ -82,19 +82,32 @@ const Explore = (): JSX.Element => {
                 if (sidebarRef.current) {
                     map.addControl(new MapControl(sidebarRef.current), 'top-left');
                 }
+
+                updateIsMapLoaded(true);
             });
             mapRef.current = map;
         }
     }, []);
 
     React.useEffect(() => {
-        axios
-            .get(speciesJSON)
-            .then(({ data }) => {
-                updateAllSpecies(data);
-            })
-            .catch(console.error);
-    }, []);
+        const map = mapRef.current;
+        if (map && isMapLoaded) {
+            const stationsSource = map.getSource('stations') as maplibre.GeoJSONSource;
+            if (stationsSource) {
+                stationsSource.setData({
+                    type: 'FeatureCollection',
+                    features: stations.map((stationProps) => ({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: stationProps.coordinates
+                        },
+                        properties: stationProps
+                    }))
+                });
+            }
+        }
+    }, [stations, isMapLoaded]);
 
     React.useEffect(() => {
         const map = mapRef.current;
@@ -126,20 +139,12 @@ const Explore = (): JSX.Element => {
                 elevation={0}
                 color="transparent"
             >
-                <Toolbar>[TODO] FILTER BAR</Toolbar>
+                <Toolbar>
+                    <Filters />
+                </Toolbar>
             </AppBar>
             <Box sx={{ width: '100%', height: `calc(100% - ${filterBarHeight}px)` }} ref={mapContainerRef} />
-            {mapRef.current ? (
-                <Sidebar
-                    sidebarRef={sidebarRef}
-                    map={mapRef.current}
-                    allSpecies={allSpecies}
-                    selectedSpecies={selectedSpecies}
-                    selectedStation={selectedStation}
-                    updateSelectedSpecies={updateSelectedSpecies}
-                    updateSelectedStation={updateSelectedStation}
-                />
-            ) : null}
+            {mapRef.current ? <Sidebar sidebarRef={sidebarRef} map={mapRef.current} /> : null}
         </Box>
     );
 };

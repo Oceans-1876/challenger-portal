@@ -11,7 +11,7 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-export const headerHeight = 75;
+export const headerHeight = 60;
 
 type Props = {
     children?: React.ReactNode;
@@ -41,6 +41,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                 sx={{
                     'height': headerHeight,
                     'color': 'primary.main',
+                    'backgroundColor': 'secondary.light',
                     'justifyContent': 'center',
                     '& a': {
                         textDecoration: 'none',
@@ -129,7 +130,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                 </Toolbar>
             </AppBar>
 
-            <Box sx={{ border: 40, borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
+            <Box sx={{ border: 30, borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
                 {children}
             </Box>
         </Box>
