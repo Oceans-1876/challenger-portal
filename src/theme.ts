@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-export const theme = createTheme({
+export const themeOptions = {
     palette: {
         primary: {
             dark: '#002e2c',
@@ -18,7 +18,9 @@ export const theme = createTheme({
     typography: {
         fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(',')
     }
-});
+};
+
+export const theme = createTheme(themeOptions);
 
 theme.typography.h1 = {
     fontSize: '6rem',

@@ -18,7 +18,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => (
             display: 'flex',
             flexDirection: 'column',
             border: 40,
-            borderColor: 'secondary.light'
+            borderColor: 'primary.light'
         }}
     >
         <AppBar
@@ -35,17 +35,8 @@ const Layout: React.FC<Props> = ({ children }: Props) => (
             elevation={0}
             color="transparent"
         >
-            <Toolbar
-                sx={{
-                    '& > :first-child': {
-                        flexGrow: 1
-                    },
-                    '& > *': {
-                        marginLeft: 2
-                    }
-                }}
-            >
-                <Typography variant="h4" component={Link} to="/">
+            <Toolbar>
+                <Typography sx={{ flexGrow: 1 }} variant="h4" component={Link} to="/">
                     Oceans 1876
                 </Typography>
                 <Typography variant="h5">HMS Challenger Journey</Typography>

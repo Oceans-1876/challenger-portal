@@ -3,7 +3,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateStations':
             return {
                 ...state,
-                stations: action.stations
+                stationsList: action.stations
             };
         case 'updateSelectedStation':
             return {
@@ -13,7 +13,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateAllSpecies':
             return {
                 ...state,
-                allSpecies: action.species
+                allSpeciesList: action.species
             };
         case 'updateSelectedSpecies':
             return {

@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import maplibre from 'maplibre-gl';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -12,14 +13,16 @@ import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
 
+maplibre.accessToken = MAPBOX_TOKEN || '';
+
 const App = (): JSX.Element => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
 
     React.useEffect(() => {
-        getData<SpeciesProperties[]>('species/', (species) => {
+        getData<SpeciesSummary[]>('species/all/?order_by=matched_canonical_full_name', (species) => {
             dataActionDispatcher({ type: 'updateAllSpecies', species });
         });
-        getData<StationProperties[]>('stations/', (stations) => {
+        getData<StationSummary[]>('stations/all/?order_by=date', (stations) => {
             dataActionDispatcher({ type: 'updateStations', stations });
         });
     }, []);

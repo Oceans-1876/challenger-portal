@@ -1,16 +1,16 @@
 interface UpdateStations {
     type: 'updateStations';
-    stations: StationProperties[];
+    stations: StationSummary[];
 }
 
 interface UpdateSelectedStation {
     type: 'updateSelectedStation';
-    station: StationProperties | null;
+    station: StationDetails | null;
 }
 
 interface UpdateAllSpecies {
     type: 'updateAllSpecies';
-    species: SpeciesProperties[];
+    species: SpeciesSummary[];
 }
 
 interface UpdateSelectedSpecies {

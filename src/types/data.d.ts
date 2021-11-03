@@ -1,12 +1,15 @@
-interface StationProperties {
+interface StationSummary {
     name: string;
-    sediment_sample: string;
+    date: string; // Date in ISO 8601 format (i.e. YYYY-MM-DD)
     coordinates: [number, number];
+}
+
+interface StationDetails extends StationSummary {
+    sediment_sample: string;
     location: string;
     water_body: string;
     sea_area: string;
     place: string;
-    date: string; // Date in ISO 8601 format (i.e. YYYY-MM-DD)
     fao_area: number;
     gear: string;
     depth_fathoms: number;
@@ -22,11 +25,15 @@ interface StationProperties {
     species: { id: string }[];
 }
 
-interface SpeciesProperties {
+interface SpeciesSummary {
+    id: string;
+    matched_canonical_full_name: string;
+}
+
+interface SpeciesDetails extends SpeciesSummary {
     id: string;
     matched_name: string;
     matched_canonical_simple_name: string;
-    matched_canonical_full_name: string;
     common_name: string;
     classification_path: string;
     classification_ranks: string;
@@ -35,8 +42,10 @@ interface SpeciesProperties {
 }
 
 interface DataState {
-    stations: StationProperties[];
-    selectedStation: StationProperties | null;
-    allSpecies: SpeciesProperties[];
+    stationsList: StationSummary[];
+    stationsObject: { [name: string]: StationDetails };
+    selectedStation: StationDetails | null;
+    allSpeciesList: SpeciesSummary[];
+    allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     selectedSpecies: string[];
 }

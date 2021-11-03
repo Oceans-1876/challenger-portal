@@ -11,7 +11,11 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import { getRandomBackground } from './backgrounds';
+
 export const headerHeight = 60;
+
+const backgroundImage = getRandomBackground();
 
 type Props = {
     children?: React.ReactNode;
@@ -34,18 +38,19 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                height: '100%'
+                height: '100%',
+                background: `url(${backgroundImage.url})`
             }}
         >
             <AppBar
                 sx={{
                     'height': headerHeight,
-                    'color': 'primary.main',
-                    'backgroundColor': 'secondary.light',
+                    'color': 'primary.contrastText',
+                    'backgroundColor': 'primary.light',
                     'justifyContent': 'center',
                     '& a': {
                         textDecoration: 'none',
-                        color: 'primary.main'
+                        color: 'primary.contrastText'
                     }
                 }}
                 position="relative"
@@ -130,7 +135,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                 </Toolbar>
             </AppBar>
 
-            <Box sx={{ border: 30, borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
+            <Box sx={{ padding: '30px', borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
                 {children}
             </Box>
         </Box>

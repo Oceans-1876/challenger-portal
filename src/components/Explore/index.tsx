@@ -1,36 +1,30 @@
 import React from 'react';
 import maplibre from 'maplibre-gl';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
-import { MapControl } from '../Map/Control';
+import { mapStyle } from '../Map/styles';
 
 import Filters from './Filters';
 import Sidebar from './Sidebar';
 
-maplibre.accessToken = MAPBOX_TOKEN || '';
-
-const filterBarHeight = 65;
+const filterBarHeight = 75;
 
 const Explore = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stations, selectedSpecies } = React.useContext(DataStateContext);
+    const { stationsList, selectedSpecies } = React.useContext(DataStateContext);
 
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibre.Map>();
     const [isMapLoaded, updateIsMapLoaded] = React.useState(false);
 
-    const sidebarRef = React.useRef<HTMLDivElement>(null);
-
     React.useEffect(() => {
-        if (mapContainerRef.current && maplibre.accessToken) {
+        if (mapContainerRef.current) {
             const map = new maplibre.Map({
                 container: mapContainerRef.current,
-                style: 'mapbox://styles/mapbox/streets-v11',
+                style: mapStyle,
                 center: [0, 0],
-                zoom: 1
+                zoom: 0
             });
             map.on('load', () => {
                 map.addSource('stations', {
@@ -63,7 +57,7 @@ const Explore = (): JSX.Element => {
 
                 map.on('click', 'stations', (e) => {
                     if (e.features && e.features[0]) {
-                        const stationProperties = e.features[0].properties as StationProperties;
+                        const stationProperties = e.features[0].properties as StationDetails;
                         dataActionDispatcher({ type: 'updateSelectedStation', station: stationProperties });
                         map.setFilter('selected-station', ['==', 'name', stationProperties.name]);
                     }
@@ -79,10 +73,6 @@ const Explore = (): JSX.Element => {
                     map.getCanvas().style.cursor = '';
                 });
 
-                if (sidebarRef.current) {
-                    map.addControl(new MapControl(sidebarRef.current), 'top-left');
-                }
-
                 updateIsMapLoaded(true);
             });
             mapRef.current = map;
@@ -96,7 +86,7 @@ const Explore = (): JSX.Element => {
             if (stationsSource) {
                 stationsSource.setData({
                     type: 'FeatureCollection',
-                    features: stations.map((stationProps) => ({
+                    features: stationsList.map((stationProps) => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -107,7 +97,7 @@ const Explore = (): JSX.Element => {
                 });
             }
         }
-    }, [stations, isMapLoaded]);
+    }, [stationsList, isMapLoaded]);
 
     React.useEffect(() => {
         const map = mapRef.current;
@@ -125,26 +115,11 @@ const Explore = (): JSX.Element => {
                 alignContent: 'space-around'
             }}
         >
-            <AppBar
-                sx={{
-                    'height': filterBarHeight,
-                    'color': 'primary.main',
-                    'justifyContent': 'center',
-                    '& a': {
-                        textDecoration: 'none',
-                        color: 'primary.main'
-                    }
-                }}
-                position="relative"
-                elevation={0}
-                color="transparent"
-            >
-                <Toolbar>
-                    <Filters />
-                </Toolbar>
-            </AppBar>
-            <Box sx={{ width: '100%', height: `calc(100% - ${filterBarHeight}px)` }} ref={mapContainerRef} />
-            {mapRef.current ? <Sidebar sidebarRef={sidebarRef} map={mapRef.current} /> : null}
+            <Filters filterBarHeight={filterBarHeight} />
+            <Box sx={{ display: 'flex', height: `calc(100% - ${filterBarHeight}px)` }}>
+                <Sidebar />
+                <Box ref={mapContainerRef} sx={{ height: '100%', flexGrow: 1 }} />
+            </Box>
         </Box>
     );
 };
