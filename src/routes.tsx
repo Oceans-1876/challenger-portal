@@ -5,15 +5,13 @@ import layouts from './components/Layouts';
 
 const routes: { [key: string]: import('react-router-dom').RouteProps } = {
     '/': {
-        exact: true,
-        component: withLayout(
+        element: withLayout(
             layouts.Scrollable,
             lazy(() => import('./components/Home'))
         )
     },
     '/explore': {
-        exact: true,
-        component: withLayout(
+        element: withLayout(
             layouts.SinglePage,
             lazy(() => import('./components/Explore'))
         )

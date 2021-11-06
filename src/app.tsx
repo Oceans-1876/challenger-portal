@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import maplibre from 'maplibre-gl';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -35,11 +35,11 @@ const App = (): JSX.Element => {
                     <Suspense fallback={<Loading />}>
                         <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
                             <DataStateContext.Provider value={dataState}>
-                                <Switch>
+                                <Routes>
                                     {Object.entries(routes).map(([path, props]) => (
                                         <Route key={path} path={path} {...props} />
                                     ))}
-                                </Switch>
+                                </Routes>
                             </DataStateContext.Provider>
                         </DataActionDispatcherContext.Provider>
                     </Suspense>
