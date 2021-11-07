@@ -2,6 +2,7 @@
 export const dataStateInitialValue: DataState = {
     stationsList: [],
     stationsObject: {},
+    journeyPath: [],
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},

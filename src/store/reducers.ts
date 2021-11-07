@@ -1,8 +1,11 @@
+import { fixLineMeridianCrossing } from '../components/Map/utils';
+
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
         case 'updateStations':
             return {
                 ...state,
+                journeyPath: fixLineMeridianCrossing(action.stations.map((station) => station.coordinates)), // Expects stations to be sorted by date
                 stationsList: action.stations
             };
         case 'updateSelectedStation':
@@ -10,6 +13,9 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 selectedStation: action.station
             };
+        case 'updateStationDetails':
+            state.stationsObject[action.station.name] = action.station;
+            return state;
         case 'updateAllSpecies':
             return {
                 ...state,

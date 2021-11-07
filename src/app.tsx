@@ -22,7 +22,7 @@ const App = (): JSX.Element => {
         getData<SpeciesSummary[]>('species/all/?order_by=matched_canonical_full_name', (species) => {
             dataActionDispatcher({ type: 'updateAllSpecies', species });
         });
-        getData<StationSummary[]>('stations/all/?order_by=date', (stations) => {
+        getData<StationSummary[]>('stations/all/?order_by=order', (stations) => {
             dataActionDispatcher({ type: 'updateStations', stations });
         });
     }, []);
