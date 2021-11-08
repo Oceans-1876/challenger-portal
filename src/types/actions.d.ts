@@ -5,7 +5,7 @@ interface UpdateStations {
 
 interface UpdateSelectedStation {
     type: 'updateSelectedStation';
-    station: StationDetails | null;
+    station: StationSummary | null;
 }
 
 interface UpdateStationDetails {
