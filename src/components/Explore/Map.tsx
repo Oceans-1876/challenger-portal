@@ -1,8 +1,11 @@
 import React from 'react';
 import maplibre from 'maplibre-gl';
 import Box from '@mui/material/Box';
+import Icon from '@mui/material/Icon';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import Help from '../Map/Help';
+import { MapControl } from '../Map/Control';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { pulsingDot } from '../Map/utils';
 
@@ -14,14 +17,34 @@ const Map = (): JSX.Element => {
     const mapRef = React.useRef<maplibre.Map>();
     const [isMapLoaded, updateIsMapLoaded] = React.useState(false);
 
+    const resetPitchButtonRef = React.useRef<HTMLButtonElement>(null);
+    const resetBoundsButtonRef = React.useRef<HTMLButtonElement>(null);
+
+    const helpButtonRef = React.useRef<HTMLButtonElement>(null);
+    const [showAbout, updateShowAbout] = React.useState(false);
+
     React.useEffect(() => {
         if (maplibre.supported() && mapContainerRef.current) {
             const map = new maplibre.Map({
                 container: mapContainerRef.current,
                 style: mapStyle,
                 bounds: [-180, -90, 180, 90],
-                minZoom: 1
+                minZoom: 1,
+                attributionControl: false
             });
+
+            map.addControl(new maplibre.AttributionControl({ compact: true }), 'bottom-left');
+            map.addControl(new maplibre.NavigationControl());
+            if (resetPitchButtonRef.current) {
+                map.addControl(new MapControl(resetPitchButtonRef.current));
+            }
+            if (resetBoundsButtonRef.current) {
+                map.addControl(new MapControl(resetBoundsButtonRef.current));
+            }
+            if (helpButtonRef.current) {
+                map.addControl(new MapControl(helpButtonRef.current), 'top-left');
+            }
+
             map.on('load', () => {
                 pulsingDot(map, 100);
 
@@ -156,6 +179,41 @@ const Map = (): JSX.Element => {
     return (
         <Box ref={mapContainerRef} sx={{ height: '100%', flexGrow: 1, background: 'white' }}>
             {maplibre.supported() ? null : 'Your browser does not support the map features.'}
+
+            <Box ref={helpButtonRef} className="maplibregl-ctrl-group">
+                <button type="button" title="How to navigate the map" onClick={() => updateShowAbout(true)}>
+                    <Icon>question_mark</Icon>
+                </button>
+                <Help open={showAbout} onClose={() => updateShowAbout(false)} />
+            </Box>
+
+            <Box ref={resetPitchButtonRef} className="maplibregl-ctrl-group">
+                <button
+                    type="button"
+                    title="Reset map pitch"
+                    onClick={() => {
+                        if (mapRef.current) {
+                            mapRef.current.easeTo({ pitch: 0 });
+                        }
+                    }}
+                >
+                    <Icon>360</Icon>
+                </button>
+            </Box>
+
+            <Box ref={resetBoundsButtonRef} className="maplibregl-ctrl-group">
+                <button
+                    type="button"
+                    title="Reset map bounds"
+                    onClick={() => {
+                        if (mapRef.current) {
+                            mapRef.current?.fitBounds(stationsBounds);
+                        }
+                    }}
+                >
+                    <Icon>zoom_out_map</Icon>
+                </button>
+            </Box>
         </Box>
     );
 };
