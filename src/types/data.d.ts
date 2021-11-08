@@ -46,7 +46,7 @@ interface DataState {
     stationsObject: { [name: string]: StationDetails };
     stationsBounds: import('maplibre-gl').LngLatBoundsLike;
     journeyPath: LineCoordinates;
-    selectedStation: StationDetails | null;
+    selectedStation: StationSummary | null;
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     selectedSpecies: string[];

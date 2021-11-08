@@ -4,14 +4,15 @@ import Box from '@mui/material/Box';
 import Icon from '@mui/material/Icon';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
-import Help from '../Map/Help';
-import { MapControl } from '../Map/Control';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { pulsingDot } from '../Map/utils';
+import { MapControl } from '../Map/Control';
+import Help from '../Map/Help';
 
 const Map = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsBounds, stationsList, selectedSpecies } = React.useContext(DataStateContext);
+    const { stationsBounds, stationsList, selectedSpecies, selectedStation } = React.useContext(DataStateContext);
+    const selectedStationRef = React.useRef<StationSummary | null>(null);
 
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibre.Map>();
@@ -93,9 +94,14 @@ const Map = (): JSX.Element => {
                 map.on('click', 'stations', (e) => {
                     if (e.features && e.features[0]) {
                         const feature = e.features[0];
-                        const stationProperties = feature.properties as StationDetails;
-                        dataActionDispatcher({ type: 'updateSelectedStation', station: stationProperties });
-                        map.setFilter('selected-station', ['==', 'name', stationProperties.name]);
+                        const stationProperties = feature.properties as StationSummary;
+                        const newSelectedStation =
+                            stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
+                        dataActionDispatcher({
+                            type: 'updateSelectedStation',
+                            station: newSelectedStation
+                        });
+                        selectedStationRef.current = newSelectedStation;
                     }
                 });
 
@@ -168,6 +174,13 @@ const Map = (): JSX.Element => {
             }
         }
     }, [stationsList, isMapLoaded]);
+
+    React.useEffect(() => {
+        const map = mapRef.current;
+        if (map && isMapLoaded) {
+            map.setFilter('selected-station', ['==', 'name', selectedStation ? selectedStation.name : '']);
+        }
+    }, [selectedStation]);
 
     React.useEffect(() => {
         const map = mapRef.current;

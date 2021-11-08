@@ -2,6 +2,7 @@
 export const dataStateInitialValue: DataState = {
     stationsList: [],
     stationsObject: {},
+    stationsBounds: [-180, -90, 180, 90],
     journeyPath: [],
     selectedStation: null,
     allSpeciesList: [],
