@@ -44,6 +44,7 @@ interface SpeciesDetails extends SpeciesSummary {
 interface DataState {
     stationsList: StationSummary[];
     stationsObject: { [name: string]: StationDetails };
+    stationsBounds: import('maplibre-gl').LngLatBoundsLike;
     journeyPath: LineCoordinates;
     selectedStation: StationDetails | null;
     allSpeciesList: SpeciesSummary[];

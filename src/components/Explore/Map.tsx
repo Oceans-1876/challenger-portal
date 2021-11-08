@@ -8,7 +8,7 @@ import { pulsingDot } from '../Map/utils';
 
 const Map = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, selectedSpecies } = React.useContext(DataStateContext);
+    const { stationsBounds, stationsList, selectedSpecies } = React.useContext(DataStateContext);
 
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibre.Map>();
@@ -141,6 +141,7 @@ const Map = (): JSX.Element => {
                         properties: stationProps
                     }))
                 });
+                map.fitBounds(stationsBounds);
             }
         }
     }, [stationsList, isMapLoaded]);

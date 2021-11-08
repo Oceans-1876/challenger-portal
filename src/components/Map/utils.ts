@@ -14,6 +14,20 @@ export const fixLineMeridianCrossing = (coordinates: LineCoordinates): LineCoord
     return coordinates;
 };
 
+export const getFeatureBounds = (coordinates: LineCoordinates) => {
+    const start = coordinates[0];
+
+    // Create a 'LngLatBounds' with both corners at the first coordinate.
+    const bounds = new maplibre.LngLatBounds(start, start);
+
+    // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+    coordinates.forEach((coordinate) => {
+        bounds.extend(coordinate);
+    });
+
+    return bounds;
+};
+
 export const pulsingDot = (map: maplibre.Map, size: number): void => {
     /** Create a pulsing dot that can be used by symbol styles.
      * Set `icon-image` to ``pulsing-dot` under the `layout` attribute of the style.
