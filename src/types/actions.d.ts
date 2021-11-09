@@ -18,6 +18,11 @@ interface UpdateAllSpecies {
     species: SpeciesSummary[];
 }
 
+interface UpdateSpeciesDetails {
+    type: 'updateSpeciesDetails';
+    species: SpeciesDetails;
+}
+
 interface UpdateSelectedSpecies {
     type: 'updateSelectedSpecies';
     species: string[];
@@ -38,6 +43,7 @@ type DataAction =
     | UpdateSelectedStation
     | UpdateStationDetails
     | UpdateAllSpecies
+    | UpdateSpeciesDetails
     | UpdateSelectedSpecies
     | AddToSelectedSpecies
     | RemoveFromSelectedSpecies;

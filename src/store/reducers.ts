@@ -24,6 +24,9 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 allSpeciesList: action.species
             };
+        case 'updateSpeciesDetails':
+            state.allSpeciesObject[action.species.id] = action.species;
+            return state;
         case 'updateSelectedSpecies':
             return {
                 ...state,
