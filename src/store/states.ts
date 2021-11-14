@@ -7,5 +7,6 @@ export const dataStateInitialValue: DataState = {
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},
-    selectedSpecies: []
+    filteredStations: [],
+    filteredSpecies: []
 };

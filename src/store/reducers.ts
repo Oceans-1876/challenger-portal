@@ -27,20 +27,25 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateSpeciesDetails':
             state.allSpeciesObject[action.species.id] = action.species;
             return state;
-        case 'updateSelectedSpecies':
+        case 'updateFilteredSpecies':
             return {
                 ...state,
-                selectedSpecies: action.species
+                filteredSpecies: action.species
             };
-        case 'addToSelectedSpecies':
+        case 'addToFilteredSpecies':
             return {
                 ...state,
-                selectedSpecies: Array.from(new Set([...state.selectedSpecies, ...action.species]))
+                filteredSpecies: Array.from(new Set([...state.filteredSpecies, ...action.species]))
             };
-        case 'removeFromSelectedSpecies':
+        case 'removeFromFilteredSpecies':
             return {
                 ...state,
-                selectedSpecies: state.selectedSpecies.filter((speciesId) => !action.species.includes(speciesId))
+                filteredSpecies: state.filteredSpecies.filter((speciesId) => !action.species.includes(speciesId))
+            };
+        case 'updateFilteredStations':
+            return {
+                ...state,
+                filteredStations: action.stations
             };
     }
     throw Error(`Received invalid action: ${action}`);

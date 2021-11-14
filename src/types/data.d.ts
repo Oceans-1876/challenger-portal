@@ -50,5 +50,6 @@ interface DataState {
     selectedStation: StationSummary | null;
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
-    selectedSpecies: string[];
+    filteredStations: string[];
+    filteredSpecies: string[];
 }

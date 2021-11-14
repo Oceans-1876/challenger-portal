@@ -5,7 +5,7 @@ import Filters from './Filters';
 import Map from './Map';
 import Sidebar from './Sidebar';
 
-const filterBarHeight = 75;
+const filterBarHeight = 100;
 
 const Explore = (): JSX.Element => (
     <Box

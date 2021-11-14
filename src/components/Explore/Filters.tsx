@@ -15,7 +15,7 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { allSpeciesList, selectedSpecies } = React.useContext(DataStateContext);
+    const { stationsList, allSpeciesList, filteredSpecies, filteredStations } = React.useContext(DataStateContext);
 
     return (
         <AppBar
@@ -34,9 +34,30 @@ const Filters = ({ filterBarHeight }: Props) => {
             elevation={1}
             square
         >
-            <Toolbar>
+            <Toolbar sx={{ alignItems: 'start' }}>
                 <Box sx={{ 'display': 'flex', 'width': '100%', '& > *': { pr: 2 } }}>
                     <Typography variant="h5">Filter by</Typography>
+                    <Box>
+                        <Autocomplete
+                            sx={{ width: 250 }}
+                            disableCloseOnSelect
+                            size="small"
+                            multiple
+                            limitTags={0}
+                            renderInput={(params) => <TextField {...params} placeholder="Stations" />}
+                            options={stationsList.map((station) => station.name)}
+                            getOptionLabel={(option) => `Station ${option}`}
+                            renderTags={() => null}
+                            value={filteredStations}
+                            onChange={(_e, selectedOption) => {
+                                dataActionDispatcher({
+                                    type: 'updateFilteredStations',
+                                    stations: selectedOption
+                                });
+                            }}
+                        />
+                        {filteredStations.length ? `Matched ${filteredStations.length} station(s)` : null}
+                    </Box>
                     <Box>
                         <Autocomplete
                             sx={{ width: 250 }}
@@ -49,13 +70,13 @@ const Filters = ({ filterBarHeight }: Props) => {
                                 return option;
                             }}
                             filterOptions={(options: string[]) =>
-                                options.filter((name) => !selectedSpecies.includes(name))
+                                options.filter((name) => !filteredSpecies.includes(name))
                             }
                             value={null}
                             renderInput={(params) => <TextField {...params} placeholder="Species // TODO broken" />}
                             onChange={(_e, selectedOption) => {
                                 dataActionDispatcher({
-                                    type: 'updateSelectedSpecies',
+                                    type: 'updateFilteredSpecies',
                                     species: selectedOption ? [selectedOption] : []
                                 });
                             }}

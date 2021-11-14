@@ -23,19 +23,24 @@ interface UpdateSpeciesDetails {
     species: SpeciesDetails;
 }
 
-interface UpdateSelectedSpecies {
-    type: 'updateSelectedSpecies';
+interface UpdateFilteredSpecies {
+    type: 'updateFilteredSpecies';
     species: string[];
 }
 
-interface AddToSelectedSpecies {
-    type: 'addToSelectedSpecies';
+interface AddToFilteredSpecies {
+    type: 'addToFilteredSpecies';
     species: string[];
 }
 
-interface RemoveFromSelectedSpecies {
-    type: 'removeFromSelectedSpecies';
+interface RemoveFromFilteredSpecies {
+    type: 'removeFromFilteredSpecies';
     species: string[];
+}
+
+interface UpdateFilteredStations {
+    type: 'updateFilteredStations';
+    stations: string[];
 }
 
 type DataAction =
@@ -44,6 +49,7 @@ type DataAction =
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
-    | UpdateSelectedSpecies
-    | AddToSelectedSpecies
-    | RemoveFromSelectedSpecies;
+    | UpdateFilteredSpecies
+    | AddToFilteredSpecies
+    | RemoveFromFilteredSpecies
+    | UpdateFilteredStations;
