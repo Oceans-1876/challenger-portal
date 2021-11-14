@@ -12,8 +12,8 @@ module.exports = {
     context: __dirname,
 
     entry: {
-        maplibreStyle: 'maplibre-gl/dist/maplibre-gl.css',
-        style: './src/styles/main.scss',
+        maplibre: 'maplibre-gl/dist/maplibre-gl.css',
+        appStyle: './src/styles/main.scss',
         polyfill: './src/polyfill.js',
         app: './src/app.tsx'
     },
@@ -81,37 +81,13 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
 
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-            cacheGroups: {
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name(module) {
-                      // get the name. E.g. node_modules/packageName/not/this/part.js
-                      // or node_modules/packageName
-                      const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-
-                      // npm package names are URL-safe, but some servers don't like @ symbols
-                      return `npm.${packageName.replace('@', '')}`;
-                    },
-                },
-                // Create a commons chunk, which includes all code shared between entry points.
-                commons: {
-                    name: 'commons',
-                    chunks: 'initial',
-                    minChunks: 2
-                }
-            }
-        }
-    },
-
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
         new Webpack.DefinePlugin({
             PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
+            API_PATH: JSON.stringify(process.env.API_PATH),
             MAPBOX_TOKEN: JSON.stringify(process.env.MAPBOX_TOKEN)
         }),
         new FaviconsWebpackPlugin({
