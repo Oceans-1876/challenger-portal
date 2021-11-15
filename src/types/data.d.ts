@@ -1,28 +1,28 @@
 interface StationSummary {
     name: string;
     date: string; // Date in ISO 8601 format (i.e. YYYY-MM-DD)
-    coordinates: [number, number];
+    coordinates: PointCoordinates;
 }
 
 interface StationDetails extends StationSummary {
-    sediment_sample: string;
+    sediment_sample?: string;
     location: string;
     water_body: string;
-    sea_area: string;
-    place: string;
+    sea_area?: string;
+    place?: string;
     fao_area: number;
-    gear: string;
-    depth_fathoms: number;
-    bottom_water_temp_c: number;
-    bottom_water_depth_fathoms: number;
-    specific_gravity_at_bottom: number;
-    surface_temp_c: number;
-    specific_gravity_at_surface: number;
+    gear?: string;
+    depth_fathoms?: number;
+    bottom_water_temp_c?: number;
+    bottom_water_depth_fathoms?: number;
+    specific_gravity_at_bottom?: number;
+    surface_temp_c?: number;
+    specific_gravity_at_surface?: number;
     water_temp_c_at_depth_fathoms: {
-        [depth: string]: number;
+        [depth: string]: ?number;
     };
     text: string;
-    species: { id: string }[];
+    species: Array<{ id: string }>;
 }
 
 interface SpeciesSummary {
@@ -44,7 +44,9 @@ interface SpeciesDetails extends SpeciesSummary {
 interface DataState {
     stationsList: StationSummary[];
     stationsObject: { [name: string]: StationDetails };
-    selectedStation: StationDetails | null;
+    stationsBounds: import('maplibre-gl').LngLatBoundsLike;
+    journeyPath: LineCoordinates;
+    selectedStation: StationSummary | null;
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     selectedSpecies: string[];

@@ -116,7 +116,8 @@
     ],
     "operator-linebreak": [
       "warn",
-      "after"
+      "after",
+      { "overrides": { "?": "before", ":": "before" } }
     ],
     "prefer-destructuring": "off",
     "quotes": [

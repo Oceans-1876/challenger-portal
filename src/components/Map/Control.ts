@@ -11,7 +11,7 @@ export class MapControl implements maplibre.IControl {
 
     onAdd(map: maplibre.Map): HTMLElement {
         this.map = map;
-        this._container.classList.add('mapboxgl-ctrl');
+        this._container.classList.add('maplibregl-ctrl');
         this._container.classList.remove('hidden');
         return this._container;
     }

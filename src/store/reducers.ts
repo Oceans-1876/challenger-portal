@@ -1,15 +1,24 @@
+import { fixLineMeridianCrossing, getFeatureBounds } from '../components/Map/utils';
+
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
-        case 'updateStations':
+        case 'updateStations': {
+            const journeyPath = fixLineMeridianCrossing(action.stations.map((station) => station.coordinates)); // Expects stations to be sorted by date
             return {
                 ...state,
+                journeyPath,
+                stationsBounds: getFeatureBounds(journeyPath),
                 stationsList: action.stations
             };
+        }
         case 'updateSelectedStation':
             return {
                 ...state,
                 selectedStation: action.station
             };
+        case 'updateStationDetails':
+            state.stationsObject[action.station.name] = action.station;
+            return state;
         case 'updateAllSpecies':
             return {
                 ...state,

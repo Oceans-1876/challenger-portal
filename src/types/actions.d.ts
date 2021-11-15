@@ -5,7 +5,12 @@ interface UpdateStations {
 
 interface UpdateSelectedStation {
     type: 'updateSelectedStation';
-    station: StationDetails | null;
+    station: StationSummary | null;
+}
+
+interface UpdateStationDetails {
+    type: 'updateStationDetails';
+    station: StationDetails;
 }
 
 interface UpdateAllSpecies {
@@ -31,6 +36,7 @@ interface RemoveFromSelectedSpecies {
 type DataAction =
     | UpdateStations
     | UpdateSelectedStation
+    | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSelectedSpecies
     | AddToSelectedSpecies
