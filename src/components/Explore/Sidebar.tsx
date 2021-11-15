@@ -22,7 +22,7 @@ const Sidebar = () => {
                         initialPanel="Station"
                         panels={[
                             { Panel: () => <StationDetails station={selectedStation} />, label: 'Station' },
-                            { Panel: StationSpecies, label: 'Species' }
+                            { Panel: () => <StationSpecies station={selectedStation} />, label: 'Species' }
                         ]}
                     />
                     <Box sx={{ alignSelf: 'center' }}>

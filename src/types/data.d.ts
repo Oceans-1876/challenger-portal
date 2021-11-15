@@ -22,11 +22,12 @@ interface StationDetails extends StationSummary {
         [depth: string]: ?number;
     };
     text: string;
-    species: Array<{ id: string }>;
+    species: SpeciesSummary[];
 }
 
 interface SpeciesSummary {
     id: string;
+    record_id: string;
     matched_canonical_full_name: string;
 }
 

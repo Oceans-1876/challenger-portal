@@ -33,7 +33,12 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
     }
 
     return (
-        <Box sx={sx}>
+        <Box
+            sx={{
+                overflowY: 'auto',
+                ...sx
+            }}
+        >
             <Tabs
                 centered
                 value={activeTabIsInPanels ? activeTab : false}
