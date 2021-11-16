@@ -22,6 +22,7 @@ interface StationDetails extends StationSummary {
         [depth: string]: ?number;
     };
     text: string;
+    hathitrust_urls: string[];
     species: SpeciesSummary[];
 }
 

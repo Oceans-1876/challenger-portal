@@ -36,6 +36,7 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
         <Box
             sx={{
                 overflowY: 'auto',
+                zIndex: 1,
                 ...sx
             }}
         >
