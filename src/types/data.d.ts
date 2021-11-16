@@ -22,6 +22,7 @@ interface StationDetails extends StationSummary {
         [depth: string]: ?number;
     };
     text: string;
+    hathitrust_urls: string[];
     species: SpeciesSummary[];
 }
 
@@ -50,5 +51,6 @@ interface DataState {
     selectedStation: StationSummary | null;
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
-    selectedSpecies: string[];
+    filteredStations: string[];
+    filteredSpecies: string[];
 }

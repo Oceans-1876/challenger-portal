@@ -8,6 +8,7 @@ import Intro from '../Intro';
 import TabsGroup from '../TabsGroup';
 import StationDetails from '../Station/Details';
 import StationSpecies from '../Station/Species';
+import StationText from '../Station/Text';
 
 const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
@@ -22,7 +23,8 @@ const Sidebar = () => {
                         initialPanel="Station"
                         panels={[
                             { Panel: () => <StationDetails station={selectedStation} />, label: 'Station' },
-                            { Panel: () => <StationSpecies station={selectedStation} />, label: 'Species' }
+                            { Panel: () => <StationSpecies station={selectedStation} />, label: 'Species' },
+                            { Panel: () => <StationText station={selectedStation} />, label: 'Text' }
                         ]}
                     />
                     <Box sx={{ alignSelf: 'center' }}>

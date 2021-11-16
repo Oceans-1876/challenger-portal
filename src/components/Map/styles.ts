@@ -18,11 +18,10 @@ const basemapLayer: maplibre.RasterLayer = {
     maxzoom: 22
 };
 
-export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.AnyLayer> } } = {
+export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre.AnyLayer> } } = {
     stations: {
         default: {
             type: 'circle',
-            filter: ['!', ['has', 'point_count']],
             paint: {
                 'circle-color': themeOptions.palette.primary.dark,
                 'circle-opacity': 0.7
@@ -46,6 +45,15 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
                 //   * #98d320, 25px circles when point count is greater than or equal to 40
                 'circle-color': ['step', ['get', 'point_count'], '#14807c', 20, '#32bb39', 40, '#98d320'],
                 'circle-radius': ['step', ['get', 'point_count'], 15, 20, 20, 40, 25]
+            }
+        },
+        clusterCount: {
+            type: 'symbol',
+            filter: ['has', 'point_count'],
+            layout: {
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['Roboto Regular'],
+                'text-size': 12
             }
         }
     },

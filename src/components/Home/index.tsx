@@ -69,21 +69,41 @@ const Home = (): JSX.Element => (
         <Card sx={{ mb: 2 }}>
             <CardMedia component="img" image={mapImage} alt="World Map" />
         </Card>
-        <Typography variant="body1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tincidunt risus quis vestibulum congue.
-            Phasellus auctor a ipsum at sollicitudin. Vivamus cursus fringilla dolor ut pharetra. Aenean Aenean viverra
-            rhoncus purus, id accumsan ipsum consectetur nec. In eget commodo eros, et accumsan accumsan tortor.
-            Vestibulum sit amet dolor vehicula, luctus mauris ac, semper velit. Maecenas convallis et elit non congue.
-            Vivamus vel ligula id nunc cursus tincidunt. Donec a efficitur ante, ante, vitae dictum sapien. Donec
-            dignissim neque id eros rhoncus vulputate. Duis id risus et orci orci sagittis molestie. Morbi eget
-            tincidunt purus.
-        </Typography>
-        <Typography variant="body1">
-            Etiam mattis nulla quis ex maximus accumsan. Vivamus pretium tempus dui, sed viverra quam ullamcorper in.
-            Nullam pharetra ullamcorper lectus sed laoreet. Fusce tempor at lorem ac porttitor. porttitor. Morbi
-            pellentesque venenatis quam, et tincidunt mi egestas at. Duis suscipit rhoncus leo leo suscipit efficitur.
-            Nulla et mollis sapien.
-        </Typography>
+        <Box sx={{ width: '75%' }}>
+            <Typography variant="subtitle1">
+                Explore the world&#39;s oceans with <i>HMS Challenger</i> on her monumental four-year odyssey (1872-76)!
+                Search for marine species, and compare the ocean temperatures and chemistry of the pre-industrial age
+                150 years ago with the warming seas of today. Click on the <i>Oceans 1876</i> map, and zoom in on any of
+                the 364 stations from Hawaii to Antarctica for information on <i>Challenger&#39;s</i> amazing
+                discoveries…
+            </Typography>
+            <Typography sx={{ textAlign: 'center', p: 3 }} variant="h4">
+                Background
+            </Typography>
+            <Typography variant="subtitle1">
+                In December 1872, <i>HMS Challenger</i>, a small British warship converted into the world&#39;s first
+                floating laboratory left Portsmouth on a four-year voyage across the globe. Its pathbreaking mission was
+                to chart the ocean floor, measure ocean temperatures and chemistry, and collect marine specimens from
+                worldwide coastal shores, reefs, and the unexplored deep sea.
+            </Typography>
+            <Typography variant="subtitle1">
+                By the voyage&#39;s end, <i>Challenger</i> had wildly exceeded even these ambitious expectations.
+                Sailing nearly 70,000 miles, and recording data at over 360 individual stations, <i>Challenger</i>{' '}
+                identified the world&#39;s major ocean basins and currents as well as 4,700 new species of marine
+                creatures and plants.
+            </Typography>
+            <Typography variant="subtitle1">
+                The thousands of bottled specimens, deposited largely in the Natural History Museum in London, plus
+                fifty published volumes of <i>Challenger</i> data, inaugurated the modern fields of oceanography and
+                marine biology.
+            </Typography>
+            <Typography variant="subtitle1">
+                Here, for the first time, <i>Challenger&#39;s</i> vast trove of groundbreaking data is at everyone&#39;s
+                fingertips, with vital lessons for today&#39;s world. How have our oceans, and their creatures, been
+                transformed over the last 150 years? And how can we protect the wonderful diversity of marine life into
+                an uncertain future?
+            </Typography>
+        </Box>
     </Box>
 );
 
