@@ -67,7 +67,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         <Button
                             variant="outlined"
                             size="small"
-                            startIcon={<Icon>search</Icon>}
+                            startIcon={<Icon baseClassName="icons">search</Icon>}
                             component={Link}
                             to="/explore"
                         >
@@ -76,7 +76,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         <Button
                             disabled
                             variant="outlined"
-                            startIcon={<Icon>bar_chart</Icon>}
+                            startIcon={<Icon baseClassName="icons">bar_chart</Icon>}
                             size="small"
                             component={Link}
                             to="/analysis"
@@ -85,7 +85,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         </Button>
                         <Button
                             variant="outlined"
-                            startIcon={<Icon>data_exploration</Icon>}
+                            startIcon={<Icon baseClassName="icons">data_exploration</Icon>}
                             size="small"
                             href={`${API_PATH}/docs`}
                             target="_blank"
@@ -95,7 +95,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton onClick={handleMobileMenuOpen}>
-                            <Icon>more_vert</Icon>
+                            <Icon baseClassName="icons">more_vert</Icon>
                         </IconButton>
 
                         <Menu
@@ -114,19 +114,19 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         >
                             <MenuItem dense component={Link} to="/explore">
                                 <IconButton size="small">
-                                    <Icon>search</Icon>
+                                    <Icon baseClassName="icons">search</Icon>
                                 </IconButton>
                                 <p>Explore</p>
                             </MenuItem>
                             <MenuItem dense disabled component={Link} to="/analysis">
                                 <IconButton size="small">
-                                    <Icon>bar_chart</Icon>
+                                    <Icon baseClassName="icons">bar_chart</Icon>
                                 </IconButton>
                                 <p>Analysis</p>
                             </MenuItem>
                             <MenuItem dense component="a" href={`${API_PATH}/docs`} target="_blank">
                                 <IconButton size="small">
-                                    <Icon>data_exploration</Icon>
+                                    <Icon baseClassName="icons">data_exploration</Icon>
                                 </IconButton>
                                 <p>API</p>
                             </MenuItem>

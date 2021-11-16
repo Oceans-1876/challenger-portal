@@ -42,7 +42,7 @@ const Text = ({ station }: Props) => {
                 </Typography>
             </Alert>
             <Accordion square disableGutters>
-                <AccordionSummary expandIcon={<Icon>expand_more</Icon>}>
+                <AccordionSummary expandIcon={<Icon baseClassName="icons">expand_more</Icon>}>
                     <Typography>See in HathiTrust</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -72,7 +72,7 @@ const Text = ({ station }: Props) => {
                                 Station {stationDetails.name} - HathiTrust&nbsp;
                                 <Link href={selectedHathiTrustUrl} target="_blank" rel="noreferrer,nofollow">
                                     <IconButton>
-                                        <Icon>launch</Icon>
+                                        <Icon baseClassName="icons">launch</Icon>
                                     </IconButton>
                                 </Link>
                                 <IconButton
@@ -83,7 +83,7 @@ const Text = ({ station }: Props) => {
                                     }}
                                     onClick={() => setSelectedHathiTrustUrl(null)}
                                 >
-                                    <Icon>close</Icon>
+                                    <Icon baseClassName="icons">close</Icon>
                                 </IconButton>
                             </DialogTitle>
                             <DialogContent sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
