@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { matchSorter } from 'match-sorter';
+import throttle from "lodash/throttle";
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { themeOptions } from '../../theme';
@@ -17,6 +19,7 @@ const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { stationsList, filteredStations, speciesOptions } = React.useContext(DataStateContext);
     const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions)
+    const [inputVal, setInputVal] = React.useState<string>("")
 
     React.useEffect(() => {
         setOptions(speciesOptions)
@@ -67,9 +70,6 @@ const Filters = ({ filterBarHeight }: Props) => {
                         />
                         {filteredStations.length ? `Matched ${filteredStations.length} station(s)` : null}
                     </Box>
-                    {/* {console.log(allSpeciesList)} */}
-                    {/* {console.log(options.length)}
-                    {console.log(filteredSpecies.length)} */}
                     <Box>
                         <Autocomplete
                             sx={{ width: 250 }}
@@ -93,8 +93,8 @@ const Filters = ({ filterBarHeight }: Props) => {
                             freeSolo
                             selectOnFocus
                             clearOnBlur
+                            filterOptions={(options) => matchSorter(options, inputVal, {keys: ['label']})}
                             renderTags={() => null}
-                            // value={selectedSpecies}
                             onChange={(_e, selectedOption) => {
                                 let ids: string[] = selectedOption.map(sp => (sp as SpeciesOptions).id)
                                 dataActionDispatcher({
@@ -102,8 +102,10 @@ const Filters = ({ filterBarHeight }: Props) => {
                                     species: ids
                                 });
                             }}
+                            onInputChange={(_e, newVal) => {
+                                throttle(() => setInputVal(newVal), 1000)()
+                            }}
                         />
-                        {/* {console.log(filteredSpecies)} */}
                     </Box>
                 </Box>
             </Toolbar>
