@@ -1,6 +1,7 @@
 import React from 'react';
 import maplibre from 'maplibre-gl';
 
+import { searchStations } from '../../store/api';
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { getFeatureBounds, pulsingDot } from '../Map/utils';
@@ -200,7 +201,29 @@ const ExploreMap = (): JSX.Element => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            if (filteredStations.length || filteredFAOAreas.length) {
+            if (filteredStations.length || filteredFAOAreas.length || filteredSpecies.length) {
+                searchStations(
+                    { stationNames: filteredStations, faoAreas: filteredFAOAreas, species: filteredSpecies },
+                    (stations) => {
+                        map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
+
+                        // Move the map to filtered stations
+                        if (stations.length === 1) {
+                            map.flyTo({
+                                center: stations[0].coordinates,
+                                zoom: 6
+                            });
+                        } else {
+                            const bounds = getFeatureBounds(
+                                stations.map(({ coordinates }) => coordinates) as LineCoordinates
+                            );
+                            if (!bounds.isEmpty()) {
+                                map.fitBounds(bounds, { padding: 50 });
+                            }
+                        }
+                    }
+                );
+
                 if (selectedStation && !filteredStations.includes(selectedStation.name)) {
                     dataActionDispatcher({ type: 'updateSelectedStation', station: null });
                 }
@@ -210,25 +233,7 @@ const ExploreMap = (): JSX.Element => {
                         map.setLayoutProperty(layerName, 'visibility', 'none');
                     }
                 );
-                map.setFilter('stations', ['in', 'name', ...filteredStations]);
                 map.setLayoutProperty('stations', 'visibility', 'visible');
-
-                // Move the map to filtered stations
-                if (filteredStations.length === 1) {
-                    map.flyTo({
-                        center: stationsList.find(({ name }) => name === filteredStations[0])?.coordinates,
-                        zoom: 6
-                    });
-                } else {
-                    const bounds = getFeatureBounds(
-                        filteredStations.map(
-                            (stationName) => stationsList.find(({ name }) => name === stationName)?.coordinates
-                        ) as LineCoordinates
-                    );
-                    if (!bounds.isEmpty()) {
-                        map.fitBounds(bounds, { padding: 50 });
-                    }
-                }
             } else {
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
