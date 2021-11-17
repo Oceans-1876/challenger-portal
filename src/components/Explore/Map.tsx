@@ -221,12 +221,12 @@ const ExploreMap = (): JSX.Element => {
                                 map.fitBounds(bounds, { padding: 50 });
                             }
                         }
+
+                        if (selectedStation && !stations.find(({ name }) => name === selectedStation.name)) {
+                            dataActionDispatcher({ type: 'updateSelectedStation', station: null });
+                        }
                     }
                 );
-
-                if (selectedStation && !filteredStations.includes(selectedStation.name)) {
-                    dataActionDispatcher({ type: 'updateSelectedStation', station: null });
-                }
 
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
