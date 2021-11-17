@@ -80,7 +80,14 @@ const Filters = ({ filterBarHeight }: Props) => {
                             size="small"
                             multiple
                             limitTags={0}
-                            renderInput={(params) => <TextField {...params} placeholder="FAO Areas" />}
+                            renderInput={
+                                (params) => 
+                                <TextField 
+                                    {...params} 
+                                    variant="filled"
+                                    label="FAO Areas"
+                                    placeholder="Select FAO Areas" />
+                            }
                             options={faoAreas}
                             getOptionLabel={(option: FAOArea) => `${option.name} (${option.code})`}
                             renderTags={() => null}
@@ -121,8 +128,6 @@ const Filters = ({ filterBarHeight }: Props) => {
                             getOptionLabel={(option) => {
                                 return option.label;
                             }}
-                            freeSolo
-                            selectOnFocus
                             clearOnBlur
                             filterOptions={(options) => matchSorter(options, inputVal, {keys: ['label']})}
                             renderTags={() => null}
