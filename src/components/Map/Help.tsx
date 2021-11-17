@@ -20,19 +20,19 @@ const Help = ({ open, onClose }: Props) => (
             <List>
                 <ListItem>
                     <ListItemIcon>
-                        <Icon>explore</Icon>
+                        <Icon baseClassName="icons">explore</Icon>
                     </ListItemIcon>
                     <ListItemText primary="Hold the ctrl button while panning the map with the mouse to change the map pitch and bearing. You can also use the right mouse button for this." />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
-                        <Icon>zoom_in</Icon>
+                        <Icon baseClassName="icons">zoom_in</Icon>
                     </ListItemIcon>
                     <ListItemText primary="Activate the map by clicking on it and use +/- to zoom in or out." />
                 </ListItem>
                 <ListItem>
                     <ListItemIcon>
-                        <Icon>zoom_in_map</Icon>
+                        <Icon baseClassName="icons">zoom_in_map</Icon>
                     </ListItemIcon>
                     <ListItemText primary="Hold the shift button, click and drag the left mouse button to start drawing a rectangle on the map to zoom to." />
                 </ListItem>

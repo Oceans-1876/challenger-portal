@@ -11,3 +11,14 @@ interface StyleImage {
     onAdd?: (map: Map, id: string) => void;
     onRemove?: () => void;
 }
+
+interface LayersControlProps {
+    id: string;
+    label: string;
+    initialOpacity: number;
+    attribution?: {
+        text: string;
+        url?: string;
+    };
+    style: Partial<import('maplibre-gl').AnyLayer>;
+}
