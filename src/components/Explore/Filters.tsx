@@ -20,8 +20,8 @@ const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { stationsList, allSpeciesList, filteredSpecies, filteredStations, speciesOptions } = React.useContext(DataStateContext);
     const [inputVal, setInputVal] = React.useState<string>("")
-    const [options, setOptions] = React.useState<string[]>([])
-    const [updateOptions, setUpdateOptions] = React.useState<boolean>(true)
+    const [options, setOptions] = React.useState<string[]>(speciesOptions)
+    // const [updateOptions, setUpdateOptions] = React.useState<boolean>(true)
 
     React.useEffect(() => {
         if (inputVal !== ""){
@@ -43,12 +43,15 @@ const Filters = ({ filterBarHeight }: Props) => {
                 setOptions(newOptions)
             }
         }
-        if (updateOptions && speciesOptions.length !== 0){
+    }, [inputVal])
+
+    React.useEffect(() => {
+        if (speciesOptions.length !== 0){
             setOptions(speciesOptions)
-            setUpdateOptions(false)
+            // setUpdateOptions(false)
             
         }
-    }, [inputVal])
+    }, [speciesOptions])
     return (
         <AppBar
             sx={{
