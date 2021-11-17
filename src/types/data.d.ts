@@ -48,6 +48,12 @@ interface SpeciesOptions {
     id: string;
 }
 
+interface FAOArea {
+    code: string;
+    name: string;
+    ocean: string;
+}
+
 interface DataState {
     stationsList: StationSummary[];
     stationsObject: { [name: string]: StationDetails };
@@ -56,7 +62,9 @@ interface DataState {
     selectedStation: StationSummary | null;
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
+    faoAreas: FAOArea[];
     filteredStations: string[];
     filteredSpecies: string[];
     speciesOptions: SpeciesOptions[];
+    filteredFAOAreas: string[];
 }

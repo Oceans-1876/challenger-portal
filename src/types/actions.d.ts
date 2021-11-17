@@ -23,6 +23,11 @@ interface UpdateSpeciesDetails {
     species: SpeciesDetails;
 }
 
+interface UpdateFAOAreas {
+    type: 'updateFAOAreas';
+    faoAreas: FAOArea[];
+}
+
 interface UpdateFilteredSpecies {
     type: 'updateFilteredSpecies';
     species: string[];
@@ -48,14 +53,21 @@ interface UpdateFilteredStations {
     stations: string[];
 }
 
+interface UpdateFilteredFAOAreas {
+    type: 'updateFilteredFAOAreas';
+    faoAreas: string[];
+}
+
 type DataAction =
     | UpdateStations
     | UpdateSelectedStation
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
+    | UpdateFAOAreas
     | UpdateFilteredSpecies
     | AddToFilteredSpecies
     | RemoveFromFilteredSpecies
     | UpdateFilteredStations
-    | UpdateSpeciesOptions;
+    | UpdateSpeciesOptions
+    | UpdateFilteredFAOAreas;

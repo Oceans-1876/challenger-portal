@@ -27,6 +27,11 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateSpeciesDetails':
             state.allSpeciesObject[action.species.id] = action.species;
             return state;
+        case 'updateFAOAreas':
+            return {
+                ...state,
+                faoAreas: action.faoAreas
+            };
         case 'updateFilteredSpecies':
             return {
                 ...state,
@@ -51,6 +56,11 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
             return {
                 ...state,
                 filteredStations: action.stations
+            };
+        case 'updateFilteredFAOAreas':
+            return {
+                ...state,
+                filteredFAOAreas: action.faoAreas
             };
     }
     throw Error(`Received invalid action: ${action}`);

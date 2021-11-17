@@ -10,6 +10,7 @@ import throttle from "lodash/throttle";
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { themeOptions } from '../../theme';
+import { useFAOAreas } from '../../utils/hooks';
 
 interface Props {
     filterBarHeight: number;
@@ -17,9 +18,10 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, speciesOptions } = React.useContext(DataStateContext);
+    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas } = React.useContext(DataStateContext);
     const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions)
     const [inputVal, setInputVal] = React.useState<string>("")
+    const faoAreas = useFAOAreas();
 
     React.useEffect(() => {
         setOptions(speciesOptions)
@@ -70,6 +72,35 @@ const Filters = ({ filterBarHeight }: Props) => {
                         />
                         {filteredStations.length ? `Matched ${filteredStations.length} station(s)` : null}
                     </Box>
+
+                    <Box>
+                        <Autocomplete
+                            sx={{ width: 250 }}
+                            disableCloseOnSelect
+                            size="small"
+                            multiple
+                            limitTags={0}
+                            renderInput={(params) => <TextField {...params} placeholder="FAO Areas" />}
+                            options={faoAreas}
+                            getOptionLabel={(option: FAOArea) => `${option.name} (${option.code})`}
+                            renderTags={() => null}
+                            value={filteredFAOAreas.reduce((values: FAOArea[], faoAreaCode: string) => {
+                                const faoArea = faoAreas.find(({ code }) => code === faoAreaCode);
+                                if (faoArea) {
+                                    values.push(faoArea);
+                                }
+                                return values;
+                            }, [])}
+                            onChange={(_e, selectedOption) => {
+                                dataActionDispatcher({
+                                    type: 'updateFilteredFAOAreas',
+                                    faoAreas: selectedOption.map((faoArea) => faoArea.code)
+                                });
+                            }}
+                        />
+                        {filteredFAOAreas.length ? `Matched ${filteredFAOAreas.length} FAO Area(s)` : null}
+                    </Box>
+
                     <Box>
                         <Autocomplete
                             sx={{ width: 250 }}

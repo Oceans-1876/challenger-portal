@@ -23,7 +23,7 @@ const Species = ({ station }: Props) => {
                 <>
                     <Button
                         variant="outlined"
-                        startIcon={<Icon>chevron_left</Icon>}
+                        startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
                         onClick={() => {
                             setSelectedSpecies(null);
                         }}

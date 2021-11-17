@@ -65,6 +65,15 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
                 'line-width': 2
             }
         }
+    },
+    faoAreas: {
+        default: {
+            type: 'fill',
+            paint: {
+                'fill-color': '#794c5a',
+                'fill-opacity': 0.25
+            }
+        }
     }
 };
 
