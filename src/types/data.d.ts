@@ -43,6 +43,11 @@ interface SpeciesDetails extends SpeciesSummary {
     data_source_id: number;
 }
 
+interface SpeciesOptions {
+    label: string;
+    id: string;
+}
+
 interface DataState {
     stationsList: StationSummary[];
     stationsObject: { [name: string]: StationDetails };
@@ -53,5 +58,5 @@ interface DataState {
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     filteredStations: string[];
     filteredSpecies: string[];
-    speciesOptions: string[];
+    speciesOptions: SpeciesOptions[];
 }

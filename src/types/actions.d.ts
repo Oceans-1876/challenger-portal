@@ -30,7 +30,7 @@ interface UpdateFilteredSpecies {
 
 interface UpdateSpeciesOptions {
     type: 'updateSpeciesOptions';
-    species: string[];
+    speciesOptions: SpeciesOptions[];
 }
 
 interface AddToFilteredSpecies {

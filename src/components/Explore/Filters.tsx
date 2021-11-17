@@ -5,11 +5,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-import throttle from "lodash/throttle";
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
-import { getData } from '../../store/api';
 import { themeOptions } from '../../theme';
 
 interface Props {
@@ -18,40 +15,13 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, allSpeciesList, filteredSpecies, filteredStations, speciesOptions } = React.useContext(DataStateContext);
-    const [inputVal, setInputVal] = React.useState<string>("")
-    const [options, setOptions] = React.useState<string[]>(speciesOptions)
-    // const [updateOptions, setUpdateOptions] = React.useState<boolean>(true)
+    const { stationsList, filteredStations, speciesOptions } = React.useContext(DataStateContext);
+    const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions)
 
     React.useEffect(() => {
-        if (inputVal !== ""){
-            throttle(() => {
-                console.log(`Hitting the search endpoint with ${inputVal}`)
-                getData<SpeciesSummary[]>(`species/search/?search_term=${inputVal}&search_column=matched_canonical_full_name&limit=0`, (species) => {
-                    let newOptions = species.filter(sp => sp.matched_canonical_full_name !== null).map(sp => sp.matched_canonical_full_name)
-                    // dataActionDispatcher({ type: 'updateAllSpecies', species });
-                    dataActionDispatcher({type: 'updateSpeciesOptions', species: newOptions })
-                    setOptions(newOptions)
-                })
-            }, 300)()
-        }
-        if ((inputVal === "")){
-            if (speciesOptions.length !== allSpeciesList.length - 1){ // because of the null value present in one of the species
-                console.log("Resetting Species Options in Datastore and Updating Options")
-                let newOptions = allSpeciesList.filter(sp => sp.matched_canonical_full_name !== null).map(sp => sp.matched_canonical_full_name)
-                dataActionDispatcher({type: 'updateSpeciesOptions', species: newOptions })
-                setOptions(newOptions)
-            }
-        }
-    }, [inputVal])
-
-    React.useEffect(() => {
-        if (speciesOptions.length !== 0){
-            setOptions(speciesOptions)
-            // setUpdateOptions(false)
-            
-        }
+        setOptions(speciesOptions)
     }, [speciesOptions])
+
     return (
         <AppBar
             sx={{
@@ -118,25 +88,22 @@ const Filters = ({ filterBarHeight }: Props) => {
                             }
                             options={options}
                             getOptionLabel={(option) => {
-                                return option;
+                                return option.label;
                             }}
                             freeSolo
                             selectOnFocus
                             clearOnBlur
-                            filterOptions={(x) => x}
                             renderTags={() => null}
-                            value={filteredSpecies}
+                            // value={selectedSpecies}
                             onChange={(_e, selectedOption) => {
+                                let ids: string[] = selectedOption.map(sp => (sp as SpeciesOptions).id)
                                 dataActionDispatcher({
                                     type: 'updateFilteredSpecies',
-                                    species: selectedOption
+                                    species: ids
                                 });
                             }}
-                            onInputChange={(_e, entered_value) => {
-                                setInputVal(entered_value)
-                            }}
                         />
-                        {console.log(filteredSpecies)}
+                        {/* {console.log(filteredSpecies)} */}
                     </Box>
                 </Box>
             </Toolbar>

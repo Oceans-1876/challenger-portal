@@ -35,7 +35,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateSpeciesOptions':
             return {
                 ...state,
-                speciesOptions: action.species
+                speciesOptions: action.speciesOptions
             };
         case 'addToFilteredSpecies':
             return {
