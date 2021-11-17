@@ -1,14 +1,15 @@
 import maplibre from 'maplibre-gl';
 
-export const fixLineMeridianCrossing = (coordinates: LineCoordinates): LineCoordinates => {
-    // TODO fix this
+import directionArrowIcon from '../../images/direction_arrow_icon.png';
+
+export const createJourneyPathFromStationPoints = (coordinates: LineCoordinates): LineCoordinates => {
     for (let i = 0; i < coordinates.length; i += 1) {
         const currentLng = coordinates[i][0];
-        const previousLng = coordinates[i === 0 ? coordinates.length - 1 : i - 1][0];
-        if (currentLng - previousLng > 180) {
-            coordinates[i][0] -= 360;
-        } else if (currentLng - previousLng < -180) {
-            coordinates[i][0] += 360;
+        if (i !== coordinates.length - 1) {
+            const nextLng = coordinates[i + 1][0];
+            if (currentLng - nextLng > 180) {
+                coordinates[i + 1][0] += 360;
+            }
         }
     }
     return coordinates;
@@ -89,4 +90,13 @@ export const pulsingDot = (map: maplibre.Map, size: number): void => {
         }
     };
     map.addImage('pulsing-dot', dot, { pixelRatio: 2 });
+};
+
+export const directionArrow = (map: maplibre.Map): void => {
+    map.loadImage(directionArrowIcon, (error: Error, image: HTMLImageElement) => {
+        if (error) {
+            throw error;
+        }
+        map.addImage('direction-arrow', image, { pixelRatio: 2 });
+    });
 };

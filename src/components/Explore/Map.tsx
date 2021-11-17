@@ -4,15 +4,22 @@ import maplibre from 'maplibre-gl';
 import { searchStations } from '../../store/api';
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { getFeatureBounds, pulsingDot } from '../Map/utils';
+import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsBounds, stationsList, filteredSpecies, selectedStation, filteredStations, filteredFAOAreas } =
-        React.useContext(DataStateContext);
+    const {
+        journeyPath,
+        stationsBounds,
+        stationsList,
+        filteredSpecies,
+        selectedStation,
+        filteredStations,
+        filteredFAOAreas
+    } = React.useContext(DataStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
     const mapRef = React.useRef<maplibre.Map>();
@@ -22,6 +29,10 @@ const ExploreMap = (): JSX.Element => {
         // Add a pulsing dot image to the map to be used for selected station
         pulsingDot(map, 100);
 
+        // Add direction arrow to the map to be used for journey path
+        directionArrow(map);
+
+        // Add FAO Areas
         map.addSource('faoAreas', {
             type: 'geojson',
             data: faoAreasUrl
@@ -32,6 +43,31 @@ const ExploreMap = (): JSX.Element => {
             id: 'faoAreas',
             source: 'faoAreas'
         } as maplibre.FillLayer);
+
+        // Add journey path
+        map.addSource('journey', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: []
+                }
+            }
+        });
+
+        map.addLayer({
+            ...layerStyles.journeyPath.default,
+            id: 'journey',
+            source: 'journey'
+        } as maplibre.LineLayer);
+
+        map.addLayer({
+            ...layerStyles.journeyPath.direction,
+            id: 'journey-direction',
+            source: 'journey'
+        } as maplibre.SymbolLayer);
 
         // Both `stations` and `clustered-stations` sources hold the same data.
         // For performance reasons, it is better to use separate sources and hide or show
@@ -145,21 +181,6 @@ const ExploreMap = (): JSX.Element => {
             });
         });
 
-        // Add journey path
-        map.addSource('journey', {
-            type: 'geojson',
-            data: {
-                type: 'FeatureCollection',
-                features: []
-            }
-        });
-
-        map.addLayer({
-            ...layerStyles.journeyPath.default,
-            id: 'journey',
-            source: 'journey'
-        } as maplibre.LineLayer);
-
         mapRef.current = map;
         setIsMapLoaded(true);
     };
@@ -186,6 +207,18 @@ const ExploreMap = (): JSX.Element => {
                 }
             });
             map.fitBounds(stationsBounds);
+
+            const journeySource = map.getSource('journey') as maplibre.GeoJSONSource;
+            if (journeySource) {
+                journeySource.setData({
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: journeyPath
+                    }
+                });
+            }
         }
     }, [stationsList, isMapLoaded]);
 
