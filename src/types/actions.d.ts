@@ -28,6 +28,11 @@ interface UpdateFilteredSpecies {
     species: string[];
 }
 
+interface UpdateSpeciesOptions {
+    type: 'updateSpeciesOptions';
+    species: string[];
+}
+
 interface AddToFilteredSpecies {
     type: 'addToFilteredSpecies';
     species: string[];
@@ -52,4 +57,5 @@ type DataAction =
     | UpdateFilteredSpecies
     | AddToFilteredSpecies
     | RemoveFromFilteredSpecies
-    | UpdateFilteredStations;
+    | UpdateFilteredStations
+    | UpdateSpeciesOptions;

@@ -53,4 +53,5 @@ interface DataState {
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     filteredStations: string[];
     filteredSpecies: string[];
+    speciesOptions: string[];
 }

@@ -8,5 +8,6 @@ export const dataStateInitialValue: DataState = {
     allSpeciesList: [],
     allSpeciesObject: {},
     filteredStations: [],
-    filteredSpecies: []
+    filteredSpecies: [],
+    speciesOptions: [],
 };
