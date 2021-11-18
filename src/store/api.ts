@@ -13,31 +13,52 @@ export const searchStations = (
 ) => {
     const expressions: Array<SearchExpression | SearchExpressionGroup> = [];
 
-    const addExpression = (column_name: string, operator: string, values: string[]) => {
-        if (values.length > 1) {
-            expressions.push({
-                join: 'OR',
-                expressions: values.map(
-                    (value) =>
-                        ({
-                            column_name,
-                            search_term: value,
-                            operator
-                        } as SearchExpression)
-                )
-            });
-        } else if (values.length === 1) {
-            expressions.push({
-                column_name,
-                search_term: values[0],
-                operator
-            } as SearchExpression);
+    const addExpression = (column_name: string, operator: string, values: (string | null)[]) => {
+        if (column_name === 'date') {
+            console.log(values);
+            if (values[0] !== null) {
+                expressions.push({
+                    column_name,
+                    search_term: values[0],
+                    operator: 'gte'
+                } as SearchExpression);
+            }
+            if (values[1] !== null) {
+                expressions.push({
+                    column_name,
+                    search_term: values[1],
+                    operator: 'lte'
+                });
+            }
+        } else {
+            console.log(column_name);
+            if (values.length > 1) {
+                expressions.push({
+                    join: 'OR',
+                    expressions: values.map(
+                        (value) =>
+                            ({
+                                column_name,
+                                search_term: value,
+                                operator
+                            } as SearchExpression)
+                    )
+                });
+            } else if (values.length === 1) {
+                expressions.push({
+                    column_name,
+                    search_term: values[0],
+                    operator
+                } as SearchExpression);
+            }
         }
     };
 
     addExpression('name', 'eq', searchExpressions.stationNames);
     addExpression('fao_area', 'eq', searchExpressions.faoAreas);
     addExpression('species_id', 'eq', searchExpressions.species);
+    addExpression('date', 'gte', searchExpressions.dates);
+    console.log(expressions);
 
     if (expressions.length) {
         const data =

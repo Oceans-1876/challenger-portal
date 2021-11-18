@@ -11,5 +11,6 @@ export const dataStateInitialValue: DataState = {
     filteredSpecies: [],
     speciesOptions: [],
     faoAreas: [],
-    filteredFAOAreas: []
+    filteredFAOAreas: [],
+    filterDates: []
 };

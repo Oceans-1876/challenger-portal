@@ -2,11 +2,16 @@ import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
+// import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
 import { matchSorter } from 'match-sorter';
 import throttle from 'lodash/throttle';
+import { Dayjs } from 'dayjs';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { themeOptions } from '../../theme';
@@ -21,11 +26,26 @@ const Filters = ({ filterBarHeight }: Props) => {
     const { stationsList, filteredStations, speciesOptions, filteredFAOAreas } = React.useContext(DataStateContext);
     const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions);
     const [inputVal, setInputVal] = React.useState<string>('');
+    const [dateVal, setDateVal] = React.useState<DateRange<Dayjs>>([null, null]);
     const faoAreas = useFAOAreas();
 
     React.useEffect(() => {
         setOptions(speciesOptions);
     }, [speciesOptions]);
+
+    React.useEffect(() => {
+        const dates: (string | null)[] = dateVal.map((dateObj) => {
+            if (dateObj !== null) {
+                return dateObj.format('YYYY-MM-DD');
+            }
+            return null;
+        });
+        console.log(dates);
+        dataActionDispatcher({
+            type: 'updateFilterDates',
+            dates: dates
+        });
+    }, [dateVal]);
 
     return (
         <AppBar
@@ -44,10 +64,32 @@ const Filters = ({ filterBarHeight }: Props) => {
             elevation={1}
             square
         >
+            <Box justifyContent="center">
+                <Typography sx={{ textAlign: 'center' }} variant="h5">
+                    Filter by
+                </Typography>
+            </Box>
             <Toolbar sx={{ alignItems: 'start' }}>
                 <Box sx={{ 'display': 'flex', 'width': '100%', '& > *': { pr: 2 } }}>
-                    <Typography variant="h5">Filter by</Typography>
-                    <Box>
+                    <Box my={1}>
+                        <DateRangePicker
+                            startText="Start Date"
+                            endText="End Date"
+                            value={dateVal}
+                            onChange={(newDateVal) => {
+                                setDateVal(newDateVal);
+                            }}
+                            renderInput={(startProps, endProps) => (
+                                <React.Fragment>
+                                    <TextField {...startProps} variant="filled" />
+                                    <Box sx={{ mx: 1 }}> to </Box>
+                                    <TextField {...endProps} variant="filled" />
+                                </React.Fragment>
+                            )}
+                        />
+                    </Box>
+                    {/* {console.log(dateVal)} */}
+                    <Box my={1}>
                         <Autocomplete
                             sx={{ width: 250 }}
                             disableCloseOnSelect
@@ -76,7 +118,7 @@ const Filters = ({ filterBarHeight }: Props) => {
                         {filteredStations.length ? `Matched ${filteredStations.length} station(s)` : null}
                     </Box>
 
-                    <Box>
+                    <Box my={1}>
                         <Autocomplete
                             sx={{ width: 250 }}
                             disableCloseOnSelect
@@ -111,7 +153,7 @@ const Filters = ({ filterBarHeight }: Props) => {
                         {filteredFAOAreas.length ? `Matched ${filteredFAOAreas.length} FAO Area(s)` : null}
                     </Box>
 
-                    <Box>
+                    <Box my={1}>
                         <Autocomplete
                             sx={{ width: 250 }}
                             disableCloseOnSelect

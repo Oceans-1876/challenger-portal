@@ -67,4 +67,5 @@ interface DataState {
     filteredSpecies: string[];
     speciesOptions: SpeciesOptions[];
     filteredFAOAreas: string[];
+    filterDates: (string | null)[];
 }

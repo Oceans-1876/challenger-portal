@@ -14,4 +14,5 @@ interface StationSearchExpressions {
     stationNames: string[];
     faoAreas: string[];
     species: string[];
+    dates: (string | null)[];
 }

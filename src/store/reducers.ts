@@ -64,6 +64,11 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 filteredFAOAreas: action.faoAreas
             };
+        case 'updateFilterDates':
+            return {
+                ...state,
+                filterDates: action.dates
+            };
     }
     throw Error(`Received invalid action: ${action}`);
 };
