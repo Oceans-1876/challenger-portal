@@ -1,9 +1,11 @@
-import { fixLineMeridianCrossing, getFeatureBounds } from '../components/Map/utils';
+import { createJourneyPathFromStationPoints, getFeatureBounds } from '../components/Map/utils';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
         case 'updateStations': {
-            const journeyPath = fixLineMeridianCrossing(action.stations.map((station) => station.coordinates)); // Expects stations to be sorted by date
+            const journeyPath = createJourneyPathFromStationPoints(
+                action.stations.map((station) => station.coordinates)
+            ); // Expects stations to be sorted by date
             return {
                 ...state,
                 journeyPath,
