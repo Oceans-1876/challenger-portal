@@ -60,9 +60,24 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
     journeyPath: {
         default: {
             type: 'line',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
             paint: {
-                'line-color': '#5b6969',
-                'line-width': 2
+                'line-color': '#888',
+                'line-width': 4
+            }
+        },
+        direction: {
+            // This style depends on `directionArrow` in `components/Map/utils.ts`
+            type: 'symbol',
+            layout: {
+                'symbol-placement': 'line',
+                'symbol-spacing': 50,
+                'icon-rotate': 90,
+                'icon-image': 'direction-arrow',
+                'icon-size': 1.2
             }
         }
     },
