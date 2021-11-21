@@ -23,8 +23,9 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
         default: {
             type: 'circle',
             paint: {
+                'circle-radius': 7,
                 'circle-color': themeOptions.palette.primary.dark,
-                'circle-opacity': 0.7
+                'circle-opacity': 0.9
             }
         },
         selected: {
@@ -65,8 +66,8 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
                 'line-cap': 'round'
             },
             paint: {
-                'line-color': '#888',
-                'line-width': 4
+                'line-color': '#e3e7af',
+                'line-width': 2
             }
         },
         direction: {
