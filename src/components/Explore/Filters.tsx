@@ -5,6 +5,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { matchSorter } from 'match-sorter';
+import throttle from 'lodash/throttle';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { themeOptions } from '../../theme';
@@ -16,9 +18,14 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, allSpeciesList, filteredSpecies, filteredStations, filteredFAOAreas } =
-        React.useContext(DataStateContext);
+    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas } = React.useContext(DataStateContext);
+    const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions);
+    const [inputVal, setInputVal] = React.useState<string>('');
     const faoAreas = useFAOAreas();
+
+    React.useEffect(() => {
+        setOptions(speciesOptions);
+    }, [speciesOptions]);
 
     return (
         <AppBar
@@ -47,7 +54,14 @@ const Filters = ({ filterBarHeight }: Props) => {
                             size="small"
                             multiple
                             limitTags={0}
-                            renderInput={(params) => <TextField {...params} placeholder="Stations" />}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="filled"
+                                    label="Stations"
+                                    placeholder="Select Stations"
+                                />
+                            )}
                             options={stationsList.map((station) => station.name)}
                             getOptionLabel={(option) => `Station ${option}`}
                             renderTags={() => null}
@@ -69,7 +83,14 @@ const Filters = ({ filterBarHeight }: Props) => {
                             size="small"
                             multiple
                             limitTags={0}
-                            renderInput={(params) => <TextField {...params} placeholder="FAO Areas" />}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="filled"
+                                    label="FAO Areas"
+                                    placeholder="Select FAO Areas"
+                                />
+                            )}
                             options={faoAreas}
                             getOptionLabel={(option: FAOArea) => `${option.name} (${option.code})`}
                             renderTags={() => null}
@@ -97,20 +118,26 @@ const Filters = ({ filterBarHeight }: Props) => {
                             includeInputInList
                             size="small"
                             autoComplete
-                            options={allSpeciesList.map((species) => species.matched_canonical_full_name)}
+                            multiple
+                            renderInput={(params) => (
+                                <TextField {...params} variant="filled" label="Species" placeholder="Select Species" />
+                            )}
+                            options={options}
                             getOptionLabel={(option) => {
-                                return option;
+                                return option.label;
                             }}
-                            filterOptions={(options: string[]) =>
-                                options.filter((name) => !filteredSpecies.includes(name))
-                            }
-                            value={null}
-                            renderInput={(params) => <TextField {...params} placeholder="Species // TODO broken" />}
+                            clearOnBlur
+                            filterOptions={(options_inp) => matchSorter(options_inp, inputVal, { keys: ['label'] })}
+                            renderTags={() => null}
                             onChange={(_e, selectedOption) => {
+                                const ids: string[] = selectedOption.map((sp) => (sp as SpeciesOptions).id);
                                 dataActionDispatcher({
                                     type: 'updateFilteredSpecies',
-                                    species: selectedOption ? [selectedOption] : []
+                                    species: ids
                                 });
+                            }}
+                            onInputChange={(_e, newVal) => {
+                                throttle(() => setInputVal(newVal), 1000)();
                             }}
                         />
                     </Box>
