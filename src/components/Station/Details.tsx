@@ -3,7 +3,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 
-import { decimalFormat } from '../../utils/format';
 import { useStationDetails } from '../../utils/hooks';
 import Loading from '../Loading';
 
@@ -17,18 +16,38 @@ const Details = ({ station }: Props) => {
     return stationDetails ? (
         <List>
             <ListItem>
-                <Typography variant="subtitle1">Station {station.name}</Typography>&nbsp;-&nbsp;
+                <Typography variant="h6">Date:&nbsp;</Typography>
+                {stationDetails.date}
+            </ListItem>
+            <ListItem>
+                <Typography variant="h6">Location:&nbsp;</Typography>
                 {stationDetails.location}
             </ListItem>
+            <List disablePadding dense>
+                <ListItem sx={{ pl: 4 }}>
+                    <b>Place:&nbsp;</b>
+                    {stationDetails.place || '-'}
+                </ListItem>
+                <ListItem sx={{ pl: 4 }}>
+                    <b>Water body:&nbsp;</b>
+                    {stationDetails.water_body}
+                </ListItem>
+                <ListItem sx={{ pl: 4 }}>
+                    <b>Sea area:&nbsp;</b>
+                    {stationDetails.sea_area || '-'}
+                </ListItem>
+                <ListItem sx={{ pl: 4 }}>
+                    <b>FAO Area:&nbsp;</b>
+                    {stationDetails.fao_area}
+                </ListItem>
+            </List>
             <ListItem>
-                Surface Temperature (C):&nbsp;
-                {stationDetails.surface_temp_c ? `${decimalFormat(stationDetails.surface_temp_c)}\u00b0` : '-'}
+                <Typography variant="h6">Gear:&nbsp;</Typography>
+                {stationDetails.gear || '-'}
             </ListItem>
             <ListItem>
-                Bottom Water Temperature (C):&nbsp;
-                {stationDetails.bottom_water_temp_c
-                    ? `${decimalFormat(stationDetails.bottom_water_temp_c)}\u00b0`
-                    : '-'}
+                <Typography variant="h6">Sediment sample:&nbsp;</Typography>
+                {stationDetails.sediment_sample || '-'}
             </ListItem>
         </List>
     ) : (
