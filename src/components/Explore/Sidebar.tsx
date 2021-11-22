@@ -4,18 +4,28 @@ import Button from '@mui/material/Button';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import About from '../About';
-import Intro from '../Intro';
 import TabsGroup from '../TabsGroup';
 import StationDetails from '../Station/Details';
 import StationSpecies from '../Station/Species';
 import StationText from '../Station/Text';
+import Filters from './Filters';
 
 const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { selectedStation } = React.useContext(DataStateContext);
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', background: '#fff', width: { xs: 350, lg: 500 }, p: 1 }}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                background: '#fff',
+                width: { xs: 350, lg: 500 },
+                p: 1,
+                zIndex: 1,
+                boxShadow: '1px 0 5px gray'
+            }}
+        >
             {selectedStation ? (
                 <>
                     <TabsGroup
@@ -38,11 +48,11 @@ const Sidebar = () => {
                 </>
             ) : (
                 <TabsGroup
-                    initialPanel="Intro"
+                    initialPanel="Filters"
                     panels={[
                         {
-                            Panel: Intro,
-                            label: 'Intro'
+                            Panel: Filters,
+                            label: 'Filters'
                         },
                         {
                             Panel: About,

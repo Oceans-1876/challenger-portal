@@ -22,13 +22,7 @@ const App = (): JSX.Element => {
 
     React.useEffect(() => {
         getData<SpeciesSummary[]>('species/all/?order_by=matched_canonical_full_name', (species) => {
-            const speciesOptions: SpeciesOptions[] = species
-                .filter((sp) => sp.matched_canonical_full_name !== null)
-                .map((sp) => {
-                    return { label: sp.matched_canonical_full_name, id: sp.id };
-                });
             dataActionDispatcher({ type: 'updateAllSpecies', species });
-            dataActionDispatcher({ type: 'updateSpeciesOptions', speciesOptions });
         });
         getData<StationSummary[]>('stations/all/?order_by=order', (stations) => {
             dataActionDispatcher({ type: 'updateStations', stations });

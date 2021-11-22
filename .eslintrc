@@ -30,7 +30,6 @@
           "node_modules"
         ],
         "extensions": [
-          ".js",
           ".ts",
           ".tsx"
         ]
