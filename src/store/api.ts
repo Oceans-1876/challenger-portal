@@ -13,8 +13,23 @@ export const searchStations = (
 ) => {
     const expressions: Array<SearchExpression | SearchExpressionGroup> = [];
 
-    const addExpression = (column_name: string, operator: string, values: string[]) => {
-        if (values.length > 1) {
+    const addExpression = (column_name: string, operator: string, values: (string | null)[]) => {
+        if (column_name === 'date') {
+            if (values[0] !== null) {
+                expressions.push({
+                    column_name,
+                    search_term: values[0],
+                    operator: 'ge'
+                } as SearchExpression);
+            }
+            if (values[1] !== null) {
+                expressions.push({
+                    column_name,
+                    search_term: values[1],
+                    operator: 'le'
+                });
+            }
+        } else if (values.length > 1) {
             expressions.push({
                 join: 'OR',
                 expressions: values.map(
@@ -38,6 +53,7 @@ export const searchStations = (
     addExpression('name', 'eq', searchExpressions.stationNames);
     addExpression('fao_area', 'eq', searchExpressions.faoAreas);
     addExpression('species_id', 'eq', searchExpressions.species);
+    addExpression('date', 'ge', searchExpressions.dates);
 
     if (expressions.length) {
         const data =

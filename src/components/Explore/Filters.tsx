@@ -3,13 +3,16 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Autocomplete from '@mui/material/Autocomplete';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DatePicker from '@mui/lab/DatePicker';
 import { matchSorter } from 'match-sorter';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { useFAOAreas } from '../../utils/hooks';
@@ -19,11 +22,41 @@ const Filters = () => {
     const { stationsList, filteredStations, allSpeciesList, filteredFAOAreas, filteredSpecies } =
         React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
+    const minDate = dayjs('1872-01-01');
+    const maxDate = dayjs('1876-12-31');
+    const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
+    const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
     const faoAreas = useFAOAreas();
 
     React.useEffect(() => {
         setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
     }, [allSpeciesList]);
+
+    React.useEffect(() => {
+        const dates: (string | null)[] = [];
+        if (startDate !== null) {
+            if ((startDate as Dayjs).isValid()) {
+                dates.push((startDate as Dayjs).format('YYYY-MM-DD'));
+            } else {
+                dates.push(null);
+            }
+        } else {
+            dates.push(null);
+        }
+        if (endDate !== null) {
+            if ((endDate as Dayjs).isValid()) {
+                dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
+            } else {
+                dates.push(null);
+            }
+        } else {
+            dates.push(null);
+        }
+        dataActionDispatcher({
+            type: 'updateFilterDates',
+            dates
+        });
+    }, [endDate, startDate]);
 
     return (
         <Stack direction="column" spacing={4}>
@@ -31,6 +64,41 @@ const Filters = () => {
                 Start by selecting a station from the map to see its details or filter out stations.
             </Typography>
 
+            <Stack direction="column" alignItems="center" spacing={1}>
+                <Box my={1} justifyContent="center">
+                    <DatePicker
+                        label="Start Date"
+                        value={startDate}
+                        renderInput={(params) => <TextField {...params} />}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        openTo="year"
+                        clearable
+                        onChange={(newVal) => {
+                            setStartDate(newVal);
+                        }}
+                    />
+                </Box>
+                <Box my={1} justifyContent="center">
+                    <DatePicker
+                        label="End Date"
+                        value={endDate}
+                        renderInput={(params) => <TextField {...params} />}
+                        minDate={minDate}
+                        maxDate={maxDate}
+                        openTo="year"
+                        clearable
+                        onChange={(newVal) => {
+                            setEndDate(newVal);
+                        }}
+                    />
+                </Box>
+            </Stack>
+            {startDate !== null && endDate !== null && startDate > endDate ? (
+                <Alert severity="warning">
+                    The Start Date is greater than the End Date. It should be less than or equal to End Date.
+                </Alert>
+            ) : null}
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth

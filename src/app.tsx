@@ -4,6 +4,8 @@ import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import maplibre from 'maplibre-gl';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import DateFnsAdapter from '@mui/lab/AdapterDayjs';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { getData } from './store/api';
 import { DataActionDispatcherContext, DataStateContext } from './store/contexts';
@@ -35,11 +37,13 @@ const App = (): JSX.Element => {
                     <Suspense fallback={<Loading />}>
                         <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
                             <DataStateContext.Provider value={dataState}>
-                                <Routes>
-                                    {Object.entries(routes).map(([path, props]) => (
-                                        <Route key={path} path={path} {...props} />
-                                    ))}
-                                </Routes>
+                                <LocalizationProvider dateAdapter={DateFnsAdapter}>
+                                    <Routes>
+                                        {Object.entries(routes).map(([path, props]) => (
+                                            <Route key={path} path={path} {...props} />
+                                        ))}
+                                    </Routes>
+                                </LocalizationProvider>
                             </DataStateContext.Provider>
                         </DataActionDispatcherContext.Provider>
                     </Suspense>

@@ -18,7 +18,8 @@ const ExploreMap = (): JSX.Element => {
         filteredSpecies,
         selectedStation,
         filteredStations,
-        filteredFAOAreas
+        filteredFAOAreas,
+        filterDates
     } = React.useContext(DataStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
@@ -234,9 +235,20 @@ const ExploreMap = (): JSX.Element => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            if (filteredStations.length || filteredFAOAreas.length || filteredSpecies.length) {
+            if (
+                filteredStations.length ||
+                filteredFAOAreas.length ||
+                filteredSpecies.length ||
+                filterDates[0] !== null ||
+                filterDates[1] !== null
+            ) {
                 searchStations(
-                    { stationNames: filteredStations, faoAreas: filteredFAOAreas, species: filteredSpecies },
+                    {
+                        stationNames: filteredStations,
+                        faoAreas: filteredFAOAreas,
+                        species: filteredSpecies,
+                        dates: filterDates
+                    },
                     (stations) => {
                         map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
 
@@ -276,7 +288,7 @@ const ExploreMap = (): JSX.Element => {
                 map.setLayoutProperty('stations', 'visibility', 'none');
             }
         }
-    }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded]);
+    }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded, filterDates]);
 
     return (
         <Map

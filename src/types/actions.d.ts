@@ -53,6 +53,11 @@ interface UpdateFilteredFAOAreas {
     faoAreas: string[];
 }
 
+interface UpdateFilterDates {
+    type: 'updateFilterDates';
+    dates: (string | null)[];
+}
+
 type DataAction =
     | UpdateStations
     | UpdateSelectedStation
@@ -64,4 +69,5 @@ type DataAction =
     | AddToFilteredSpecies
     | RemoveFromFilteredSpecies
     | UpdateFilteredStations
-    | UpdateFilteredFAOAreas;
+    | UpdateFilteredFAOAreas
+    | UpdateFilterDates;
