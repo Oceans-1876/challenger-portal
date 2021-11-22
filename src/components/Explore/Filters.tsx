@@ -53,8 +53,8 @@ const Filters = ({ filterBarHeight }: Props) => {
     }, [dateVal]);
 
     React.useEffect(() => {
-        setMaxDate(Dayjs('1877-12-01'));
-        setMinDate(Dayjs('1870-12-31'));
+        setMaxDate(new Dayjs('1877-12-01'));
+        setMinDate(new Dayjs('1870-12-31'));
     }, [maxDate, minDate]);
 
     return (
