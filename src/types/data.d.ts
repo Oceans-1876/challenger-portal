@@ -43,11 +43,6 @@ interface SpeciesDetails extends SpeciesSummary {
     data_source_id: number;
 }
 
-interface SpeciesOptions {
-    label: string;
-    id: string;
-}
-
 interface FAOArea {
     code: string;
     name: string;
@@ -65,6 +60,5 @@ interface DataState {
     faoAreas: FAOArea[];
     filteredStations: string[];
     filteredSpecies: string[];
-    speciesOptions: SpeciesOptions[];
     filteredFAOAreas: string[];
 }
