@@ -235,7 +235,13 @@ const ExploreMap = (): JSX.Element => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            if (filteredStations.length || filteredFAOAreas.length || filteredSpecies.length) {
+            if (
+                filteredStations.length ||
+                filteredFAOAreas.length ||
+                filteredSpecies.length ||
+                filterDates[0] !== null ||
+                filterDates[1] !== null
+            ) {
                 searchStations(
                     {
                         stationNames: filteredStations,
