@@ -18,7 +18,6 @@ const ExploreMap = (): JSX.Element => {
         filteredSpecies,
         selectedStation,
         filteredStations,
-
         filteredFAOAreas,
         filterDates
     } = React.useContext(DataStateContext);
