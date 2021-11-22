@@ -35,8 +35,8 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
     return (
         <Box
             sx={{
-                overflowY: 'auto',
                 zIndex: 1,
+                height: '80%',
                 ...sx
             }}
         >
@@ -52,7 +52,7 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
 
             {panels.map(({ Panel, label }) => {
                 return (
-                    <Box key={label} sx={{ p: 2 }} hidden={activeTab !== label}>
+                    <Box key={label} sx={{ p: 2, height: '90%', overflowY: 'auto' }} hidden={activeTab !== label}>
                         <Panel />
                     </Box>
                 );

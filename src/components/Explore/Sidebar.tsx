@@ -1,11 +1,13 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import About from '../About';
 import TabsGroup from '../TabsGroup';
 import StationDetails from '../Station/Details';
+import StationEnvironment from '../Station/Environment';
 import StationSpecies from '../Station/Species';
 import StationText from '../Station/Text';
 import Filters from './Filters';
@@ -20,7 +22,7 @@ const Sidebar = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 background: '#fff',
-                width: { xs: 350, lg: 500 },
+                width: { xs: 500, lg: 550 },
                 p: 1,
                 zIndex: 1,
                 boxShadow: '1px 0 5px gray'
@@ -28,16 +30,20 @@ const Sidebar = () => {
         >
             {selectedStation ? (
                 <>
+                    <Typography variant="h5" align="center">
+                        Station {selectedStation.name}
+                    </Typography>
                     <TabsGroup
                         sx={{ flexGrow: 1 }}
                         initialPanel="Station"
                         panels={[
                             { Panel: () => <StationDetails station={selectedStation} />, label: 'Station' },
+                            { Panel: () => <StationEnvironment station={selectedStation} />, label: 'Environment' },
                             { Panel: () => <StationSpecies station={selectedStation} />, label: 'Species' },
                             { Panel: () => <StationText station={selectedStation} />, label: 'Text' }
                         ]}
                     />
-                    <Box sx={{ alignSelf: 'center' }}>
+                    <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
                         <Button
                             variant="outlined"
                             onClick={() => dataActionDispatcher({ type: 'updateSelectedStation', station: null })}
