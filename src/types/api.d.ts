@@ -1,7 +1,7 @@
 interface SearchExpression {
     column_name: string;
     search_term: string;
-    operator: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains';
+    operator: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'contains';
     min_string_similarity?: number;
 }
 

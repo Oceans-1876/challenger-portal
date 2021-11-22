@@ -23,10 +23,15 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas } = React.useContext(DataStateContext);
+    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas, filterDates } =
+        React.useContext(DataStateContext);
     const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions);
     const [inputVal, setInputVal] = React.useState<string>('');
     const [dateVal, setDateVal] = React.useState<DateRange<Dayjs>>([null, null]);
+    // const maxDate = new Date('1877-12-01');
+    const [maxDate, setMaxDate] = React.useState<Dayjs | null>(null);
+    // const minDate = new Date('1870-12-31');
+    const [minDate, setMinDate] = React.useState<Dayjs | null>(null);
     const faoAreas = useFAOAreas();
 
     React.useEffect(() => {
@@ -46,6 +51,11 @@ const Filters = ({ filterBarHeight }: Props) => {
             dates: dates
         });
     }, [dateVal]);
+
+    React.useEffect(() => {
+        setMaxDate(Dayjs('1877-12-01'));
+        setMinDate(Dayjs('1870-12-31'));
+    }, [maxDate, minDate]);
 
     return (
         <AppBar
@@ -76,6 +86,9 @@ const Filters = ({ filterBarHeight }: Props) => {
                             startText="Start Date"
                             endText="End Date"
                             value={dateVal}
+                            // openTo={'year'}
+                            minDate={minDate}
+                            maxDate={maxDate}
                             onChange={(newDateVal) => {
                                 setDateVal(newDateVal);
                             }}
@@ -88,7 +101,7 @@ const Filters = ({ filterBarHeight }: Props) => {
                             )}
                         />
                     </Box>
-                    {/* {console.log(dateVal)} */}
+                    {console.log(filterDates)}
                     <Box my={1}>
                         <Autocomplete
                             sx={{ width: 250 }}
