@@ -2,16 +2,13 @@ import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
-// import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
+import DatePicker from '@mui/lab/DatePicker';
 import { matchSorter } from 'match-sorter';
 import throttle from 'lodash/throttle';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { themeOptions } from '../../theme';
@@ -23,15 +20,13 @@ interface Props {
 
 const Filters = ({ filterBarHeight }: Props) => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas, filterDates } =
-        React.useContext(DataStateContext);
+    const { stationsList, filteredStations, speciesOptions, filteredFAOAreas } = React.useContext(DataStateContext);
     const [options, setOptions] = React.useState<SpeciesOptions[]>(speciesOptions);
     const [inputVal, setInputVal] = React.useState<string>('');
-    const [dateVal, setDateVal] = React.useState<DateRange<Dayjs>>([null, null]);
-    // const maxDate = new Date('1877-12-01');
-    const [maxDate, setMaxDate] = React.useState<Dayjs | null>(null);
-    // const minDate = new Date('1870-12-31');
-    const [minDate, setMinDate] = React.useState<Dayjs | null>(null);
+    const minDate = dayjs('1870-12-31');
+    const maxDate = dayjs('1877-12-31');
+    const [startDate, setStartDate] = React.useState<Dayjs | null>(minDate);
+    const [endDate, setEndDate] = React.useState<Dayjs | null>(maxDate);
     const faoAreas = useFAOAreas();
 
     React.useEffect(() => {
@@ -39,23 +34,27 @@ const Filters = ({ filterBarHeight }: Props) => {
     }, [speciesOptions]);
 
     React.useEffect(() => {
-        const dates: (string | null)[] = dateVal.map((dateObj) => {
-            if (dateObj !== null) {
-                return dateObj.format('YYYY-MM-DD');
+        const dates: (string | null)[] = [];
+        if ((startDate as Dayjs) <= (endDate as Dayjs)) {
+            if ((startDate as Dayjs).isValid()) {
+                dates.push((startDate as Dayjs).format('YYYY-MM-DD'));
+            } else {
+                dates.push(null);
             }
-            return null;
-        });
-        console.log(dates);
+            if ((endDate as Dayjs).isValid()) {
+                dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
+            } else {
+                dates.push(null);
+            }
+        } else {
+            dates.push(null);
+            dates.push(null);
+        }
         dataActionDispatcher({
             type: 'updateFilterDates',
             dates: dates
         });
-    }, [dateVal]);
-
-    React.useEffect(() => {
-        setMaxDate(new Dayjs('1877-12-01'));
-        setMinDate(new Dayjs('1870-12-31'));
-    }, [maxDate, minDate]);
+    }, [endDate, startDate]);
 
     return (
         <AppBar
@@ -82,26 +81,29 @@ const Filters = ({ filterBarHeight }: Props) => {
             <Toolbar sx={{ alignItems: 'start' }}>
                 <Box sx={{ 'display': 'flex', 'width': '100%', '& > *': { pr: 2 } }}>
                     <Box my={1}>
-                        <DateRangePicker
-                            startText="Start Date"
-                            endText="End Date"
-                            value={dateVal}
-                            // openTo={'year'}
+                        <DatePicker
+                            label="Start Date"
+                            value={startDate}
+                            renderInput={(params) => <TextField {...params} variant="filled" />}
                             minDate={minDate}
                             maxDate={maxDate}
-                            onChange={(newDateVal) => {
-                                setDateVal(newDateVal);
+                            onChange={(newVal) => {
+                                setStartDate(newVal);
                             }}
-                            renderInput={(startProps, endProps) => (
-                                <React.Fragment>
-                                    <TextField {...startProps} variant="filled" />
-                                    <Box sx={{ mx: 1 }}> to </Box>
-                                    <TextField {...endProps} variant="filled" />
-                                </React.Fragment>
-                            )}
                         />
                     </Box>
-                    {console.log(filterDates)}
+                    <Box my={1}>
+                        <DatePicker
+                            label="End Date"
+                            value={endDate}
+                            renderInput={(params) => <TextField {...params} variant="filled" />}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            onChange={(newVal) => {
+                                setEndDate(newVal);
+                            }}
+                        />
+                    </Box>
                     <Box my={1}>
                         <Autocomplete
                             sx={{ width: 250 }}
