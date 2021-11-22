@@ -19,7 +19,7 @@ import { useFAOAreas } from '../../utils/hooks';
 
 const Filters = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, allSpeciesList, filteredFAOAreas, filteredSpecies, filterDates } =
+    const { stationsList, filteredStations, allSpeciesList, filteredFAOAreas, filteredSpecies } =
         React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
     const minDate = dayjs('1872-01-01');
@@ -43,7 +43,6 @@ const Filters = () => {
         } else {
             dates.push(null);
         }
-        console.log('Change');
         if (endDate !== null) {
             if ((endDate as Dayjs).isValid()) {
                 dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
@@ -55,7 +54,7 @@ const Filters = () => {
         }
         dataActionDispatcher({
             type: 'updateFilterDates',
-            dates: dates
+            dates
         });
     }, [endDate, startDate]);
 
@@ -74,7 +73,7 @@ const Filters = () => {
                         minDate={minDate}
                         maxDate={maxDate}
                         openTo="year"
-                        clearable={true}
+                        clearable
                         onChange={(newVal) => {
                             setStartDate(newVal);
                         }}
@@ -88,19 +87,17 @@ const Filters = () => {
                         minDate={minDate}
                         maxDate={maxDate}
                         openTo="year"
-                        clearable={true}
+                        clearable
                         onChange={(newVal) => {
                             setEndDate(newVal);
                         }}
                     />
                 </Box>
             </Stack>
-            {startDate !== null && endDate !== null ? (
-                startDate > endDate ? (
-                    <Alert severity="warning">
-                        The Start Date is greater than the End Date. It should be less than or equal to End Date.
-                    </Alert>
-                ) : null
+            {startDate !== null && endDate !== null && startDate > endDate ? (
+                <Alert severity="warning">
+                    The Start Date is greater than the End Date. It should be less than or equal to End Date.
+                </Alert>
             ) : null}
             <Stack direction="column" spacing={1}>
                 <Autocomplete
