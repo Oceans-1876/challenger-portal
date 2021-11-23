@@ -5,14 +5,13 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Autocomplete from '@mui/material/Autocomplete';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DatePicker from '@mui/lab/DatePicker';
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
 import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -106,9 +105,10 @@ const Filters = () => {
                             }}
                         />
                         <Box my={1}>
-                            <IconButton onClick={(e) => handleStartClr(e)}>
-                                <CloseIcon />
-                            </IconButton>
+                            <Button
+                                startIcon={<Icon baseClassName="icons">download</Icon>}
+                                onClick={(e) => handleStartClr(e)}
+                            ></Button>
                         </Box>
                     </Stack>
                 </Box>
@@ -127,9 +127,10 @@ const Filters = () => {
                             }}
                         />
                         <Box my={1}>
-                            <IconButton onClick={(e) => handleEndClr(e)}>
-                                <CloseIcon />
-                            </IconButton>
+                            <Button
+                                startIcon={<Icon baseClassName="icons">download</Icon>}
+                                onClick={(e) => handleEndClr(e)}
+                            ></Button>
                         </Box>
                     </Stack>
                 </Box>

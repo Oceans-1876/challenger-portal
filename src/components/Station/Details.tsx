@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import DownloadIcon from '@mui/icons-material/Download';
+import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -59,12 +59,12 @@ const Details = ({ station }: Props) => {
                 <Stack direction="column" spacing={4}>
                     <Button
                         variant="outlined"
+                        startIcon={<Icon baseClassName="icons">download</Icon>}
                         href={`data:text/json;charset=utf-8,${encodeURIComponent(
                             JSON.stringify(stationDetails, null, 4)
                         )}`}
                         download={`${stationDetails.name}.json`}
                     >
-                        <DownloadIcon />
                         Download Station Details
                     </Button>
                 </Stack>
