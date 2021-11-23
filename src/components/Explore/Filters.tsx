@@ -82,13 +82,6 @@ const Filters = () => {
                             label="Start Date"
                             value={startDate}
                             renderInput={(params) => <TextField {...params} />}
-                            InputProps={{
-                                endAdornment: (
-                                    <IconButton onClick={(e) => handleStartClr(e)}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                )
-                            }}
                             minDate={minDate}
                             maxDate={maxDate}
                             openTo="year"
@@ -110,13 +103,6 @@ const Filters = () => {
                             label="End Date"
                             value={endDate}
                             renderInput={(params) => <TextField {...params} />}
-                            InputProps={{
-                                endAdornment: (
-                                    <IconButton onClick={(e) => handleEndClr(e)}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                )
-                            }}
                             minDate={minDate}
                             maxDate={maxDate}
                             openTo="year"
