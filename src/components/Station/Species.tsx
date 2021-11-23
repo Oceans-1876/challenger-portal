@@ -32,8 +32,7 @@ const Species = ({ station }: Props) => {
                     >
                         Back to species
                     </Button>
-                    <SpeciesDetails speciesId={selectedSpecies} />
-                    <DownloadButton stationDetails={stationDetails} />
+                    <SpeciesDetails speciesId={selectedSpecies} stationName={stationDetails.name} />
                 </>
             ) : (
                 <Box>
@@ -44,7 +43,11 @@ const Species = ({ station }: Props) => {
                             </ListItemButton>
                         ))}
                     </List>
-                    <DownloadButton stationDetails={stationDetails} />
+                    <DownloadButton
+                        data={stationDetails.species}
+                        filename={`Station-${stationDetails.name}-Species`}
+                        message={`Download Station ${stationDetails.name}'s Species List`}
+                    />
                 </Box>
             )}
         </>

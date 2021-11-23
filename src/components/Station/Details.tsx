@@ -53,7 +53,11 @@ const Details = ({ station }: Props) => {
                     {stationDetails.sediment_sample || '-'}
                 </ListItem>
             </List>
-            <DownloadButton stationDetails={stationDetails} />
+            <DownloadButton
+                data={stationDetails}
+                filename={`Station-${stationDetails.name}-details`}
+                message={`Download Station Details`}
+            />
         </Box>
     ) : (
         <Loading />

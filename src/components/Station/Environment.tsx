@@ -107,7 +107,11 @@ const Environment = ({ station }: Props) => {
                     </List>
                 </Collapse>
             </List>
-            <DownloadButton stationDetails={stationDetails} />
+            <DownloadButton
+                data={stationDetails}
+                filename={`Station-${stationDetails.name}-details`}
+                message={`Download Station Details`}
+            />
         </Box>
     ) : (
         <Loading />
