@@ -16,18 +16,21 @@ import IconButton from '@mui/material/IconButton';
 import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import { useFAOAreas } from '../../utils/hooks';
 
 const Filters = () => {
-    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, allSpeciesList, filteredFAOAreas, filteredSpecies } =
-        React.useContext(DataStateContext);
+    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
+    const { filteredFAOAreas, filteredSpecies, filteredStations } = React.useContext(FilterStateContext);
+    const { stationsList, allSpeciesList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
-    const minDate = dayjs('1872-01-01');
     const maxDate = dayjs('1876-12-31');
+    const minDate = dayjs('1872-01-01');
     const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
     const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+    const [maxStartDate, setMaxStartDate] = React.useState<Dayjs>(maxDate);
+    const [minEndDate, setMinEndDate] = React.useState<Dayjs>(minDate);
+    const [showError, setShowError] = React.useState<boolean>(false);
     const faoAreas = useFAOAreas();
 
     const handleStartClr = (e: React.MouseEvent) => {
@@ -48,25 +51,37 @@ const Filters = () => {
         if (startDate !== null) {
             if ((startDate as Dayjs).isValid()) {
                 dates.push((startDate as Dayjs).format('YYYY-MM-DD'));
+                setMinEndDate(startDate);
             } else {
                 dates.push(null);
             }
         } else {
             dates.push(null);
+            setMinEndDate(minDate);
         }
         if (endDate !== null) {
             if ((endDate as Dayjs).isValid()) {
                 dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
+                setMaxStartDate(endDate);
             } else {
                 dates.push(null);
             }
         } else {
             dates.push(null);
+            setMaxStartDate(maxDate);
         }
-        dataActionDispatcher({
+        filterActionDispatcher({
             type: 'updateFilterDates',
             dates
         });
+
+        if (startDate !== null && endDate !== null) {
+            if (startDate > endDate && startDate.format('YYYY-MM-DD') !== endDate.format('YYYY-MM-DD')) {
+                setShowError(true);
+            } else if (showError) {
+                setShowError(false);
+            }
+        }
     }, [endDate, startDate]);
 
     return (
@@ -83,7 +98,7 @@ const Filters = () => {
                             value={startDate}
                             renderInput={(params) => <TextField {...params} />}
                             minDate={minDate}
-                            maxDate={maxDate}
+                            maxDate={maxStartDate}
                             openTo="year"
                             clearable
                             onChange={(newVal) => {
@@ -103,7 +118,7 @@ const Filters = () => {
                             label="End Date"
                             value={endDate}
                             renderInput={(params) => <TextField {...params} />}
-                            minDate={minDate}
+                            minDate={minEndDate}
                             maxDate={maxDate}
                             openTo="year"
                             clearable
@@ -119,11 +134,11 @@ const Filters = () => {
                     </Stack>
                 </Box>
             </Stack>
-            {startDate !== null && endDate !== null && startDate > endDate ? (
+            {showError && (
                 <Alert severity="warning">
                     The Start Date is greater than the End Date. It should be less than or equal to End Date.
                 </Alert>
-            ) : null}
+            )}
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth
@@ -137,7 +152,7 @@ const Filters = () => {
                     renderTags={() => null}
                     value={filteredStations}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredStations',
                             stations: selectedOption
                         });
@@ -157,7 +172,7 @@ const Filters = () => {
                                         variant="outlined"
                                         label={`Station ${station}`}
                                         onDelete={() => {
-                                            dataActionDispatcher({
+                                            filterActionDispatcher({
                                                 type: 'updateFilteredStations',
                                                 stations: filteredStations.filter(
                                                     (stationName) => stationName !== station
@@ -191,7 +206,7 @@ const Filters = () => {
                         return values;
                     }, [])}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredFAOAreas',
                             faoAreas: selectedOption.map((faoArea) => faoArea.code)
                         });
@@ -213,7 +228,7 @@ const Filters = () => {
                                             variant="outlined"
                                             label={`${name} (${code})`}
                                             onDelete={() => {
-                                                dataActionDispatcher({
+                                                filterActionDispatcher({
                                                     type: 'updateFilteredFAOAreas',
                                                     faoAreas: filteredFAOAreas.filter(
                                                         (faoAreaCode) => faoAreaCode !== code
@@ -250,7 +265,7 @@ const Filters = () => {
                         return values;
                     }, [])}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredSpecies',
                             species: selectedOption.map((species) => species.id)
                         });
@@ -272,7 +287,7 @@ const Filters = () => {
                                             variant="outlined"
                                             label={matched_canonical_full_name}
                                             onDelete={() => {
-                                                dataActionDispatcher({
+                                                filterActionDispatcher({
                                                     type: 'updateFilteredSpecies',
                                                     species: filteredSpecies.filter((speciesId) => speciesId !== id)
                                                 });

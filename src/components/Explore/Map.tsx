@@ -2,7 +2,7 @@ import React from 'react';
 import maplibre from 'maplibre-gl';
 
 import { searchStations } from '../../store/api';
-import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import { DataStateContext, FilterStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
 import Map from '../Map';
@@ -11,16 +11,8 @@ import faoAreasUrl from '../../files/fao_areas.geojson';
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const {
-        journeyPath,
-        stationsBounds,
-        stationsList,
-        filteredSpecies,
-        selectedStation,
-        filteredStations,
-        filteredFAOAreas,
-        filterDates
-    } = React.useContext(DataStateContext);
+    const { journeyPath, stationsBounds, stationsList, selectedStation } = React.useContext(DataStateContext);
+    const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
     const mapRef = React.useRef<maplibre.Map>();

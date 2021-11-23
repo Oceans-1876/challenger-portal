@@ -2,7 +2,6 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import DownloadIcon from '@mui/icons-material/Download';
 import Stack from '@mui/material/Stack';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
@@ -32,6 +31,7 @@ const Sidebar = () => {
         >
             {selectedStation ? (
                 <>
+                    {console.log(selectedStation)}
                     <Typography variant="h5" align="center">
                         Station {selectedStation.name}
                     </Typography>
@@ -47,18 +47,6 @@ const Sidebar = () => {
                     />
                     <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
                         <Stack direction="column" spacing={4}>
-                            <Stack>
-                                <Button
-                                    variant="outlined"
-                                    href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                                        JSON.stringify(selectedStation, null, 4)
-                                    )}`}
-                                    download={`${selectedStation.name}.json`}
-                                >
-                                    <DownloadIcon />
-                                    Download Station Details
-                                </Button>
-                            </Stack>
                             <Stack spacing={4}>
                                 <Button
                                     variant="outlined"
