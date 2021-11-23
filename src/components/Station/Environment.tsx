@@ -73,8 +73,8 @@ const Environment = ({ station }: Props) => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Depth (fathom)</TableCell>
-                                    <TableCell align="right">Temperature (C)</TableCell>
+                                    <TableCell align="center">Depth (fathom)</TableCell>
+                                    <TableCell align="center">Temperature (C)</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -87,10 +87,10 @@ const Environment = ({ station }: Props) => {
                                             key={depth}
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
-                                            <TableCell component="th" scope="row">
+                                            <TableCell align="center" component="th" scope="row">
                                                 {depth}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell align="center" component="th" scope="row">
                                                 {`${temp}\u00b0`}
                                             </TableCell>
                                         </TableRow>

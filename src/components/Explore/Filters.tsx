@@ -11,6 +11,8 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DatePicker from '@mui/lab/DatePicker';
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -27,6 +29,15 @@ const Filters = () => {
     const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
     const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
     const faoAreas = useFAOAreas();
+
+    const handleStartClr = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setStartDate(null);
+    };
+    const handleEndClr = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEndDate(null);
+    };
 
     React.useEffect(() => {
         setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
@@ -66,32 +77,60 @@ const Filters = () => {
 
             <Stack direction="column" alignItems="center" spacing={1}>
                 <Box my={1} justifyContent="center">
-                    <DatePicker
-                        label="Start Date"
-                        value={startDate}
-                        renderInput={(params) => <TextField {...params} />}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        openTo="year"
-                        clearable
-                        onChange={(newVal) => {
-                            setStartDate(newVal);
-                        }}
-                    />
+                    <Stack direction="row">
+                        <DatePicker
+                            label="Start Date"
+                            value={startDate}
+                            renderInput={(params) => <TextField {...params} />}
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton onClick={(e) => handleStartClr(e)}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                )
+                            }}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            openTo="year"
+                            clearable
+                            onChange={(newVal) => {
+                                setStartDate(newVal);
+                            }}
+                        />
+                        <Box my={1}>
+                            <IconButton onClick={(e) => handleStartClr(e)}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    </Stack>
                 </Box>
                 <Box my={1} justifyContent="center">
-                    <DatePicker
-                        label="End Date"
-                        value={endDate}
-                        renderInput={(params) => <TextField {...params} />}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        openTo="year"
-                        clearable
-                        onChange={(newVal) => {
-                            setEndDate(newVal);
-                        }}
-                    />
+                    <Stack direction="row">
+                        <DatePicker
+                            label="End Date"
+                            value={endDate}
+                            renderInput={(params) => <TextField {...params} />}
+                            InputProps={{
+                                endAdornment: (
+                                    <IconButton onClick={(e) => handleEndClr(e)}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                )
+                            }}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            openTo="year"
+                            clearable
+                            onChange={(newVal) => {
+                                setEndDate(newVal);
+                            }}
+                        />
+                        <Box my={1}>
+                            <IconButton onClick={(e) => handleEndClr(e)}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    </Stack>
                 </Box>
             </Stack>
             {startDate !== null && endDate !== null && startDate > endDate ? (
