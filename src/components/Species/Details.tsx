@@ -27,7 +27,7 @@ const Details = ({ speciesId, stationName }: Props) => {
             <DownloadButton
                 data={speciesDetails}
                 filename={`Station-${stationName}'s-${speciesDetails.matched_canonical_full_name}-details`}
-                message={`Download Species's Details`}
+                message={"Download Species's Details"}
             />
         </Box>
     ) : (

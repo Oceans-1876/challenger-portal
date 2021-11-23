@@ -56,7 +56,7 @@ const Details = ({ station }: Props) => {
             <DownloadButton
                 data={stationDetails}
                 filename={`Station-${stationDetails.name}-details`}
-                message={`Download Station Details`}
+                message="Download Station Details"
             />
         </Box>
     ) : (

@@ -11,7 +11,6 @@ interface Props {
 }
 
 const DownloadButton = ({ data, filename, message }: Props) => {
-    console.log(filename);
     return (
         <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
             <Stack direction="column" spacing={4}>
