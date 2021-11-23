@@ -61,8 +61,9 @@ interface DataState {
 }
 
 interface FilterState {
+    filterCount: number | null;
     filteredStations: string[];
     filteredSpecies: string[];
     filteredFAOAreas: string[];
-    filterDates: (string | null)[];
+    filterDates: (import('dayjs').Dayjs | null)[];
 }

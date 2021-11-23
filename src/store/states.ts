@@ -11,8 +11,9 @@ export const dataStateInitialValue: DataState = {
 };
 
 export const filtersStateInitialValue: FilterState = {
+    filterCount: null,
     filteredStations: [],
     filteredSpecies: [],
     filteredFAOAreas: [],
-    filterDates: []
+    filterDates: [null, null]
 };

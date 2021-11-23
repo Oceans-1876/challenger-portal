@@ -5,9 +5,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Autocomplete from '@mui/material/Autocomplete';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
-// import IconButton from '@mui/material/IconButton';
 import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -18,71 +16,33 @@ import dayjs, { Dayjs } from 'dayjs';
 
 import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import { useFAOAreas } from '../../utils/hooks';
+import DatePickerClearableTextField, { DatePickerClearableInputProps } from '../ClearableDatePicker';
+
+const MAX_DATE = dayjs('1876-12-31');
+const MIN_DATE = dayjs('1872-01-01');
 
 const Filters = () => {
     const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
-    const { filteredFAOAreas, filteredSpecies, filteredStations } = React.useContext(FilterStateContext);
+    const { filterCount, filteredFAOAreas, filteredSpecies, filteredStations, filterDates } =
+        React.useContext(FilterStateContext);
     const { stationsList, allSpeciesList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
-    const maxDate = dayjs('1876-12-31');
-    const minDate = dayjs('1872-01-01');
-    const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
-    const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
-    const [maxStartDate, setMaxStartDate] = React.useState<Dayjs>(maxDate);
-    const [minEndDate, setMinEndDate] = React.useState<Dayjs>(minDate);
-    const [showError, setShowError] = React.useState<boolean>(false);
     const faoAreas = useFAOAreas();
 
-    const handleStartClr = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setStartDate(null);
-    };
-    const handleEndClr = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setEndDate(null);
-    };
+    const [startDate, endDate] = filterDates;
 
     React.useEffect(() => {
         setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
     }, [allSpeciesList]);
 
-    React.useEffect(() => {
-        const dates: (string | null)[] = [];
-        if (startDate !== null) {
-            if ((startDate as Dayjs).isValid()) {
-                dates.push((startDate as Dayjs).format('YYYY-MM-DD'));
-                setMinEndDate(startDate);
-            } else {
-                dates.push(null);
-            }
-        } else {
-            dates.push(null);
-            setMinEndDate(minDate);
+    const handleDateRangeChange = (source: 'start' | 'end', value: Dayjs | null) => {
+        if (!value || value.isValid()) {
+            filterActionDispatcher({
+                type: 'updateFilterDates',
+                dates: source === 'start' ? [value, endDate] : [startDate, value]
+            });
         }
-        if (endDate !== null) {
-            if ((endDate as Dayjs).isValid()) {
-                dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
-                setMaxStartDate(endDate);
-            } else {
-                dates.push(null);
-            }
-        } else {
-            dates.push(null);
-            setMaxStartDate(maxDate);
-        }
-        filterActionDispatcher({
-            type: 'updateFilterDates',
-            dates
-        });
-
-        if (startDate !== null && endDate !== null) {
-            if (startDate > endDate && startDate.format('YYYY-MM-DD') !== endDate.format('YYYY-MM-DD')) {
-                setShowError(true);
-            } else if (showError) {
-                setShowError(false);
-            }
-        }
-    }, [endDate, startDate]);
+    };
 
     return (
         <Stack direction="column" spacing={4}>
@@ -90,63 +50,67 @@ const Filters = () => {
                 Start by selecting a station from the map to see its details or filter out stations.
             </Typography>
 
-            <Stack direction="column" alignItems="center" spacing={1}>
-                <Box my={1} justifyContent="center">
-                    <Stack direction="row">
-                        <DatePicker
-                            label="Start Date"
+            {filterCount !== null ? (
+                <Alert severity="info">
+                    {filterCount
+                        ? `${filterCount} station(s) match the selected filters`
+                        : 'No station matches the selected filters'}
+                </Alert>
+            ) : null}
+
+            <Stack direction="row" spacing={1}>
+                <DatePicker
+                    label="Start Date"
+                    value={startDate}
+                    renderInput={({ InputProps, ...params }) => (
+                        <DatePickerClearableTextField
+                            textFieldProps={{
+                                ...params,
+                                size: 'small'
+                            }}
+                            inputProps={InputProps as DatePickerClearableInputProps}
                             value={startDate}
-                            renderInput={(params) => <TextField {...params} />}
-                            minDate={minDate}
-                            maxDate={maxStartDate}
-                            openTo="year"
-                            clearable
-                            onChange={(newVal) => {
-                                setStartDate(newVal);
-                            }}
+                            onClear={() => handleDateRangeChange('start', null)}
                         />
-                        <Box my={1} mx={1}>
-                            <Button
-                                size="small"
-                                // startIcon={<Icon baseClassName="icons">close</Icon>}
-                                onClick={(e) => handleStartClr(e)}
-                            >
-                                <Icon baseClassName="icons">close</Icon>
-                            </Button>
-                        </Box>
-                    </Stack>
-                </Box>
-                <Box my={1} justifyContent="center">
-                    <Stack direction="row">
-                        <DatePicker
-                            label="End Date"
+                    )}
+                    minDate={MIN_DATE}
+                    maxDate={endDate || MAX_DATE}
+                    openTo="year"
+                    clearable
+                    onChange={(newVal) => {
+                        handleDateRangeChange('start', newVal);
+                    }}
+                />
+
+                <DatePicker
+                    label="End Date"
+                    value={endDate}
+                    renderInput={({ InputProps, ...params }) => (
+                        <DatePickerClearableTextField
+                            textFieldProps={{
+                                ...params,
+                                size: 'small'
+                            }}
+                            inputProps={InputProps as DatePickerClearableInputProps}
                             value={endDate}
-                            renderInput={(params) => <TextField {...params} />}
-                            minDate={minEndDate}
-                            maxDate={maxDate}
-                            openTo="year"
-                            clearable
-                            onChange={(newVal) => {
-                                setEndDate(newVal);
-                            }}
+                            onClear={() => handleDateRangeChange('end', null)}
                         />
-                        <Box my={1} mx={1}>
-                            <Button
-                                size="small"
-                                // startIcon={<Icon baseClassName="icons">close</Icon>}
-                                onClick={(e) => handleEndClr(e)}
-                            >
-                                <Icon baseClassName="icons">close</Icon>
-                            </Button>
-                        </Box>
-                    </Stack>
-                </Box>
+                    )}
+                    minDate={startDate || MIN_DATE}
+                    maxDate={MAX_DATE}
+                    openTo="year"
+                    clearable
+                    onChange={(newVal) => {
+                        handleDateRangeChange('end', newVal);
+                    }}
+                />
             </Stack>
-            {showError && (
+            {startDate && endDate && startDate > endDate ? (
                 <Alert severity="warning">
                     The Start Date is greater than the End Date. It should be less than or equal to End Date.
                 </Alert>
-            )}
+            ) : null}
+
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Dayjs } from 'dayjs';
 
 export const getData = <T>(endpoint: string, success: (data: T) => void) => {
     axios
@@ -13,21 +14,21 @@ export const searchStations = (
 ) => {
     const expressions: Array<SearchExpression | SearchExpressionGroup> = [];
 
-    const addExpression = (column_name: string, operator: string, values: (string | null)[]) => {
+    const addExpression = (column_name: string, operator: string, values: (Dayjs | string | null)[]) => {
         if (column_name === 'date') {
-            if (values[0] !== null) {
+            if (values[0]) {
                 expressions.push({
                     column_name,
                     search_term: values[0],
                     operator: 'ge'
                 } as SearchExpression);
             }
-            if (values[1] !== null) {
+            if (values[1]) {
                 expressions.push({
                     column_name,
                     search_term: values[1],
                     operator: 'le'
-                });
+                } as SearchExpression);
             }
         } else if (values.length > 1) {
             expressions.push({

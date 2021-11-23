@@ -40,6 +40,11 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
 
 export const filterReducers = (state: FilterState, action: FilterAction): FilterState => {
     switch (action.type) {
+        case 'updateFilterCount':
+            return {
+                ...state,
+                filterCount: action.count
+            };
         case 'updateFilteredSpecies':
             return {
                 ...state,
