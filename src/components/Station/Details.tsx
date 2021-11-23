@@ -1,14 +1,12 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Icon from '@mui/material/Icon';
-import Stack from '@mui/material/Stack';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 
 import { useStationDetails } from '../../utils/hooks';
 import Loading from '../Loading';
+import DownloadButton from './DownloadButton';
 
 interface Props {
     station: StationSummary;
@@ -55,20 +53,7 @@ const Details = ({ station }: Props) => {
                     {stationDetails.sediment_sample || '-'}
                 </ListItem>
             </List>
-            <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
-                <Stack direction="column" spacing={4}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<Icon baseClassName="icons">download</Icon>}
-                        href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                            JSON.stringify(stationDetails, null, 4)
-                        )}`}
-                        download={`${stationDetails.name}.json`}
-                    >
-                        Download Station Details
-                    </Button>
-                </Stack>
-            </Box>
+            <DownloadButton stationDetails={stationDetails} />
         </Box>
     ) : (
         <Loading />

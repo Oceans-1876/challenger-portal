@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Icon from '@mui/material/Icon';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -8,6 +9,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import { useStationDetails } from '../../utils/hooks';
 import Loading from '../Loading';
 import SpeciesDetails from '../Species/Details';
+import DownloadButton from './DownloadButton';
 
 interface Props {
     station: StationSummary;
@@ -31,15 +33,19 @@ const Species = ({ station }: Props) => {
                         Back to species
                     </Button>
                     <SpeciesDetails speciesId={selectedSpecies} />
+                    <DownloadButton stationDetails={stationDetails} />
                 </>
             ) : (
-                <List>
-                    {stationDetails.species.map(({ id, matched_canonical_full_name }) => (
-                        <ListItemButton key={id} onClick={() => setSelectedSpecies(id)}>
-                            <ListItem>{matched_canonical_full_name}</ListItem>
-                        </ListItemButton>
-                    ))}
-                </List>
+                <Box>
+                    <List>
+                        {stationDetails.species.map(({ id, matched_canonical_full_name }) => (
+                            <ListItemButton key={id} onClick={() => setSelectedSpecies(id)}>
+                                <ListItem>{matched_canonical_full_name}</ListItem>
+                            </ListItemButton>
+                        ))}
+                    </List>
+                    <DownloadButton stationDetails={stationDetails} />
+                </Box>
             )}
         </>
     ) : (

@@ -2,7 +2,6 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import About from '../About';
@@ -45,18 +44,12 @@ const Sidebar = () => {
                         ]}
                     />
                     <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
-                        <Stack direction="column" spacing={4}>
-                            <Stack spacing={4}>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() =>
-                                        dataActionDispatcher({ type: 'updateSelectedStation', station: null })
-                                    }
-                                >
-                                    Go Back
-                                </Button>
-                            </Stack>
-                        </Stack>
+                        <Button
+                            variant="outlined"
+                            onClick={() => dataActionDispatcher({ type: 'updateSelectedStation', station: null })}
+                        >
+                            Go Back
+                        </Button>
                     </Box>
                 </>
             ) : (

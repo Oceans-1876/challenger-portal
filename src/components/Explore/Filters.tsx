@@ -7,6 +7,7 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+// import IconButton from '@mui/material/IconButton';
 import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -104,11 +105,14 @@ const Filters = () => {
                                 setStartDate(newVal);
                             }}
                         />
-                        <Box my={1}>
+                        <Box my={1} mx={1}>
                             <Button
-                                startIcon={<Icon baseClassName="icons">download</Icon>}
+                                size="small"
+                                // startIcon={<Icon baseClassName="icons">close</Icon>}
                                 onClick={(e) => handleStartClr(e)}
-                            />
+                            >
+                                <Icon baseClassName="icons">close</Icon>
+                            </Button>
                         </Box>
                     </Stack>
                 </Box>
@@ -126,11 +130,14 @@ const Filters = () => {
                                 setEndDate(newVal);
                             }}
                         />
-                        <Box my={1}>
+                        <Box my={1} mx={1}>
                             <Button
-                                startIcon={<Icon baseClassName="icons">download</Icon>}
+                                size="small"
+                                // startIcon={<Icon baseClassName="icons">close</Icon>}
                                 onClick={(e) => handleEndClr(e)}
-                            />
+                            >
+                                <Icon baseClassName="icons">close</Icon>
+                            </Button>
                         </Box>
                     </Stack>
                 </Box>
