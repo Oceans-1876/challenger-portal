@@ -108,7 +108,7 @@ const Filters = () => {
                             <Button
                                 startIcon={<Icon baseClassName="icons">download</Icon>}
                                 onClick={(e) => handleStartClr(e)}
-                            ></Button>
+                            />
                         </Box>
                     </Stack>
                 </Box>
@@ -130,7 +130,7 @@ const Filters = () => {
                             <Button
                                 startIcon={<Icon baseClassName="icons">download</Icon>}
                                 onClick={(e) => handleEndClr(e)}
-                            ></Button>
+                            />
                         </Box>
                     </Stack>
                 </Box>

@@ -31,7 +31,6 @@ const Sidebar = () => {
         >
             {selectedStation ? (
                 <>
-                    {console.log(selectedStation)}
                     <Typography variant="h5" align="center">
                         Station {selectedStation.name}
                     </Typography>
