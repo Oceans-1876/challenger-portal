@@ -7,9 +7,12 @@ export const dataStateInitialValue: DataState = {
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},
+    faoAreas: []
+};
+
+export const filtersStateInitialValue: FilterState = {
     filteredStations: [],
     filteredSpecies: [],
-    faoAreas: [],
     filteredFAOAreas: [],
     filterDates: []
 };

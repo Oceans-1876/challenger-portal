@@ -5,7 +5,9 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Autocomplete from '@mui/material/Autocomplete';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
+// import IconButton from '@mui/material/IconButton';
 import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -14,19 +16,31 @@ import DatePicker from '@mui/lab/DatePicker';
 import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import { useFAOAreas } from '../../utils/hooks';
 
 const Filters = () => {
-    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { stationsList, filteredStations, allSpeciesList, filteredFAOAreas, filteredSpecies } =
-        React.useContext(DataStateContext);
+    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
+    const { filteredFAOAreas, filteredSpecies, filteredStations } = React.useContext(FilterStateContext);
+    const { stationsList, allSpeciesList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
-    const minDate = dayjs('1872-01-01');
     const maxDate = dayjs('1876-12-31');
+    const minDate = dayjs('1872-01-01');
     const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
     const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+    const [maxStartDate, setMaxStartDate] = React.useState<Dayjs>(maxDate);
+    const [minEndDate, setMinEndDate] = React.useState<Dayjs>(minDate);
+    const [showError, setShowError] = React.useState<boolean>(false);
     const faoAreas = useFAOAreas();
+
+    const handleStartClr = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setStartDate(null);
+    };
+    const handleEndClr = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEndDate(null);
+    };
 
     React.useEffect(() => {
         setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
@@ -37,25 +51,37 @@ const Filters = () => {
         if (startDate !== null) {
             if ((startDate as Dayjs).isValid()) {
                 dates.push((startDate as Dayjs).format('YYYY-MM-DD'));
+                setMinEndDate(startDate);
             } else {
                 dates.push(null);
             }
         } else {
             dates.push(null);
+            setMinEndDate(minDate);
         }
         if (endDate !== null) {
             if ((endDate as Dayjs).isValid()) {
                 dates.push((endDate as Dayjs).format('YYYY-MM-DD'));
+                setMaxStartDate(endDate);
             } else {
                 dates.push(null);
             }
         } else {
             dates.push(null);
+            setMaxStartDate(maxDate);
         }
-        dataActionDispatcher({
+        filterActionDispatcher({
             type: 'updateFilterDates',
             dates
         });
+
+        if (startDate !== null && endDate !== null) {
+            if (startDate > endDate && startDate.format('YYYY-MM-DD') !== endDate.format('YYYY-MM-DD')) {
+                setShowError(true);
+            } else if (showError) {
+                setShowError(false);
+            }
+        }
     }, [endDate, startDate]);
 
     return (
@@ -66,39 +92,61 @@ const Filters = () => {
 
             <Stack direction="column" alignItems="center" spacing={1}>
                 <Box my={1} justifyContent="center">
-                    <DatePicker
-                        label="Start Date"
-                        value={startDate}
-                        renderInput={(params) => <TextField {...params} />}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        openTo="year"
-                        clearable
-                        onChange={(newVal) => {
-                            setStartDate(newVal);
-                        }}
-                    />
+                    <Stack direction="row">
+                        <DatePicker
+                            label="Start Date"
+                            value={startDate}
+                            renderInput={(params) => <TextField {...params} />}
+                            minDate={minDate}
+                            maxDate={maxStartDate}
+                            openTo="year"
+                            clearable
+                            onChange={(newVal) => {
+                                setStartDate(newVal);
+                            }}
+                        />
+                        <Box my={1} mx={1}>
+                            <Button
+                                size="small"
+                                // startIcon={<Icon baseClassName="icons">close</Icon>}
+                                onClick={(e) => handleStartClr(e)}
+                            >
+                                <Icon baseClassName="icons">close</Icon>
+                            </Button>
+                        </Box>
+                    </Stack>
                 </Box>
                 <Box my={1} justifyContent="center">
-                    <DatePicker
-                        label="End Date"
-                        value={endDate}
-                        renderInput={(params) => <TextField {...params} />}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                        openTo="year"
-                        clearable
-                        onChange={(newVal) => {
-                            setEndDate(newVal);
-                        }}
-                    />
+                    <Stack direction="row">
+                        <DatePicker
+                            label="End Date"
+                            value={endDate}
+                            renderInput={(params) => <TextField {...params} />}
+                            minDate={minEndDate}
+                            maxDate={maxDate}
+                            openTo="year"
+                            clearable
+                            onChange={(newVal) => {
+                                setEndDate(newVal);
+                            }}
+                        />
+                        <Box my={1} mx={1}>
+                            <Button
+                                size="small"
+                                // startIcon={<Icon baseClassName="icons">close</Icon>}
+                                onClick={(e) => handleEndClr(e)}
+                            >
+                                <Icon baseClassName="icons">close</Icon>
+                            </Button>
+                        </Box>
+                    </Stack>
                 </Box>
             </Stack>
-            {startDate !== null && endDate !== null && startDate > endDate ? (
+            {showError && (
                 <Alert severity="warning">
                     The Start Date is greater than the End Date. It should be less than or equal to End Date.
                 </Alert>
-            ) : null}
+            )}
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth
@@ -112,7 +160,7 @@ const Filters = () => {
                     renderTags={() => null}
                     value={filteredStations}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredStations',
                             stations: selectedOption
                         });
@@ -132,7 +180,7 @@ const Filters = () => {
                                         variant="outlined"
                                         label={`Station ${station}`}
                                         onDelete={() => {
-                                            dataActionDispatcher({
+                                            filterActionDispatcher({
                                                 type: 'updateFilteredStations',
                                                 stations: filteredStations.filter(
                                                     (stationName) => stationName !== station
@@ -166,7 +214,7 @@ const Filters = () => {
                         return values;
                     }, [])}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredFAOAreas',
                             faoAreas: selectedOption.map((faoArea) => faoArea.code)
                         });
@@ -188,7 +236,7 @@ const Filters = () => {
                                             variant="outlined"
                                             label={`${name} (${code})`}
                                             onDelete={() => {
-                                                dataActionDispatcher({
+                                                filterActionDispatcher({
                                                     type: 'updateFilteredFAOAreas',
                                                     faoAreas: filteredFAOAreas.filter(
                                                         (faoAreaCode) => faoAreaCode !== code
@@ -225,7 +273,7 @@ const Filters = () => {
                         return values;
                     }, [])}
                     onChange={(_e, selectedOption) => {
-                        dataActionDispatcher({
+                        filterActionDispatcher({
                             type: 'updateFilteredSpecies',
                             species: selectedOption.map((species) => species.id)
                         });
@@ -247,7 +295,7 @@ const Filters = () => {
                                             variant="outlined"
                                             label={matched_canonical_full_name}
                                             onDelete={() => {
-                                                dataActionDispatcher({
+                                                filterActionDispatcher({
                                                     type: 'updateFilteredSpecies',
                                                     species: filteredSpecies.filter((speciesId) => speciesId !== id)
                                                 });

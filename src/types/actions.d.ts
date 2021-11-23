@@ -64,7 +64,9 @@ type DataAction =
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
-    | UpdateFAOAreas
+    | UpdateFAOAreas;
+
+type FilterAction =
     | UpdateFilteredSpecies
     | AddToFilteredSpecies
     | RemoveFromFilteredSpecies
