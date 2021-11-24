@@ -300,6 +300,38 @@ const ExploreMap = (): JSX.Element => {
             attribution
             help
             navigation
+            basemaps={{
+                basemaps: [
+                    {
+                        id: 'World_Ocean_Base',
+                        tiles: [
+                            '//services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            tileSize: 256,
+                            attribution:
+                                "Map tiles by <a href='http://stamen.com'>Stamen Design</a>, <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a> &mdash; Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/''>CC-BY-SA</a>",
+                            minzoom: 0,
+                            maxzoom: 20
+                        }
+                    },
+                    {
+                        id: 'World_Topo_Map',
+                        tiles: [
+                            '//server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            tileSize: 256,
+                            attribution:
+                                'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
+                            minzoom: 0,
+                            maxzoom: 22
+                        }
+                    }
+                ],
+                initialBasemap: 'World_Ocean_Base',
+                expandDirection: 'top'
+            }}
             LayersControlProps={[
                 {
                     id: 'faoAreas',

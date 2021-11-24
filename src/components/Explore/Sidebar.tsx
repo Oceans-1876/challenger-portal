@@ -1,10 +1,14 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
+import { useStationDetails } from '../../utils/hooks';
 import About from '../About';
+import DownloadButton from '../DownloadButton';
+import Loading from '../Loading';
 import TabsGroup from '../TabsGroup';
 import StationDetails from '../Station/Details';
 import StationEnvironment from '../Station/Environment';
@@ -15,6 +19,7 @@ import Filters from './Filters';
 const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { selectedStation } = React.useContext(DataStateContext);
+    const selectedStationDetails = useStationDetails(selectedStation?.name);
 
     return (
         <Box
@@ -33,24 +38,52 @@ const Sidebar = () => {
                     <Typography variant="h5" align="center">
                         Station {selectedStation.name}
                     </Typography>
-                    <TabsGroup
-                        sx={{ flexGrow: 1 }}
-                        initialPanel="Station"
-                        panels={[
-                            { Panel: () => <StationDetails station={selectedStation} />, label: 'Station' },
-                            { Panel: () => <StationEnvironment station={selectedStation} />, label: 'Environment' },
-                            { Panel: () => <StationSpecies station={selectedStation} />, label: 'Species' },
-                            { Panel: () => <StationText station={selectedStation} />, label: 'Text' }
-                        ]}
-                    />
-                    <Box sx={{ alignSelf: 'center', zIndex: 1 }}>
-                        <Button
-                            variant="outlined"
-                            onClick={() => dataActionDispatcher({ type: 'updateSelectedStation', station: null })}
-                        >
-                            Go Back
-                        </Button>
-                    </Box>
+                    {selectedStationDetails ? (
+                        <>
+                            <TabsGroup
+                                sx={{ flexGrow: 1 }}
+                                initialPanel="Station"
+                                panels={[
+                                    {
+                                        Panel: () => <StationDetails station={selectedStationDetails} />,
+                                        label: 'Station'
+                                    },
+                                    {
+                                        Panel: () => <StationEnvironment station={selectedStationDetails} />,
+                                        label: 'Environment'
+                                    },
+                                    {
+                                        Panel: () => <StationSpecies station={selectedStationDetails} />,
+                                        label: 'Species'
+                                    },
+                                    { Panel: () => <StationText station={selectedStationDetails} />, label: 'Text' }
+                                ]}
+                            />
+                            <Stack direction="row" spacing={1} justifyContent="space-between">
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() =>
+                                        dataActionDispatcher({ type: 'updateSelectedStation', station: null })
+                                    }
+                                >
+                                    Go Back
+                                </Button>
+                                <DownloadButton
+                                    data={selectedStationDetails}
+                                    filename={`Station-${selectedStation.name}-details`}
+                                    message="Download Data"
+                                />
+                                <DownloadButton
+                                    data={selectedStationDetails.species}
+                                    filename={`Station-${selectedStation.name}-Species`}
+                                    message="Download All Species"
+                                />
+                            </Stack>
+                        </>
+                    ) : (
+                        <Loading />
+                    )}
                 </>
             ) : (
                 <TabsGroup

@@ -16,17 +16,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { useStationDetails } from '../../utils/hooks';
-
 interface Props {
-    station: StationSummary;
+    station: StationDetails;
 }
 
 const Text = ({ station }: Props) => {
-    const stationDetails = useStationDetails(station.name);
     const [selectedHathiTrustUrl, setSelectedHathiTrustUrl] = React.useState<string | null>(null);
 
-    return stationDetails ? (
+    return (
         <Stack spacing={2}>
             <Alert severity="warning">
                 <Typography variant="subtitle2">
@@ -47,7 +44,7 @@ const Text = ({ station }: Props) => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <List dense disablePadding>
-                        {stationDetails.hathitrust_urls.map((url, idx) => (
+                        {station.hathitrust_urls.map((url, idx) => (
                             <ListItemButton
                                 key={url}
                                 dense
@@ -69,7 +66,7 @@ const Text = ({ station }: Props) => {
                             onClose={() => setSelectedHathiTrustUrl(null)}
                         >
                             <DialogTitle>
-                                Station {stationDetails.name} - HathiTrust&nbsp;
+                                Station {station.name} - HathiTrust&nbsp;
                                 <Link href={selectedHathiTrustUrl} target="_blank" rel="noreferrer,nofollow">
                                     <IconButton>
                                         <Icon baseClassName="icons">launch</Icon>
@@ -91,7 +88,7 @@ const Text = ({ station }: Props) => {
                                     sx={{ width: 'calc(100% - 64px)', height: 'calc(100% - 64px)' }}
                                     component="iframe"
                                     src={`${selectedHathiTrustUrl}%3Bui=embed`}
-                                    title={`Station ${stationDetails.name} - HathiTrust`}
+                                    title={`Station ${station.name} - HathiTrust`}
                                 />
                             </DialogContent>
                         </Dialog>
@@ -99,10 +96,10 @@ const Text = ({ station }: Props) => {
                 </AccordionDetails>
             </Accordion>
             <Typography sx={{ whiteSpace: 'break-spaces' }} variant="body1" component="pre">
-                {stationDetails.text}
+                {station.text}
             </Typography>
         </Stack>
-    ) : null;
+    );
 };
 
 export default Text;
