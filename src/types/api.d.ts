@@ -14,5 +14,5 @@ interface StationSearchExpressions {
     stationNames: string[];
     faoAreas: string[];
     species: string[];
-    dates: (string | null)[];
+    dates: (import('dayjs').Dayjs | null)[];
 }

@@ -2,7 +2,12 @@ import React from 'react';
 import maplibre from 'maplibre-gl';
 
 import { searchStations } from '../../store/api';
-import { DataStateContext, FilterStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import {
+    DataStateContext,
+    DataActionDispatcherContext,
+    FilterStateContext,
+    FilterActionDispatcherContext
+} from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
 import Map from '../Map';
@@ -12,6 +17,7 @@ import faoAreasUrl from '../../files/fao_areas.geojson';
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { journeyPath, stationsBounds, stationsList, selectedStation } = React.useContext(DataStateContext);
+    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
     const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
@@ -262,6 +268,7 @@ const ExploreMap = (): JSX.Element => {
                         if (selectedStation && !stations.find(({ name }) => name === selectedStation.name)) {
                             dataActionDispatcher({ type: 'updateSelectedStation', station: null });
                         }
+                        filterActionDispatcher({ type: 'updateFilterCount', count: stations.length });
                     }
                 );
 
@@ -278,6 +285,7 @@ const ExploreMap = (): JSX.Element => {
                     }
                 );
                 map.setLayoutProperty('stations', 'visibility', 'none');
+                filterActionDispatcher({ type: 'updateFilterCount', count: null });
             }
         }
     }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded, filterDates]);
@@ -292,6 +300,38 @@ const ExploreMap = (): JSX.Element => {
             attribution
             help
             navigation
+            basemaps={{
+                basemaps: [
+                    {
+                        id: 'World_Ocean_Base',
+                        tiles: [
+                            '//services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            tileSize: 256,
+                            attribution:
+                                "Map tiles by <a href='http://stamen.com'>Stamen Design</a>, <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a> &mdash; Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/''>CC-BY-SA</a>",
+                            minzoom: 0,
+                            maxzoom: 20
+                        }
+                    },
+                    {
+                        id: 'World_Topo_Map',
+                        tiles: [
+                            '//server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            tileSize: 256,
+                            attribution:
+                                'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
+                            minzoom: 0,
+                            maxzoom: 22
+                        }
+                    }
+                ],
+                initialBasemap: 'World_Ocean_Base',
+                expandDirection: 'top'
+            }}
             LayersControlProps={[
                 {
                     id: 'faoAreas',

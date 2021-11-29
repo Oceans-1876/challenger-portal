@@ -5,7 +5,7 @@ import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 
 interface Props {
-    data: StationDetails | SpeciesDetails | SpeciesSummary[];
+    data: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     filename: string;
     message: string;
 }
@@ -16,6 +16,7 @@ const DownloadButton = ({ data, filename, message }: Props) => {
             <Stack direction="column" spacing={4}>
                 <Button
                     variant="outlined"
+                    size="small"
                     startIcon={<Icon baseClassName="icons">download</Icon>}
                     href={`data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 4))}`}
                     download={`${filename}.json`}

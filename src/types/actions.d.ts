@@ -28,6 +28,11 @@ interface UpdateFAOAreas {
     faoAreas: FAOArea[];
 }
 
+interface UpdateFilterCount {
+    type: 'updateFilterCount';
+    count: number | null;
+}
+
 interface UpdateFilteredSpecies {
     type: 'updateFilteredSpecies';
     species: string[];
@@ -55,7 +60,7 @@ interface UpdateFilteredFAOAreas {
 
 interface UpdateFilterDates {
     type: 'updateFilterDates';
-    dates: (string | null)[];
+    dates: (import('dayjs').Dayjs | null)[];
 }
 
 type DataAction =
@@ -67,6 +72,7 @@ type DataAction =
     | UpdateFAOAreas;
 
 type FilterAction =
+    | UpdateFilterCount
     | UpdateFilteredSpecies
     | AddToFilteredSpecies
     | RemoveFromFilteredSpecies

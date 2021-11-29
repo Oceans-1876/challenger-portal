@@ -2,6 +2,7 @@ import React from 'react';
 import maplibre from 'maplibre-gl';
 import Box from '@mui/material/Box';
 import Icon from '@mui/material/Icon';
+import BasemapsControl, { MapLibreBasemapsControlOptions } from 'maplibre-gl-basemaps';
 
 import { MapControl } from './Control';
 import Help from './Help';
@@ -13,6 +14,7 @@ interface Props {
     attribution?: boolean;
     help?: boolean;
     navigation?: boolean;
+    basemaps?: MapLibreBasemapsControlOptions;
     LayersControlProps?: LayersControlProps[];
     onLoad: (map: maplibre.Map) => void;
 }
@@ -23,6 +25,7 @@ const Map = ({
     attribution,
     help,
     navigation,
+    basemaps,
     LayersControlProps,
     onLoad
 }: Props): JSX.Element => {
@@ -47,7 +50,7 @@ const Map = ({
             });
 
             if (attribution) {
-                map.addControl(new maplibre.AttributionControl({ compact: true }), 'bottom-left');
+                map.addControl(new maplibre.AttributionControl({ compact: true }), 'bottom-right');
             }
 
             if (navigation) {
@@ -58,6 +61,10 @@ const Map = ({
                 if (resetBoundsButtonRef.current) {
                     map.addControl(new MapControl(resetBoundsButtonRef.current));
                 }
+            }
+
+            if (basemaps) {
+                map.addControl(new BasemapsControl(basemaps), 'bottom-left');
             }
 
             if (help && helpButtonRef.current) {
