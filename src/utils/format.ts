@@ -6,3 +6,8 @@ export const decimalFormat = (value: number, decimals = 2): string => {
     });
     return formatter.format(value);
 };
+
+export const convertFarenheitToCelcius = (temp: number): string => {
+    const formattedTemp = decimalFormat((temp - 32) * (5 / 9));
+    return formattedTemp;
+};

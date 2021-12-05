@@ -1,4 +1,5 @@
 import React from 'react';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Icon from '@mui/material/Icon';
 import List from '@mui/material/List';
@@ -40,13 +41,19 @@ const Species = ({ station }: Props) => {
             <SpeciesDetails species={speciesDetails} />
         </>
     ) : (
-        <List>
-            {station.species.map(({ id, matched_canonical_full_name }) => (
-                <ListItemButton key={id} onClick={() => setSelectedSpecies(id)}>
-                    <ListItem>{matched_canonical_full_name}</ListItem>
-                </ListItemButton>
-            ))}
-        </List>
+        <>
+            {station.species.length ? (
+                <List>
+                    {station.species.map(({ id, matched_canonical_full_name }) => (
+                        <ListItemButton key={id} onClick={() => setSelectedSpecies(id)}>
+                            <ListItem>{matched_canonical_full_name}</ListItem>
+                        </ListItemButton>
+                    ))}
+                </List>
+            ) : (
+                <Alert severity="info">{`Currently there are no records of any Species for Station ${station.name} in the database.`}</Alert>
+            )}
+        </>
     );
 };
 
