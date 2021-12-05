@@ -50,12 +50,10 @@ export const searchStations = (
             } as SearchExpression);
         }
     };
-
     addExpression('name', 'eq', searchExpressions.stationNames);
     addExpression('fao_area', 'eq', searchExpressions.faoAreas);
     addExpression('species_id', 'eq', searchExpressions.species);
     addExpression('date', 'ge', searchExpressions.dates);
-
     if (expressions.length) {
         const data =
             expressions.length > 1

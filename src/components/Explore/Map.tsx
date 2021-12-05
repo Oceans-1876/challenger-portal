@@ -249,7 +249,6 @@ const ExploreMap = (): JSX.Element => {
                     },
                     (stations) => {
                         map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
-
                         // Move the map to filtered stations
                         if (stations.length === 1) {
                             map.flyTo({
