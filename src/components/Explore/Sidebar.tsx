@@ -22,10 +22,9 @@ const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
-
-    const onNavigate = (selectedStation: string, navigate_to: string) => {
-        const index: number = stationsList.map((station) => station.name).indexOf(selectedStation);
-        var new_station: StationSummary | null = null;
+    const onNavigate = (selectedStationName: string, navigate_to: string) => {
+        const index: number = stationsList.map((station) => station.name).indexOf(selectedStationName);
+        let new_station: StationSummary | null = null;
         if (navigate_to === 'forward') {
             new_station = stationsList[(index + 1 + stationsList.length) % stationsList.length];
         } else {

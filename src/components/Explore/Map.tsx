@@ -135,7 +135,7 @@ const ExploreMap = (): JSX.Element => {
                 if (e.features && e.features[0]) {
                     const feature = e.features[0];
                     const stationProperties = feature.properties as StationSummary;
-                    var newSelectedStation =
+                    let newSelectedStation =
                         stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
                     if (newSelectedStation) {
                         const index: number = stationsList
