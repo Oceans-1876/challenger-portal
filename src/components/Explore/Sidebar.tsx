@@ -1,6 +1,8 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Icon from '@mui/material/Icon';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
@@ -18,8 +20,19 @@ import Filters from './Filters';
 
 const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { selectedStation } = React.useContext(DataStateContext);
+    const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
+
+    const onNavigate = (selectedStation: string, navigate_to: string) => {
+        const index: number = stationsList.map((station) => station.name).indexOf(selectedStation);
+        var new_station: StationSummary | null = null;
+        if (navigate_to === 'forward') {
+            new_station = stationsList[(index + 1 + stationsList.length) % stationsList.length];
+        } else {
+            new_station = stationsList[(index - 1 + stationsList.length) % stationsList.length];
+        }
+        dataActionDispatcher({ type: 'updateSelectedStation', station: new_station });
+    };
 
     return (
         <Box
@@ -35,9 +48,25 @@ const Sidebar = () => {
         >
             {selectedStation ? (
                 <>
-                    <Typography variant="h5" align="center">
-                        Station {selectedStation.name}
-                    </Typography>
+                    <Stack direction="row">
+                        <IconButton
+                            size="medium"
+                            sx={{ mx: 'auto' }}
+                            onClick={() => onNavigate(selectedStation.name, 'backward')}
+                        >
+                            <Icon baseClassName="icons">arrow_back</Icon>
+                        </IconButton>
+                        <Typography variant="h5" align="center" sx={{ mx: 'auto' }}>
+                            Station {selectedStation.name}
+                        </Typography>
+                        <IconButton
+                            size="medium"
+                            sx={{ mx: 'auto' }}
+                            onClick={() => onNavigate(selectedStation.name, 'forward')}
+                        >
+                            <Icon baseClassName="icons">arrow_forward</Icon>
+                        </IconButton>
+                    </Stack>
                     {selectedStationDetails ? (
                         <>
                             <TabsGroup

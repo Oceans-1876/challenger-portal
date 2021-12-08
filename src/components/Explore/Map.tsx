@@ -135,8 +135,14 @@ const ExploreMap = (): JSX.Element => {
                 if (e.features && e.features[0]) {
                     const feature = e.features[0];
                     const stationProperties = feature.properties as StationSummary;
-                    const newSelectedStation =
+                    var newSelectedStation =
                         stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
+                    if (newSelectedStation) {
+                        const index: number = stationsList
+                            .map((station) => station.name)
+                            .indexOf(newSelectedStation.name);
+                        newSelectedStation = stationsList[index];
+                    }
                     dataActionDispatcher({
                         type: 'updateSelectedStation',
                         station: newSelectedStation
@@ -144,7 +150,7 @@ const ExploreMap = (): JSX.Element => {
                     selectedStationRef.current = newSelectedStation;
                     if (map.getZoom() < 6 && newSelectedStation) {
                         const { lat, lng } = e.lngLat;
-                        map.flyTo({ center: [lng, lat], zoom: 6 });
+                        map.flyTo({ center: [lng, lat], zoom: 4 });
                     }
                 }
             });
@@ -188,6 +194,7 @@ const ExploreMap = (): JSX.Element => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
+            // console.log(stationsList);
             const stationsGeoJSON = {
                 type: 'FeatureCollection',
                 features: stationsList.map((stationProps) => ({
@@ -201,6 +208,7 @@ const ExploreMap = (): JSX.Element => {
             };
             ['stations', 'clustered-stations'].forEach((sourceName) => {
                 const source = map.getSource(sourceName) as maplibre.GeoJSONSource;
+                // console.log(stationsGeoJSON);
                 if (source) {
                     source.setData(stationsGeoJSON);
                 }
@@ -226,6 +234,9 @@ const ExploreMap = (): JSX.Element => {
         const map = mapRef.current;
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
+            if (selectedStation) {
+                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
+            }
         }
     }, [selectedStation, isMapLoaded]);
 
