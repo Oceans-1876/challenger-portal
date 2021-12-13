@@ -1,43 +1,33 @@
 import React from 'react';
-import { convertFahrenheitToCelcius, convertDepthFathomsTo } from '../utils/format';
+import convert, { Temperature, Distance } from 'convert-units';
+
+import { decimalFormat } from '../utils/format';
 
 interface Props {
-    targetUnit: string; // eslint-disable-line @typescript-eslint/no-explicit-any
+    from: Temperature | Distance;
+    to: Temperature | Distance; // eslint-disable-line @typescript-eslint/no-explicit-any
     value: number;
+    precision: number;
 }
 
-const RenderUnit = ({ targetUnit, value }: Props) => {
+const RenderUnit = ({ from, to, value, precision }: Props) => {
     let new_value: number | string = value;
-    switch (targetUnit) {
-        case 'celcius':
-            new_value = convertFahrenheitToCelcius(value);
-            break;
-        case 'kilometers':
-            new_value = convertDepthFathomsTo(value, 'km');
-            break;
-        case 'meters':
-            new_value = convertDepthFathomsTo(value, 'm');
-            break;
-        case 'centimeters':
-            new_value = convertDepthFathomsTo(value, 'cm');
-            break;
-        case 'miles':
-            new_value = convertDepthFathomsTo(value, 'mi');
-            break;
-        case 'yards':
-            new_value = convertDepthFathomsTo(value, 'y');
-            break;
-        case 'feets':
-            new_value = convertDepthFathomsTo(value, 'f');
-            break;
-        case 'inches':
-            new_value = convertDepthFathomsTo(value, 'in');
-            break;
-        default:
-            new_value = value;
+    if (from === 'fathom' || to === 'fathom') {
+        // fathoms not present in unit converter.
+        // Explict conversion to yards first, then to the requested unit
+        // or convert to yards and then to fathoms for to === 'fathom'
+        let type: Distance = 'yd' as Distance;
+        new_value =
+            from === 'fathom'
+                ? convert(value * 2)
+                      .from(type)
+                      .to(to)
+                : convert(value).from(from).to(type) / 2;
+    } else {
+        new_value = convert(value).from(from).to(to);
     }
 
-    return <>{new_value}</>;
+    return <>{decimalFormat(new_value, precision)}</>;
 };
 
 export default RenderUnit;

@@ -80,11 +80,15 @@ const Environment = ({ station }: Props) => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell align="center" component="th" scope="row">
-                                                <RenderUnit targetUnit="feets" value={Number(depth)} />
+                                                <RenderUnit
+                                                    from={'fathom'}
+                                                    to={'m'}
+                                                    value={Number(depth)}
+                                                    precision={3}
+                                                />
                                             </TableCell>
                                             <TableCell align="center" component="th" scope="row">
-                                                {/* {`${convertFahrenheitToCelcius(temp)}\u00b0`} */}
-                                                <RenderUnit targetUnit="celcius" value={temp} />
+                                                <RenderUnit from={'F'} to={'C'} value={temp} precision={3} />
                                             </TableCell>
                                         </TableRow>
                                     );
