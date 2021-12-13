@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertFahrenheitToCelcius, convertCelciusToFahrenheit, convertDepthFathomsTo } from '../utils/format';
+import { convertFahrenheitToCelcius, convertDepthFathomsTo } from '../utils/format';
 
 interface Props {
     targetUnit: string; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -11,9 +11,6 @@ const RenderUnit = ({ targetUnit, value }: Props) => {
     switch (targetUnit) {
         case 'celcius':
             new_value = convertFahrenheitToCelcius(value);
-            break;
-        case 'fahrenheit':
-            new_value = convertCelciusToFahrenheit(value);
             break;
         case 'kilometers':
             new_value = convertDepthFathomsTo(value, 'km');

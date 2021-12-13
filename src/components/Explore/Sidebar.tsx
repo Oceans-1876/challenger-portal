@@ -23,7 +23,7 @@ const Sidebar = () => {
     const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
     const onNavigate = (selectedStationName: string, navigate_to: string) => {
-        const index: number = stationsList.map((station) => station.name).indexOf(selectedStationName);
+        const index: number = stationsList.findIndex(({ name }) => selectedStationName === name);
         let new_station: StationSummary | null = null;
         if (navigate_to === 'forward') {
             new_station = stationsList[(index + 1 + stationsList.length) % stationsList.length];

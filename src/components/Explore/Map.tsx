@@ -129,33 +129,6 @@ const ExploreMap = (): JSX.Element => {
             filter: ['==', 'name', '']
         } as maplibre.CircleLayer);
 
-        // Update selected station on click on the following layers
-        ['stations', 'clustered-stations-single'].forEach((layerName) => {
-            map.on('click', layerName, (e) => {
-                if (e.features && e.features[0]) {
-                    const feature = e.features[0];
-                    const stationProperties = feature.properties as StationSummary;
-                    let newSelectedStation =
-                        stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
-                    if (newSelectedStation) {
-                        const index: number = stationsList
-                            .map((station) => station.name)
-                            .indexOf(newSelectedStation.name);
-                        newSelectedStation = stationsList[index];
-                    }
-                    dataActionDispatcher({
-                        type: 'updateSelectedStation',
-                        station: newSelectedStation
-                    });
-                    selectedStationRef.current = newSelectedStation;
-                    if (map.getZoom() < 6 && newSelectedStation) {
-                        const { lat, lng } = e.lngLat;
-                        map.flyTo({ center: [lng, lat], zoom: 4 });
-                    }
-                }
-            });
-        });
-
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
             if (e.features && e.features[0]) {
@@ -194,7 +167,6 @@ const ExploreMap = (): JSX.Element => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            // console.log(stationsList);
             const stationsGeoJSON = {
                 type: 'FeatureCollection',
                 features: stationsList.map((stationProps) => ({
@@ -208,7 +180,6 @@ const ExploreMap = (): JSX.Element => {
             };
             ['stations', 'clustered-stations'].forEach((sourceName) => {
                 const source = map.getSource(sourceName) as maplibre.GeoJSONSource;
-                // console.log(stationsGeoJSON);
                 if (source) {
                     source.setData(stationsGeoJSON);
                 }
@@ -226,6 +197,28 @@ const ExploreMap = (): JSX.Element => {
                     }
                 });
             }
+            // Update selected station on click on the following layers
+            ['stations', 'clustered-stations-single'].forEach((layerName) => {
+                map.on('click', layerName, (e) => {
+                    if (e.features && e.features[0]) {
+                        const feature = e.features[0];
+                        const stationProperties = feature.properties as StationSummary;
+                        let newSelectedStation =
+                            stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
+                        if (newSelectedStation) {
+                            const index: number = stationsList.findIndex(
+                                ({ name }) => newSelectedStation?.name === name
+                            );
+                            newSelectedStation = stationsList[index];
+                        }
+                        dataActionDispatcher({
+                            type: 'updateSelectedStation',
+                            station: newSelectedStation
+                        });
+                        selectedStationRef.current = newSelectedStation;
+                    }
+                });
+            });
         }
     }, [stationsList, isMapLoaded]);
 
