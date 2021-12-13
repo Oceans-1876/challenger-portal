@@ -13,8 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
-import { decimalFormat } from '../../utils/format';
-import RenderUnit from '../RenderUnit';
+import { decimalFormat, convertFahrenheitToCelcius } from '../../utils/format';
 
 interface Props {
     station: StationDetails;
@@ -65,7 +64,7 @@ const Environment = ({ station }: Props) => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Depth (Feets)</TableCell>
+                                    <TableCell align="center">Depth (fathom)</TableCell>
                                     <TableCell align="center">Temperature (C)</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -80,11 +79,10 @@ const Environment = ({ station }: Props) => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell align="center" component="th" scope="row">
-                                                <RenderUnit targetUnit="feets" value={Number(depth)} />
+                                                {depth}
                                             </TableCell>
                                             <TableCell align="center" component="th" scope="row">
-                                                {/* {`${convertFahrenheitToCelcius(temp)}\u00b0`} */}
-                                                <RenderUnit targetUnit="celcius" value={temp} />
+                                                {`${convertFahrenheitToCelcius(temp)}\u00b0`}
                                             </TableCell>
                                         </TableRow>
                                     );
