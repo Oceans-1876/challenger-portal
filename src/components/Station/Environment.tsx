@@ -13,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
-import { decimalFormat, convertFarenheitToCelcius } from '../../utils/format';
+import { decimalFormat, convertFahrenheitToCelcius } from '../../utils/format';
 
 interface Props {
     station: StationDetails;
@@ -82,7 +82,7 @@ const Environment = ({ station }: Props) => {
                                                 {depth}
                                             </TableCell>
                                             <TableCell align="center" component="th" scope="row">
-                                                {`${convertFarenheitToCelcius(temp)}\u00b0`}
+                                                {`${convertFahrenheitToCelcius(temp)}\u00b0`}
                                             </TableCell>
                                         </TableRow>
                                     );

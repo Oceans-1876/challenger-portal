@@ -129,27 +129,6 @@ const ExploreMap = (): JSX.Element => {
             filter: ['==', 'name', '']
         } as maplibre.CircleLayer);
 
-        // Update selected station on click on the following layers
-        ['stations', 'clustered-stations-single'].forEach((layerName) => {
-            map.on('click', layerName, (e) => {
-                if (e.features && e.features[0]) {
-                    const feature = e.features[0];
-                    const stationProperties = feature.properties as StationSummary;
-                    const newSelectedStation =
-                        stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
-                    dataActionDispatcher({
-                        type: 'updateSelectedStation',
-                        station: newSelectedStation
-                    });
-                    selectedStationRef.current = newSelectedStation;
-                    if (map.getZoom() < 6 && newSelectedStation) {
-                        const { lat, lng } = e.lngLat;
-                        map.flyTo({ center: [lng, lat], zoom: 6 });
-                    }
-                }
-            });
-        });
-
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
             if (e.features && e.features[0]) {
@@ -218,6 +197,28 @@ const ExploreMap = (): JSX.Element => {
                     }
                 });
             }
+            // Update selected station on click on the following layers
+            ['stations', 'clustered-stations-single'].forEach((layerName) => {
+                map.on('click', layerName, (e) => {
+                    if (e.features && e.features[0]) {
+                        const feature = e.features[0];
+                        const stationProperties = feature.properties as StationSummary;
+                        let newSelectedStation =
+                            stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
+                        if (newSelectedStation) {
+                            const index: number = stationsList.findIndex(
+                                ({ name }) => newSelectedStation?.name === name
+                            );
+                            newSelectedStation = stationsList[index];
+                        }
+                        dataActionDispatcher({
+                            type: 'updateSelectedStation',
+                            station: newSelectedStation
+                        });
+                        selectedStationRef.current = newSelectedStation;
+                    }
+                });
+            });
         }
     }, [stationsList, isMapLoaded]);
 
@@ -226,6 +227,9 @@ const ExploreMap = (): JSX.Element => {
         const map = mapRef.current;
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
+            if (selectedStation) {
+                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
+            }
         }
     }, [selectedStation, isMapLoaded]);
 
