@@ -12,7 +12,9 @@ interface Props {
 
 const RenderUnit = ({ from, to, value, precision }: Props) => {
     let new_value: number | string = value;
-    if (from === 'fathom' || to === 'fathom') {
+    if (from === to) {
+        new_value = value;
+    } else if (from === 'fathom' || to === 'fathom') {
         // fathoms not present in unit converter.
         // Explict conversion to yards first, then to the requested unit
         // or convert to yards and then to fathoms for to === 'fathom'

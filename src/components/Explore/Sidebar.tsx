@@ -22,6 +22,12 @@ const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
+
+    const [tempFromUnit, setTempFromUnit] = React.useState<string>('F');
+    const [tempToUnit, setTempToUnit] = React.useState<string>('C');
+    const [depthFromUnit, setDepthFromUnit] = React.useState<string>('fathom');
+    const [depthToUnit, setDepthToUnit] = React.useState<string>('ft');
+
     const onNavigate = (selectedStationName: string, navigate_to: string) => {
         const index: number = stationsList.findIndex(({ name }) => selectedStationName === name);
         let new_station: StationSummary | null = null;
@@ -77,7 +83,21 @@ const Sidebar = () => {
                                         label: 'Station'
                                     },
                                     {
-                                        Panel: () => <StationEnvironment station={selectedStationDetails} />,
+                                        Panel: () => {
+                                            return (
+                                                <StationEnvironment
+                                                    station={selectedStationDetails}
+                                                    tempFromUnit={tempFromUnit}
+                                                    tempToUnit={tempToUnit}
+                                                    setTempFromUnit={setTempFromUnit}
+                                                    setTempToUnit={setTempToUnit}
+                                                    depthFromUnit={depthFromUnit}
+                                                    depthToUnit={depthToUnit}
+                                                    setDepthFromUnit={setDepthFromUnit}
+                                                    setDepthToUnit={setDepthToUnit}
+                                                />
+                                            );
+                                        },
                                         label: 'Environment'
                                     },
                                     {
