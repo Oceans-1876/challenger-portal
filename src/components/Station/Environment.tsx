@@ -18,20 +18,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
+import { Temperature, Distance } from 'convert-units';
 import { decimalFormat } from '../../utils/format';
 import RenderUnit from '../RenderUnit';
-import { Temperature, Distance } from 'convert-units';
 
 interface Props {
     station: StationDetails;
     tempFromUnit: string;
-    setTempFromUnit: Function;
+    setTempFromUnit: (unit: string) => void;
     tempToUnit: string;
-    setTempToUnit: Function;
+    setTempToUnit: (unit: string) => void;
     depthFromUnit: string;
-    setDepthFromUnit: Function;
+    setDepthFromUnit: (unit: string) => void;
     depthToUnit: string;
-    setDepthToUnit: Function;
+    setDepthToUnit: (unit: string) => void;
 }
 
 interface Map {
@@ -157,7 +157,7 @@ const Environment = ({
                                         value={station.surface_temp_c}
                                         precision={3}
                                     />
-                                    {`\u00b0`}
+                                    {'\u00b0'}
                                 </>
                             ) : (
                                 '-'
@@ -173,7 +173,7 @@ const Environment = ({
                                         value={station.bottom_water_temp_c}
                                         precision={3}
                                     />
-                                    {`\u00b0`}
+                                    {'\u00b0'}
                                 </>
                             ) : (
                                 '-'

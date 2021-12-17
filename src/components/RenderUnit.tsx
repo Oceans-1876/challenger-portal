@@ -18,7 +18,7 @@ const RenderUnit = ({ from, to, value, precision }: Props) => {
         // fathoms not present in unit converter.
         // Explict conversion to yards first, then to the requested unit
         // or convert to yards and then to fathoms for to === 'fathom'
-        let type: Distance = 'yd' as Distance;
+        const type: Distance = 'yd' as Distance;
         new_value =
             from === 'fathom'
                 ? convert(value * 2)
