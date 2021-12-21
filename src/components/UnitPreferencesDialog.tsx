@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -85,7 +84,7 @@ const UnitPreferencesDialog = ({ open, onClose }: Props) => {
     });
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth={true} scroll="paper">
+        <Dialog open={open} onClose={onClose} fullWidth scroll="paper">
             <DialogTitle>Set Metric Preferences</DialogTitle>
             <DialogContent>
                 <Stack direction="row" spacing={4} sx={{ padding: 2 }}>

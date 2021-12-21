@@ -5,7 +5,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -14,8 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
-import { DataStateContext } from '../../store/contexts';
 import { TemperatureUnits, LengthUnits } from 'convert-units';
+import { DataStateContext } from '../../store/contexts';
 import { decimalFormat } from '../../utils/format';
 import RenderUnit from '../RenderUnit';
 import { depthUnitMap, tempUnitMap } from '../UnitPreferencesDialog';

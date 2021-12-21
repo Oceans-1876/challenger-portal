@@ -30,7 +30,7 @@ interface Props {
 }
 
 const RenderUnit = ({ from, to, value, precision }: Props) => {
-    let new_value: number = convert(value).from(from).to(to);
+    const new_value: number = convert(value).from(from).to(to);
 
     return <>{decimalFormat(new_value, precision)}</>;
 };

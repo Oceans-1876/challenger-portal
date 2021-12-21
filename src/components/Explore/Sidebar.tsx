@@ -96,8 +96,8 @@ const Sidebar = () => {
                                     { Panel: () => <StationText station={selectedStationDetails} />, label: 'Text' }
                                 ]}
                             />
-                            <Stack direction={'column'} spacing={1} sx={{ padding: 1 }}>
-                                <Stack direction={'column'}>
+                            <Stack direction="column" spacing={1} sx={{ padding: 1 }}>
+                                <Stack direction="column">
                                     <Button
                                         variant="outlined"
                                         size="small"
