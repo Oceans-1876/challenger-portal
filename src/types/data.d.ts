@@ -58,6 +58,10 @@ interface DataState {
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
     faoAreas: FAOArea[];
+    tempFromUnit: string;
+    tempToUnit: string;
+    depthFromUnit: string;
+    depthToUnit: string;
 }
 
 interface FilterState {

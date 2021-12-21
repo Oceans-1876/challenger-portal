@@ -7,7 +7,11 @@ export const dataStateInitialValue: DataState = {
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},
-    faoAreas: []
+    faoAreas: [],
+    tempFromUnit: 'F',
+    tempToUnit: 'C',
+    depthFromUnit: 'fathom',
+    depthToUnit: 'ft'
 };
 
 export const filtersStateInitialValue: FilterState = {
