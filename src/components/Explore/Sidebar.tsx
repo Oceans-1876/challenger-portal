@@ -16,17 +16,12 @@ import StationDetails from '../Station/Details';
 import StationEnvironment from '../Station/Environment';
 import StationSpecies from '../Station/Species';
 import StationText from '../Station/Text';
-import UnitPreferencesDialog from '../UnitPreferencesDialog';
 import Filters from './Filters';
 
 const Sidebar = () => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
-    const [dialogOpen, setDialogOpen] = React.useState(false);
-
-    const openPreferencesDialog = () => setDialogOpen(true);
-    const closePreferencesDialog = () => setDialogOpen(false);
 
     const onNavigate = (selectedStationName: string, navigate_to: string) => {
         const index: number = stationsList.findIndex(({ name }) => selectedStationName === name);
@@ -51,7 +46,6 @@ const Sidebar = () => {
                 boxShadow: '1px 0 5px gray'
             }}
         >
-            <UnitPreferencesDialog open={dialogOpen} onClose={closePreferencesDialog} />
             {selectedStation ? (
                 <>
                     <Stack direction="row">
@@ -96,17 +90,7 @@ const Sidebar = () => {
                                     { Panel: () => <StationText station={selectedStationDetails} />, label: 'Text' }
                                 ]}
                             />
-                            <Stack direction="column" spacing={1} sx={{ padding: 1 }}>
-                                <Stack direction="column">
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        startIcon={<Icon baseClassName="icons">build</Icon>}
-                                        onClick={openPreferencesDialog}
-                                    >
-                                        Set Unit Preferences
-                                    </Button>
-                                </Stack>
+                            <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
                                 <Stack direction="row" spacing={1} justifyContent="space-between">
                                     <Button
                                         variant="outlined"

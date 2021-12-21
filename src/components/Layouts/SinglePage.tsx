@@ -12,6 +12,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 import { getRandomBackground } from './backgrounds';
+import UnitPreferencesDialog from '../UnitPreferencesDialog';
 
 export const headerHeight = 60;
 
@@ -24,6 +25,10 @@ type Props = {
 const Layout: React.FC<Props> = ({ children }: Props) => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<HTMLElement | null>(null);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+
+    const openPreferencesDialog = () => setDialogOpen(true);
+    const closePreferencesDialog = () => setDialogOpen(false);
 
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
@@ -85,6 +90,15 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         </Button>
                         <Button
                             variant="outlined"
+                            size="small"
+                            startIcon={<Icon baseClassName="icons">build</Icon>}
+                            onClick={openPreferencesDialog}
+                            sx={{ color: 'white' }}
+                        >
+                            Unit Preferences
+                        </Button>
+                        <Button
+                            variant="outlined"
                             startIcon={<Icon baseClassName="icons">data_exploration</Icon>}
                             size="small"
                             href={`${API_PATH}/docs`}
@@ -134,7 +148,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                     </Box>
                 </Toolbar>
             </AppBar>
-
+            <UnitPreferencesDialog open={dialogOpen} onClose={closePreferencesDialog} />
             <Box sx={{ padding: '30px', borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
                 {children}
             </Box>
