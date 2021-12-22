@@ -8,9 +8,7 @@ export const dataStateInitialValue: DataState = {
     allSpeciesList: [],
     allSpeciesObject: {},
     faoAreas: [],
-    tempFromUnit: 'F',
     tempToUnit: 'C',
-    depthFromUnit: 'fathom',
     depthToUnit: 'ft'
 };
 

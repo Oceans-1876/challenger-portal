@@ -68,26 +68,14 @@ interface UpdateTempToUnit {
     unit: string;
 }
 
-interface UpdateTempFromUnit {
-    type: 'updateTempFromUnit';
-    unit: string;
-}
-
 interface UpdateDepthToUnit {
     type: 'updateDepthToUnit';
     unit: string;
 }
 
-interface UpdateDepthFromUnit {
-    type: 'updateDepthFromUnit';
-    unit: string;
-}
-
 type DataAction =
     | UpdateTempToUnit
-    | UpdateTempFromUnit
     | UpdateDepthToUnit
-    | UpdateDepthFromUnit
     | UpdateStations
     | UpdateSelectedStation
     | UpdateStationDetails

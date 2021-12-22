@@ -90,21 +90,21 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         </Button>
                         <Button
                             variant="outlined"
-                            size="small"
-                            startIcon={<Icon baseClassName="icons">build</Icon>}
-                            onClick={openPreferencesDialog}
-                            sx={{ color: 'white' }}
-                        >
-                            Unit Preferences
-                        </Button>
-                        <Button
-                            variant="outlined"
                             startIcon={<Icon baseClassName="icons">data_exploration</Icon>}
                             size="small"
                             href={`${API_PATH}/docs`}
                             target="_blank"
                         >
                             API
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<Icon baseClassName="icons">build</Icon>}
+                            onClick={openPreferencesDialog}
+                            sx={{ color: 'white' }}
+                        >
+                            Preferences
                         </Button>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

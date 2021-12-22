@@ -25,7 +25,9 @@ interface Props {
 
 const Environment = ({ station }: Props) => {
     const [showWaterTempArDepths, setShowWaterTempArDepths] = React.useState(true);
-    const { tempFromUnit, tempToUnit, depthFromUnit, depthToUnit } = React.useContext(DataStateContext);
+    const { tempToUnit, depthToUnit } = React.useContext(DataStateContext);
+    const tempFromUnit: string = 'F';
+    const depthFromUnit: string = 'fathom';
 
     return (
         <List>

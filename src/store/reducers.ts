@@ -34,20 +34,10 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 faoAreas: action.faoAreas
             };
-        case 'updateTempFromUnit':
-            return {
-                ...state,
-                tempFromUnit: action.unit
-            };
         case 'updateTempToUnit':
             return {
                 ...state,
                 tempToUnit: action.unit
-            };
-        case 'updateDepthFromUnit':
-            return {
-                ...state,
-                depthFromUnit: action.unit
             };
         case 'updateDepthToUnit':
             return {
