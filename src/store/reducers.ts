@@ -34,6 +34,16 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 faoAreas: action.faoAreas
             };
+        case 'updateTempToUnit':
+            return {
+                ...state,
+                tempToUnit: action.unit
+            };
+        case 'updateDepthToUnit':
+            return {
+                ...state,
+                depthToUnit: action.unit
+            };
     }
     throw Error(`Received invalid action: ${action}`);
 };

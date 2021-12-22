@@ -63,7 +63,19 @@ interface UpdateFilterDates {
     dates: (import('dayjs').Dayjs | null)[];
 }
 
+interface UpdateTempToUnit {
+    type: 'updateTempToUnit';
+    unit: string;
+}
+
+interface UpdateDepthToUnit {
+    type: 'updateDepthToUnit';
+    unit: string;
+}
+
 type DataAction =
+    | UpdateTempToUnit
+    | UpdateDepthToUnit
     | UpdateStations
     | UpdateSelectedStation
     | UpdateStationDetails
