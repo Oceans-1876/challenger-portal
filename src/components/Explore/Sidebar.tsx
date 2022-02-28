@@ -23,6 +23,23 @@ const Sidebar = () => {
     const { selectedStation, stationsList } = React.useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
 
+    const StationPanel = React.useCallback(
+        () => <StationDetails station={selectedStationDetails} />,
+        [selectedStationDetails]
+    );
+    const EnvironmentPanel = React.useCallback(
+        () => <StationEnvironment station={selectedStationDetails} />,
+        [selectedStationDetails]
+    );
+    const SpeciesPanel = React.useCallback(
+        () => <StationSpecies station={selectedStationDetails} />,
+        [selectedStationDetails]
+    );
+    const TextPanel = React.useCallback(
+        () => <StationText station={selectedStationDetails} />,
+        [selectedStationDetails]
+    );
+
     const onNavigate = (selectedStationName: string, navigate_to: string) => {
         const index: number = stationsList.findIndex(({ name }) => selectedStationName === name);
         let new_station: StationSummary | null = null;
@@ -74,20 +91,21 @@ const Sidebar = () => {
                                 initialPanel="Station"
                                 panels={[
                                     {
-                                        Panel: () => <StationDetails station={selectedStationDetails} />,
+                                        Panel: StationPanel,
                                         label: 'Station'
                                     },
                                     {
-                                        Panel: () => {
-                                            return <StationEnvironment station={selectedStationDetails} />;
-                                        },
+                                        Panel: EnvironmentPanel,
                                         label: 'Environment'
                                     },
                                     {
-                                        Panel: () => <StationSpecies station={selectedStationDetails} />,
+                                        Panel: SpeciesPanel,
                                         label: 'Species'
                                     },
-                                    { Panel: () => <StationText station={selectedStationDetails} />, label: 'Text' }
+                                    {
+                                        Panel: TextPanel,
+                                        label: 'Text'
+                                    }
                                 ]}
                             />
                             <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
@@ -119,21 +137,19 @@ const Sidebar = () => {
                     )}
                 </>
             ) : (
-                <>
-                    <TabsGroup
-                        initialPanel="Filters"
-                        panels={[
-                            {
-                                Panel: Filters,
-                                label: 'Filters'
-                            },
-                            {
-                                Panel: About,
-                                label: 'About'
-                            }
-                        ]}
-                    />
-                </>
+                <TabsGroup
+                    initialPanel="Filters"
+                    panels={[
+                        {
+                            Panel: Filters,
+                            label: 'Filters'
+                        },
+                        {
+                            Panel: About,
+                            label: 'About'
+                        }
+                    ]}
+                />
             )}
         </Box>
     );

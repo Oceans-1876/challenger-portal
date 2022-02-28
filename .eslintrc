@@ -117,7 +117,12 @@
     "operator-linebreak": [
       "warn",
       "after",
-      { "overrides": { "?": "before", ":": "before" } }
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
     ],
     "prefer-destructuring": "off",
     "quotes": [
@@ -141,6 +146,12 @@
       "always"
     ],
     "react/destructuring-assignment": "off",
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function"
+      }
+    ],
     "react/jsx-curly-newline": "off",
     "react/jsx-filename-extension": [
       "error",
@@ -158,6 +169,12 @@
     "react/jsx-indent-props": [
       "error",
       4
+    ],
+    "react/jsx-no-useless-fragment": [
+      "error",
+      {
+        "allowExpressions": true
+      }
     ],
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
