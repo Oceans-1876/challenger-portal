@@ -1,43 +1,38 @@
 import React from 'react';
-import { convertFahrenheitToCelcius, convertDepthFathomsTo } from '../utils/format';
+import configureMeasurements, {
+    temperature,
+    TemperatureSystems,
+    TemperatureUnits,
+    length,
+    LengthSystems,
+    LengthUnits
+} from 'convert-units';
+
+import { decimalFormat } from '../utils/format';
+
+// Meausres: The names of the measures being used
+type Measures = 'length' | 'temperature';
+// Systems: The systems being used across all measures
+type Systems = LengthSystems | TemperatureSystems;
+// Units: The units across all measures and their systems
+type Units = LengthUnits | TemperatureUnits;
+
+const convert = configureMeasurements<Measures, Systems, Units>({
+    length,
+    temperature
+});
 
 interface Props {
-    targetUnit: string; // eslint-disable-line @typescript-eslint/no-explicit-any
+    from: Units;
+    to: Units; // eslint-disable-line @typescript-eslint/no-explicit-any
     value: number;
+    precision: number;
 }
 
-const RenderUnit = ({ targetUnit, value }: Props) => {
-    let new_value: number | string = value;
-    switch (targetUnit) {
-        case 'celcius':
-            new_value = convertFahrenheitToCelcius(value);
-            break;
-        case 'kilometers':
-            new_value = convertDepthFathomsTo(value, 'km');
-            break;
-        case 'meters':
-            new_value = convertDepthFathomsTo(value, 'm');
-            break;
-        case 'centimeters':
-            new_value = convertDepthFathomsTo(value, 'cm');
-            break;
-        case 'miles':
-            new_value = convertDepthFathomsTo(value, 'mi');
-            break;
-        case 'yards':
-            new_value = convertDepthFathomsTo(value, 'y');
-            break;
-        case 'feets':
-            new_value = convertDepthFathomsTo(value, 'f');
-            break;
-        case 'inches':
-            new_value = convertDepthFathomsTo(value, 'in');
-            break;
-        default:
-            new_value = value;
-    }
+const RenderUnit = ({ from, to, value, precision }: Props) => {
+    const new_value: number = convert(value).from(from).to(to);
 
-    return <>{new_value}</>;
+    return <>{decimalFormat(new_value, precision)}</>;
 };
 
 export default RenderUnit;

@@ -13,8 +13,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
+import { TemperatureUnits, LengthUnits } from 'convert-units';
+import { DataStateContext } from '../../store/contexts';
 import { decimalFormat } from '../../utils/format';
 import RenderUnit from '../RenderUnit';
+import { depthUnitMap, tempUnitMap } from '../UnitPreferencesDialog';
 
 interface Props {
     station: StationDetails;
@@ -22,6 +25,9 @@ interface Props {
 
 const Environment = ({ station }: Props) => {
     const [showWaterTempArDepths, setShowWaterTempArDepths] = React.useState(true);
+    const { tempToUnit, depthToUnit } = React.useContext(DataStateContext);
+    const tempFromUnit: string = 'F';
+    const depthFromUnit: string = 'fathom';
 
     return (
         <List>
@@ -30,17 +36,53 @@ const Environment = ({ station }: Props) => {
             </ListItem>
             <List disablePadding dense>
                 <ListItem sx={{ pl: 4 }}>
-                    <b>Surface (C):&nbsp;</b>
-                    {station.surface_temp_c ? `${decimalFormat(station.surface_temp_c)}\u00b0` : '-'}
+                    <b>Surface ({tempToUnit === 'C' ? 'C' : 'F'}):&nbsp;</b>
+                    {station.surface_temp_c ? (
+                        <>
+                            <RenderUnit
+                                from={tempFromUnit as TemperatureUnits}
+                                to={tempToUnit as TemperatureUnits}
+                                value={station.surface_temp_c}
+                                precision={3}
+                            />
+                            {'\u00b0'}
+                        </>
+                    ) : (
+                        '-'
+                    )}
                 </ListItem>
                 <ListItem sx={{ pl: 4 }}>
-                    <b>Bottom Water (C):&nbsp;</b>
-                    {station.bottom_water_temp_c ? `${decimalFormat(station.bottom_water_temp_c)}\u00b0` : '-'}
+                    <b>Bottom Water ({tempToUnit === 'C' ? 'C' : 'F'}):&nbsp;</b>
+                    {station.bottom_water_temp_c ? (
+                        <>
+                            <RenderUnit
+                                from={tempFromUnit as TemperatureUnits}
+                                to={tempToUnit as TemperatureUnits}
+                                value={station.bottom_water_temp_c}
+                                precision={3}
+                            />
+                            {'\u00b0'}
+                        </>
+                    ) : (
+                        '-'
+                    )}
                 </ListItem>
             </List>
             <ListItem>
                 <Typography variant="h6">Depth:&nbsp;</Typography>
-                {station.depth_fathoms ? `${station.depth_fathoms} fathoms` : '-'}
+                {station.depth_fathoms ? (
+                    <>
+                        <RenderUnit
+                            from={depthFromUnit as LengthUnits}
+                            to={depthToUnit as LengthUnits}
+                            value={station.depth_fathoms}
+                            precision={1}
+                        />
+                        {` ${depthUnitMap[depthToUnit]}`}
+                    </>
+                ) : (
+                    '-'
+                )}
             </ListItem>
             <ListItem>
                 <ListItemText primary={<Typography variant="h6">Specific gravity</Typography>} />
@@ -65,8 +107,8 @@ const Environment = ({ station }: Props) => {
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">Depth (Feets)</TableCell>
-                                    <TableCell align="center">Temperature (C)</TableCell>
+                                    <TableCell align="center">Depth ({depthUnitMap[depthToUnit]})</TableCell>
+                                    <TableCell align="center">Temperature ({tempUnitMap[tempToUnit]})</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -80,11 +122,20 @@ const Environment = ({ station }: Props) => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell align="center" component="th" scope="row">
-                                                <RenderUnit targetUnit="feets" value={Number(depth)} />
+                                                <RenderUnit
+                                                    from={depthFromUnit as LengthUnits}
+                                                    to={depthToUnit as LengthUnits}
+                                                    value={Number(depth)}
+                                                    precision={1}
+                                                />
                                             </TableCell>
                                             <TableCell align="center" component="th" scope="row">
-                                                {/* {`${convertFahrenheitToCelcius(temp)}\u00b0`} */}
-                                                <RenderUnit targetUnit="celcius" value={temp} />
+                                                <RenderUnit
+                                                    from={tempFromUnit as TemperatureUnits}
+                                                    to={tempToUnit as TemperatureUnits}
+                                                    value={temp}
+                                                    precision={3}
+                                                />
                                             </TableCell>
                                         </TableRow>
                                     );
