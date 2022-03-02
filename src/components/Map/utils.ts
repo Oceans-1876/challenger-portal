@@ -29,10 +29,10 @@ export const getFeatureBounds = (coordinates: LineCoordinates) => {
     return bounds;
 };
 
-export const pulsingDot = (map: maplibre.Map, size: number): void => {
+export const pulsingDot = (map: maplibregl.Map, size: number): void => {
     /** Create a pulsing dot that can be used by symbol styles.
      * Set `icon-image` to ``pulsing-dot` under the `layout` attribute of the style.
-     * @param {maplibre.Map} map - The map to add the pulsing dot to.
+     * @param {maplibregl.Map} map - The map to add the pulsing dot to.
      * @param {number} size - The size of the dot in pixels.
      */
     const dot: StyleImage = {
@@ -92,11 +92,13 @@ export const pulsingDot = (map: maplibre.Map, size: number): void => {
     map.addImage('pulsing-dot', dot, { pixelRatio: 2 });
 };
 
-export const directionArrow = (map: maplibre.Map): void => {
-    map.loadImage(directionArrowIcon, (error: Error, image: HTMLImageElement) => {
+export const directionArrow = (map: maplibregl.Map): void => {
+    map.loadImage(directionArrowIcon, (error?: Error | null, image?: HTMLImageElement | ImageBitmap | null) => {
         if (error) {
             throw error;
         }
-        map.addImage('direction-arrow', image, { pixelRatio: 2 });
+        if (image) {
+            map.addImage('direction-arrow', image, { pixelRatio: 2 });
+        }
     });
 };

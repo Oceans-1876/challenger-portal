@@ -24,19 +24,19 @@ const Sidebar = () => {
     const selectedStationDetails = useStationDetails(selectedStation?.name);
 
     const StationPanel = React.useCallback(
-        () => <StationDetails station={selectedStationDetails} />,
+        () => (selectedStationDetails ? <StationDetails station={selectedStationDetails} /> : null),
         [selectedStationDetails]
     );
     const EnvironmentPanel = React.useCallback(
-        () => <StationEnvironment station={selectedStationDetails} />,
+        () => (selectedStationDetails ? <StationEnvironment station={selectedStationDetails} /> : null),
         [selectedStationDetails]
     );
     const SpeciesPanel = React.useCallback(
-        () => <StationSpecies station={selectedStationDetails} />,
+        () => (selectedStationDetails ? <StationSpecies station={selectedStationDetails} /> : null),
         [selectedStationDetails]
     );
     const TextPanel = React.useCallback(
-        () => <StationText station={selectedStationDetails} />,
+        () => (selectedStationDetails ? <StationText station={selectedStationDetails} /> : null),
         [selectedStationDetails]
     );
 

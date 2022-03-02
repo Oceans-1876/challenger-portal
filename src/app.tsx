@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import maplibre from 'maplibre-gl';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import DateFnsAdapter from '@mui/lab/AdapterDayjs';
@@ -14,8 +13,6 @@ import { dataStateInitialValue } from './store/states';
 import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
-
-maplibre.accessToken = MAPBOX_TOKEN || '';
 
 const App = (): JSX.Element => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
