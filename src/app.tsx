@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
+import React, { StrictMode, Suspense } from 'react';
+import { createRoot } from 'react-dom/client';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import DateFnsAdapter from '@mui/lab/AdapterDayjs';
+import DatejsAdapter from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { getData } from './store/api';
@@ -27,27 +27,32 @@ const App = (): JSX.Element => {
     }, []);
 
     return (
-        <Router>
-            <CssBaseline />
-            <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={theme}>
-                    <Suspense fallback={<Loading />}>
-                        <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
-                            <DataStateContext.Provider value={dataState}>
-                                <LocalizationProvider dateAdapter={DateFnsAdapter}>
-                                    <Routes>
-                                        {Object.entries(routes).map(([path, props]) => (
-                                            <Route key={path} path={path} {...props} />
-                                        ))}
-                                    </Routes>
-                                </LocalizationProvider>
-                            </DataStateContext.Provider>
-                        </DataActionDispatcherContext.Provider>
-                    </Suspense>
-                </ThemeProvider>
-            </StyledEngineProvider>
-        </Router>
+        <StrictMode>
+            <Router>
+                <CssBaseline />
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={theme}>
+                        <Suspense fallback={<Loading />}>
+                            <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
+                                <DataStateContext.Provider value={dataState}>
+                                    <LocalizationProvider dateAdapter={DatejsAdapter}>
+                                        <Routes>
+                                            {Object.entries(routes).map(([path, props]) => (
+                                                <Route key={path} path={path} {...props} />
+                                            ))}
+                                        </Routes>
+                                    </LocalizationProvider>
+                                </DataStateContext.Provider>
+                            </DataActionDispatcherContext.Provider>
+                        </Suspense>
+                    </ThemeProvider>
+                </StyledEngineProvider>
+            </Router>
+        </StrictMode>
     );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootEl = document.getElementById('root');
+if (rootEl) {
+    createRoot(rootEl).render(<App />);
+}
