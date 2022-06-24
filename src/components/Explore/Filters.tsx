@@ -226,7 +226,7 @@ const Filters = () => {
                     options={allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null)}
                     getOptionLabel={(option: SpeciesSummary) => option.matched_canonical_full_name}
                     filterOptions={(optionsInp, { inputValue }) =>
-                        matchSorter(optionsInp, inputValue, { keys: ['matched_canonical_full_name'] })
+                        matchSorter(optionsInp, inputValue, { keys: ['matched_canonical_full_name', 'current_name'] })
                     }
                     renderTags={() => null}
                     value={filteredSpecies.reduce((values: SpeciesSummary[], speciesId: string) => {

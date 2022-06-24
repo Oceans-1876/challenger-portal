@@ -15,6 +15,12 @@ const routes: { [key: string]: import('react-router-dom').RouteProps } = {
             layouts.SinglePage,
             lazy(() => import('./components/Explore'))
         )
+    },
+    '/species': {
+        element: withLayout(
+            layouts.Scrollable,
+            lazy(() => import('./components/Species'))
+        )
     }
 };
 

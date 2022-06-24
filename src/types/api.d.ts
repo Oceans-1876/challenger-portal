@@ -2,6 +2,7 @@ interface SearchExpression {
     column_name: string;
     search_term: string;
     operator: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'contains';
+    fuzzy?: boolean;
     min_string_similarity?: number;
 }
 

@@ -35,12 +35,49 @@ interface SpeciesSummary {
 interface SpeciesDetails extends SpeciesSummary {
     id: string;
     matched_name: string;
-    matched_canonical_simple_name: string;
-    common_name: string;
-    classification_path: string;
-    classification_ranks: string;
-    classification_ids: string;
+    current_name: string;
+    current_record_id: string;
+    matched_canonical_simple_name?: string;
+    current_canonical_simple_name?: string;
+    current_canonical_full_name?: string;
+    common_name?: string;
+    classification_path?: string;
+    classification_ranks?: string;
+    classification_ids?: string;
+    outlink?: string;
+    species_extra: SpeciesExtra[];
+    species_synonyms: SpeciesSynonyms[];
+    species_common_names: SpeciesCommonNames[];
     data_source_id: number;
+}
+
+interface SpeciesExtra {
+    id: string;
+    scientific_name?: string;
+    status: boolean;
+    unaccepted_reason?: string;
+    valid_name?: string;
+    lsid?: string;
+    isBrackish: boolean;
+    isExtinct: boolean;
+    isFreshwater: boolean;
+    isMarine: boolean;
+    isTerrestrial: boolean;
+    species_id: string;
+}
+
+interface SpeciesSynonyms {
+    id: string;
+    scientific_name?: string;
+    outlink?: string;
+    species_id: string;
+}
+
+interface SpeciesCommonNames {
+    id: string;
+    language: string;
+    name: string;
+    species_id: string;
 }
 
 interface FAOArea {

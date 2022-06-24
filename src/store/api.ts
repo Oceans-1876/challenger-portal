@@ -69,3 +69,36 @@ export const searchStations = (
             .catch(console.error);
     }
 };
+
+export const searchSpecies = (
+    searchTerm: string,
+    stringSimilarityScore = 0.3,
+    success: (data: StationSummary[]) => void
+) => {
+    const expressions: SearchExpressionGroup = {
+        join: 'OR',
+        expressions: [
+            {
+                column_name: 'matched_canonical_full_name',
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            },
+            {
+                column_name: 'current_name',
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            }
+        ]
+    };
+
+    if (searchTerm.length > 2) {
+        axios
+            .post(`${API_PATH}/species/search/`, expressions)
+            .then((resp) => success(resp.data))
+            .catch(console.error);
+    }
+};
