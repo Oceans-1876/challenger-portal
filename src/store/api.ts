@@ -72,10 +72,11 @@ export const searchStations = (
 
 export const searchSpecies = (
     searchTerm: string,
-    stringSimilarityScore = 0.3,
-    success: (data: StationSummary[]) => void
+    columns: string[],
+    stringSimilarityScore = 0.2,
+    success: (data: SpeciesSummary[]) => void
 ) => {
-    const expressions: SearchExpressionGroup = {
+    const exp: SearchExpressionGroup = {
         join: 'OR',
         expressions: [
             {
@@ -95,9 +96,21 @@ export const searchSpecies = (
         ]
     };
 
+    if (columns.length > 0) {
+        columns.forEach((value) => {
+            exp.expressions.push({
+                column_name: value,
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            });
+        });
+    }
+
     if (searchTerm.length > 2) {
         axios
-            .post(`${API_PATH}/species/search/`, expressions)
+            .post(`${API_PATH}/species/search/`, exp)
             .then((resp) => success(resp.data))
             .catch(console.error);
     }
