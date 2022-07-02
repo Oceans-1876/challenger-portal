@@ -2,10 +2,7 @@ import React from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import Icon from '@mui/material/Icon';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItem from '@mui/material/ListItem';
@@ -17,7 +14,7 @@ import { useSpeciesDetails } from '../../utils/hooks';
 import Loading from '../Loading';
 import SpeciesDetails from './Details';
 import usePagination from './Pagination';
-import { getData, searchSpecies } from '../../store/api';
+import { searchSpecies, getData } from '../../store/api';
 
 interface Props {
     species_list: SpeciesSummary[];
@@ -31,8 +28,6 @@ const SpeciesList = ({ species_list }: Props) => {
     const [page, setPage] = React.useState<number>(1);
     const [showAllSpecies, setShowAllSpecies] = React.useState<boolean>(true);
     const [speciesSearchResults, setSpeciesSearchResults] = React.useState<SpeciesSummary[] | null>(null);
-    const [searchColumns, setSearchColumns] = React.useState<string[]>([]);
-    const [minSimilarityScore, setMinSimilarityScore] = React.useState<number>(0.2);
 
     const perPage = 30;
     const count: number = Math.ceil(species_list.length / perPage);
@@ -49,72 +44,42 @@ const SpeciesList = ({ species_list }: Props) => {
 
     return (
         <Box>
-            <Box component="form">
-                <TextField
-                    id="outlined-search"
-                    label="Search field"
-                    type="search"
-                    value={searchFieldValue}
-                    onChange={handleStringChange}
-                />
-                <Button
-                    variant="outlined"
-                    size="small"
-                    startIcon={<Icon baseClassName="icons">search</Icon>}
-                    onClick={() => {
-                        setShowAllSpecies(false);
-                        if (searchFieldValue !== '' && minSimilarityScore !== 0) {
-                            // getData<SpeciesSummary[]>(`species/fuzzymatch/?query_str=${searchString}`, (data) => {
-                            //     if (data.length === 0 && speciesSearchResults !== null) {
-                            //         setSpeciesSearchResults(null);
-                            //     } else {
-                            //         setSpeciesSearchResults(data);
-                            //     }
-                            // });
-                            setSearching(true);
-                            searchSpecies(searchFieldValue, searchColumns, minSimilarityScore, (data) => {
-                                if (data.length === 0 && speciesSearchResults !== null) {
-                                    setSpeciesSearchResults(null);
-                                } else {
-                                    setSearching(false);
-                                    setSpeciesSearchResults(data);
-                                }
-                            });
-                        }
-                    }}
-                />
-            </Box>
-            <Box role="group" aria-labelledby="rank">
-                <FormGroup>
-                    {['name', 'scientific_name'].map((item) => (
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={searchColumns.includes(item)}
-                                    onChange={(event) => {
-                                        if (event.target.checked) {
-                                            setSearchColumns((val) => [...val, item]);
-                                        } else {
-                                            setSearchColumns((val) => val.filter((text) => text !== item));
-                                        }
-                                    }}
-                                />
-                            }
-                            label={item}
-                            key={item}
-                        />
-                    ))}
+            <Box component="form" sx={{ mb: 1 }}>
+                <Stack direction="row" spacing={1}>
                     <TextField
-                        id="outlined-score"
-                        label="Min Similarity Score"
-                        value={minSimilarityScore}
-                        type="number"
-                        onChange={(event) => {
-                            setMinSimilarityScore(Number(event.target.value));
-                        }}
+                        id="outlined-search"
+                        label="Search Species"
+                        type="search"
+                        value={searchFieldValue}
+                        onChange={handleStringChange}
                     />
-                </FormGroup>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<Icon baseClassName="icons">search</Icon>}
+                        onClick={() => {
+                            setShowAllSpecies(false);
+                            if (searchFieldValue !== '') {
+                                setSearching(true);
+                                getData<SpeciesSummary[]>(
+                                    `species/fuzzymatch/?query_str=${searchFieldValue}`,
+                                    (data) => {
+                                        if (data.length === 0 && speciesSearchResults !== null) {
+                                            setSpeciesSearchResults(null);
+                                        } else {
+                                            setSearching(false);
+                                            setSpeciesSearchResults(data);
+                                        }
+                                    }
+                                );
+                            }
+                        }}
+                    >
+                        Search
+                    </Button>
+                </Stack>
             </Box>
+
             {selectedSpecies && speciesDetails ? (
                 <>
                     <Stack direction="column" spacing={1}>
@@ -141,6 +106,7 @@ const SpeciesList = ({ species_list }: Props) => {
                                 disabled={!speciesSearchResults}
                                 variant="outlined"
                                 size="small"
+                                sx={{ mb: 1 }}
                                 startIcon={<Icon baseClassName="icons">chevron_right</Icon>}
                                 onClick={() => {
                                     setShowAllSpecies(false);

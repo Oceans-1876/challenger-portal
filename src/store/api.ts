@@ -107,10 +107,11 @@ export const searchSpecies = (
             });
         });
     }
-
     if (searchTerm.length > 2) {
         axios
-            .post(`${API_PATH}/species/search/`, exp)
+            .post(`${API_PATH}/species/search/`, exp, {
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+            })
             .then((resp) => success(resp.data))
             .catch(console.error);
     }
