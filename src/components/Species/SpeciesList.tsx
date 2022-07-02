@@ -14,7 +14,7 @@ import { useSpeciesDetails } from '../../utils/hooks';
 import Loading from '../Loading';
 import SpeciesDetails from './Details';
 import usePagination from './Pagination';
-import { searchSpecies, getData } from '../../store/api';
+import { getData } from '../../store/api';
 
 interface Props {
     species_list: SpeciesSummary[];
@@ -44,7 +44,10 @@ const SpeciesList = ({ species_list }: Props) => {
 
     return (
         <Box>
-            <Box component="form" sx={{ mb: 1 }}>
+            <Box
+                component="form"
+                sx={{ mb: 1, display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'space-around' }}
+            >
                 <Stack direction="row" spacing={1}>
                     <TextField
                         id="outlined-search"
@@ -77,100 +80,100 @@ const SpeciesList = ({ species_list }: Props) => {
                     >
                         Search
                     </Button>
+                    <Button
+                        disabled={!speciesSearchResults}
+                        variant="outlined"
+                        size="small"
+                        startIcon={
+                            <Icon baseClassName="icons">{showAllSpecies ? 'chevron_right' : 'chevron_left'}</Icon>
+                        }
+                        onClick={() => {
+                            if (showAllSpecies) {
+                                setShowAllSpecies(false);
+                            } else {
+                                setShowAllSpecies(true);
+                            }
+                        }}
+                    >
+                        {showAllSpecies ? 'Search Results' : 'Back to All species'}
+                    </Button>
                 </Stack>
             </Box>
-
-            {selectedSpecies && speciesDetails ? (
-                <>
-                    <Stack direction="column" spacing={1}>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
-                            onClick={() => {
-                                setSelectedSpecies(undefined);
-                            }}
-                        >
-                            Back
-                        </Button>
-                        {/* </Stack>
-            <Stack direction="row" spacing={1}> */}
-                        <SpeciesDetails species={speciesDetails} />
-                    </Stack>
-                </>
-            ) : (
-                <>
-                    {showAllSpecies ? (
-                        <>
+            <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'space-around' }}>
+                {selectedSpecies && speciesDetails ? (
+                    <>
+                        <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
                             <Button
-                                disabled={!speciesSearchResults}
                                 variant="outlined"
                                 size="small"
-                                sx={{ mb: 1 }}
-                                startIcon={<Icon baseClassName="icons">chevron_right</Icon>}
+                                startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
                                 onClick={() => {
-                                    setShowAllSpecies(false);
+                                    setSelectedSpecies(undefined);
                                 }}
                             >
-                                Search Results
+                                Back
                             </Button>
-                            {species_list.length ? (
-                                <>
+                            <SpeciesDetails species={speciesDetails} />
+                        </Stack>
+                    </>
+                ) : (
+                    <>
+                        {showAllSpecies ? (
+                            <>
+                                {species_list.length ? (
+                                    <>
+                                        <Stack spacing={2} sx={{ mt: 1 }}>
+                                            <Pagination count={count} page={page} onChange={handlePageChange} />
+                                            <List>
+                                                {SpeciesListPagination.currentData().map((sp) => (
+                                                    <ListItemButton
+                                                        key={sp.id}
+                                                        onClick={() => setSelectedSpecies(sp.id)}
+                                                    >
+                                                        <ListItem>{sp.matched_canonical_full_name}</ListItem>
+                                                    </ListItemButton>
+                                                ))}
+                                            </List>
+                                            <Pagination count={count} page={page} onChange={handlePageChange} />
+                                        </Stack>
+                                    </>
+                                ) : (
+                                    <Alert severity="info">Currently there are no records of any Species found</Alert>
+                                )}{' '}
+                            </>
+                        ) : (
+                            <>
+                                {speciesSearchResults ? (
                                     <Stack spacing={2}>
-                                        <Pagination count={count} page={page} onChange={handlePageChange} />
                                         <List>
-                                            {SpeciesListPagination.currentData().map((sp) => (
-                                                <ListItemButton key={sp.id} onClick={() => setSelectedSpecies(sp.id)}>
-                                                    <ListItem>{sp.matched_canonical_full_name}</ListItem>
-                                                </ListItemButton>
-                                            ))}
+                                            {speciesSearchResults.map((sp) => {
+                                                return (
+                                                    <ListItemButton
+                                                        key={sp.id}
+                                                        onClick={() => setSelectedSpecies(sp.id)}
+                                                    >
+                                                        <ListItem>{sp.matched_canonical_full_name}</ListItem>
+                                                    </ListItemButton>
+                                                );
+                                            })}
                                         </List>
-                                        <Pagination count={count} page={page} onChange={handlePageChange} />
                                     </Stack>
-                                </>
-                            ) : (
-                                <Alert severity="info">Currently there are no records of any Species found</Alert>
-                            )}{' '}
-                        </>
-                    ) : (
-                        <>
-                            {speciesSearchResults ? (
-                                <Stack spacing={2}>
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
-                                        onClick={() => {
-                                            setShowAllSpecies(true);
-                                        }}
-                                    >
-                                        Back to All species
-                                    </Button>
-                                    <List>
-                                        {speciesSearchResults.map((sp) => {
-                                            return (
-                                                <ListItemButton key={sp.id} onClick={() => setSelectedSpecies(sp.id)}>
-                                                    <ListItem>{sp.matched_canonical_full_name}</ListItem>
-                                                </ListItemButton>
-                                            );
-                                        })}
-                                    </List>
-                                </Stack>
-                            ) : (
-                                <>
-                                    {searching ? (
-                                        <Loading />
-                                    ) : (
-                                        <Alert severity="info">
-                                            Could not find anything. Try something more specific or check spelling
-                                        </Alert>
-                                    )}
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
+                                ) : (
+                                    <>
+                                        {searching ? (
+                                            <Loading />
+                                        ) : (
+                                            <Alert severity="info">
+                                                Could not find anything. Try something more specific or check spelling
+                                            </Alert>
+                                        )}
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </Box>
         </Box>
     );
 };
