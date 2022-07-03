@@ -85,13 +85,7 @@ const SpeciesList = ({ species_list }: Props) => {
                         startIcon={
                             <Icon baseClassName="icons">{showAllSpecies ? 'chevron_right' : 'chevron_left'}</Icon>
                         }
-                        onClick={() => {
-                            if (showAllSpecies) {
-                                setShowAllSpecies(false);
-                            } else {
-                                setShowAllSpecies(true);
-                            }
-                        }}
+                        onClick={() => setShowAllSpecies(!showAllSpecies)}
                     >
                         {showAllSpecies ? 'Search Results' : 'Back to All species'}
                     </Button>
