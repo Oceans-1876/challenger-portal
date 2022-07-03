@@ -88,3 +88,29 @@ export const useFAOAreas = (): FAOArea[] => {
 
     return faoAreasData;
 };
+
+export const usePagination = (data: SpeciesSummary[], itemsPerPage: number) => {
+    const [currentPage, setCurrentPage] = React.useState<number>(1);
+    const maxPage: number = Math.ceil(data.length / itemsPerPage);
+
+    const currentData = () => {
+        const begin = (currentPage - 1) * itemsPerPage;
+        const end = begin + itemsPerPage;
+        return data.slice(begin, end);
+    };
+
+    const next = () => {
+        setCurrentPage((currPage) => Math.min(currPage + 1, maxPage));
+    };
+
+    const prev = () => {
+        setCurrentPage((currPage) => Math.max(currPage - 1, 1));
+    };
+
+    const jump = (page: number) => {
+        const pageNumber = Math.max(1, page);
+        setCurrentPage(() => Math.min(pageNumber, maxPage));
+    };
+
+    return { next, prev, jump, currentData, currentPage, maxPage };
+};

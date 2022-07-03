@@ -10,10 +10,9 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-import { useSpeciesDetails } from '../../utils/hooks';
+import { useSpeciesDetails, usePagination } from '../../utils/hooks';
 import Loading from '../Loading';
 import SpeciesDetails from './Details';
-import usePagination from './Pagination';
 import { getData } from '../../store/api';
 
 interface Props {
@@ -31,11 +30,11 @@ const SpeciesList = ({ species_list }: Props) => {
 
     const perPage = 30;
     const count: number = Math.ceil(species_list.length / perPage);
-    const SpeciesListPagination = usePagination(species_list, perPage);
+    const speciesListPagination = usePagination(species_list, perPage);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, p: number) => {
         setPage(p);
-        SpeciesListPagination.jump(p);
+        speciesListPagination.jump(p);
     };
 
     const handleStringChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,18 +60,18 @@ const SpeciesList = ({ species_list }: Props) => {
                         size="small"
                         startIcon={<Icon baseClassName="icons">search</Icon>}
                         onClick={() => {
-                            setShowAllSpecies(false);
                             if (searchFieldValue !== '') {
+                                setShowAllSpecies(false);
                                 setSearching(true);
                                 getData<SpeciesSummary[]>(
                                     `species/fuzzymatch/?query_str=${searchFieldValue}`,
                                     (data) => {
-                                        if (data.length === 0 && speciesSearchResults !== null) {
+                                        if (data.length === 0) {
                                             setSpeciesSearchResults(null);
                                         } else {
-                                            setSearching(false);
                                             setSpeciesSearchResults(data);
                                         }
+                                        setSearching(false);
                                     }
                                 );
                             }
@@ -81,7 +80,6 @@ const SpeciesList = ({ species_list }: Props) => {
                         Search
                     </Button>
                     <Button
-                        disabled={!speciesSearchResults}
                         variant="outlined"
                         size="small"
                         startIcon={
@@ -125,7 +123,7 @@ const SpeciesList = ({ species_list }: Props) => {
                                         <Stack spacing={2} sx={{ mt: 1 }}>
                                             <Pagination count={count} page={page} onChange={handlePageChange} />
                                             <List>
-                                                {SpeciesListPagination.currentData().map((sp) => (
+                                                {speciesListPagination.currentData().map((sp) => (
                                                     <ListItemButton
                                                         key={sp.id}
                                                         onClick={() => setSelectedSpecies(sp.id)}
@@ -143,7 +141,7 @@ const SpeciesList = ({ species_list }: Props) => {
                             </>
                         ) : (
                             <>
-                                {speciesSearchResults ? (
+                                {speciesSearchResults !== null ? (
                                     <Stack spacing={2}>
                                         <List>
                                             {speciesSearchResults.map((sp) => {
