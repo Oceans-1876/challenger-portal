@@ -72,6 +72,9 @@ const SpeciesList = ({ species_list }: Props) => {
                                             setSpeciesSearchResults(data);
                                         }
                                         setSearching(false);
+                                    },
+                                    () => {
+                                        setSearching(false);
                                     }
                                 );
                             }
@@ -85,7 +88,12 @@ const SpeciesList = ({ species_list }: Props) => {
                         startIcon={
                             <Icon baseClassName="icons">{showAllSpecies ? 'chevron_right' : 'chevron_left'}</Icon>
                         }
-                        onClick={() => setShowAllSpecies(!showAllSpecies)}
+                        onClick={() => {
+                            setShowAllSpecies(!showAllSpecies);
+                            if (!showAllSpecies) {
+                                setSelectedSpecies(undefined);
+                            }
+                        }}
                     >
                         {showAllSpecies ? 'Search Results' : 'Back to All species'}
                     </Button>

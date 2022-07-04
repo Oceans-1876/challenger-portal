@@ -16,13 +16,17 @@ export const useStationDetails = (stationName?: string): StationDetails | null =
             if (stationsObject[stationName]) {
                 setStationDetails(stationsObject[stationName]);
             } else {
-                getData<StationDetails>(`stations/${stationName}`, (data) => {
-                    data.species.sort((a, b) => {
-                        return a.matched_canonical_full_name.localeCompare(b.matched_canonical_full_name);
-                    });
-                    setStationDetails(data);
-                    dataActionDispatcher({ type: 'updateStationDetails', station: data });
-                });
+                getData<StationDetails>(
+                    `stations/${stationName}`,
+                    (data) => {
+                        data.species.sort((a, b) => {
+                            return a.matched_canonical_full_name.localeCompare(b.matched_canonical_full_name);
+                        });
+                        setStationDetails(data);
+                        dataActionDispatcher({ type: 'updateStationDetails', station: data });
+                    },
+                    () => undefined
+                );
             }
         }
     }, [stationName]);
@@ -40,10 +44,14 @@ export const useSpeciesDetails = (speciesId?: string): SpeciesDetails | null => 
             if (allSpeciesObject[speciesId]) {
                 setSpeciesDetails(allSpeciesObject[speciesId]);
             } else {
-                getData<SpeciesDetails>(`species/${speciesId}`, (data) => {
-                    setSpeciesDetails(data);
-                    dataActionDispatcher({ type: 'updateSpeciesDetails', species: data });
-                });
+                getData<SpeciesDetails>(
+                    `species/${speciesId}`,
+                    (data) => {
+                        setSpeciesDetails(data);
+                        dataActionDispatcher({ type: 'updateSpeciesDetails', species: data });
+                    },
+                    () => undefined
+                );
             }
         }
     }, [speciesId]);
