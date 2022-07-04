@@ -1,11 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Dayjs } from 'dayjs';
 
-export const getData = <T>(endpoint: string, success: (data: T) => void) => {
+export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
     axios
         .get(`${API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
-        .catch(console.error);
+        .catch((error) => {
+            console.error();
+            err(error);
+        });
 };
 
 export const searchStations = (
