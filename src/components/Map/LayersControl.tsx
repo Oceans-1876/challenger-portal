@@ -1,5 +1,4 @@
 import React from 'react';
-import maplibre from 'maplibre-gl';
 import Box from '@mui/material/Box';
 import Icon from '@mui/material/Icon';
 import IconButton from '@mui/material/IconButton';
@@ -12,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { getLegendFromStyle } from './legends';
 
 interface Props {
-    map?: maplibre.Map;
+    map?: maplibregl.Map;
     layers: LayersControlProps[];
 }
 

@@ -1,24 +1,6 @@
-import maplibre from 'maplibre-gl';
-
 import { themeOptions } from '../../theme';
 
-const basemapSource: maplibre.RasterSource = {
-    type: 'raster',
-    tiles: ['//server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'],
-    tileSize: 256,
-    attribution:
-        'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community'
-};
-
-const basemapLayer: maplibre.RasterLayer = {
-    id: 'basemap',
-    type: 'raster',
-    source: 'basemap',
-    minzoom: 0,
-    maxzoom: 22
-};
-
-export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre.AnyLayer> } } = {
+export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
         default: {
             type: 'circle',
@@ -93,11 +75,9 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
     }
 };
 
-export const mapStyle: maplibre.Style = {
+export const mapStyle: maplibregl.StyleSpecification = {
     version: 8,
     glyphs: `${API_FONTS}/{fontstack}/{range}.pbf`,
-    sources: {
-        basemap: basemapSource
-    },
-    layers: [basemapLayer]
+    sources: {},
+    layers: []
 };

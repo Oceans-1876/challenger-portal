@@ -1,5 +1,4 @@
 import React from 'react';
-import maplibre from 'maplibre-gl';
 
 import { searchStations } from '../../store/api';
 import {
@@ -21,10 +20,10 @@ const ExploreMap = (): JSX.Element => {
     const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
-    const mapRef = React.useRef<maplibre.Map>();
+    const mapRef = React.useRef<maplibregl.Map>();
     const [isMapLoaded, setIsMapLoaded] = React.useState(false);
 
-    const onMapLoad = (map: maplibre.Map) => {
+    const onMapLoad = (map: maplibregl.Map) => {
         // Add a pulsing dot image to the map to be used for selected station
         pulsingDot(map, 100);
 
@@ -41,7 +40,7 @@ const ExploreMap = (): JSX.Element => {
             ...layerStyles.faoAreas.default,
             id: 'faoAreas',
             source: 'faoAreas'
-        } as maplibre.FillLayer);
+        } as maplibregl.FillLayerSpecification);
 
         // Add journey path
         map.addSource('journey', {
@@ -60,13 +59,13 @@ const ExploreMap = (): JSX.Element => {
             ...layerStyles.journeyPath.default,
             id: 'journey',
             source: 'journey'
-        } as maplibre.LineLayer);
+        } as maplibregl.LineLayerSpecification);
 
         map.addLayer({
             ...layerStyles.journeyPath.direction,
             id: 'journey-direction',
             source: 'journey'
-        } as maplibre.SymbolLayer);
+        } as maplibregl.SymbolLayerSpecification);
 
         // Both `stations` and `clustered-stations` sources hold the same data.
         // For performance reasons, it is better to use separate sources and hide or show
@@ -95,21 +94,21 @@ const ExploreMap = (): JSX.Element => {
             id: 'clustered-stations-single',
             source: 'clustered-stations',
             filter: ['!', ['has', 'point_count']]
-        } as maplibre.CircleLayer);
+        } as maplibregl.CircleLayerSpecification);
 
         // The layer for clustered stations in clustered mode
         map.addLayer({
             ...layerStyles.stations.clustered,
             id: 'clustered-stations-multi',
             source: 'clustered-stations'
-        } as maplibre.CircleLayer);
+        } as maplibregl.CircleLayerSpecification);
 
         // The layer for clusters count in clustered mode
         map.addLayer({
             ...layerStyles.stations.clusterCount,
             id: 'clustered-stations-count',
             source: 'clustered-stations'
-        } as maplibre.SymbolLayer);
+        } as maplibregl.SymbolLayerSpecification);
 
         // The default stations layer in unclustered mode
         map.addLayer({
@@ -119,7 +118,7 @@ const ExploreMap = (): JSX.Element => {
             layout: {
                 visibility: 'none'
             }
-        } as maplibre.CircleLayer);
+        } as maplibregl.CircleLayerSpecification);
 
         // The layer for selected station
         map.addLayer({
@@ -127,21 +126,23 @@ const ExploreMap = (): JSX.Element => {
             id: 'stations-selected',
             source: 'stations',
             filter: ['==', 'name', '']
-        } as maplibre.CircleLayer);
+        } as maplibregl.CircleLayerSpecification);
 
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
             if (e.features && e.features[0]) {
                 const feature = e.features[0];
                 const clusterId = feature.properties.cluster_id;
-                const stationsSource = map.getSource('clustered-stations') as maplibre.GeoJSONSource;
+                const stationsSource = map.getSource('clustered-stations') as maplibregl.GeoJSONSource;
                 stationsSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
                     if (err) return;
 
-                    map.easeTo({
-                        center: feature.geometry.coordinates,
-                        zoom
-                    });
+                    if (zoom) {
+                        map.easeTo({
+                            center: feature.geometry.coordinates,
+                            zoom
+                        });
+                    }
                 });
             }
         });
@@ -179,14 +180,14 @@ const ExploreMap = (): JSX.Element => {
                 }))
             };
             ['stations', 'clustered-stations'].forEach((sourceName) => {
-                const source = map.getSource(sourceName) as maplibre.GeoJSONSource;
+                const source = map.getSource(sourceName) as maplibregl.GeoJSONSource;
                 if (source) {
                     source.setData(stationsGeoJSON);
                 }
             });
             map.fitBounds(stationsBounds);
 
-            const journeySource = map.getSource('journey') as maplibre.GeoJSONSource;
+            const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
             if (journeySource) {
                 journeySource.setData({
                     type: 'Feature',

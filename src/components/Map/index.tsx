@@ -9,14 +9,14 @@ import Help from './Help';
 import LayersControl from './LayersControl';
 
 interface Props {
-    mapOptions: Partial<maplibre.MapboxOptions>;
-    initialBounds: maplibre.LngLatBoundsLike;
+    mapOptions: Partial<maplibregl.MapOptions>;
+    initialBounds: maplibregl.LngLatBoundsLike;
     attribution?: boolean;
     help?: boolean;
     navigation?: boolean;
     basemaps?: MapLibreBasemapsControlOptions;
     LayersControlProps?: LayersControlProps[];
-    onLoad: (map: maplibre.Map) => void;
+    onLoad: (map: maplibregl.Map) => void;
 }
 
 const Map = ({
@@ -30,7 +30,7 @@ const Map = ({
     onLoad
 }: Props): JSX.Element => {
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
-    const mapRef = React.useRef<maplibre.Map>();
+    const mapRef = React.useRef<maplibregl.Map>();
 
     const resetPitchButtonRef = React.useRef<HTMLButtonElement>(null);
     const resetBoundsButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -47,14 +47,14 @@ const Map = ({
                 bounds: initialBounds,
                 attributionControl: !attribution,
                 ...mapOptions
-            });
+            } as maplibregl.MapOptions);
 
             if (attribution) {
                 map.addControl(new maplibre.AttributionControl({ compact: true }), 'bottom-right');
             }
 
             if (navigation) {
-                map.addControl(new maplibre.NavigationControl());
+                map.addControl(new maplibre.NavigationControl({}));
                 if (resetPitchButtonRef.current) {
                     map.addControl(new MapControl(resetPitchButtonRef.current));
                 }

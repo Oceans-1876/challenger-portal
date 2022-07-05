@@ -6,10 +6,6 @@ FROM node:14 AS builder
 
 WORKDIR /usr/src/app
 
-# Specify Mapbox Token to use
-ARG MAPBOX_TOKEN=""
-ENV MAPBOX_TOKEN=${MAPBOX_TOKEN}
-
 # Public Path when building application
 ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}

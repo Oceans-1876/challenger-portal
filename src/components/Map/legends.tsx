@@ -1,7 +1,6 @@
 import React from 'react';
-import maplibre from 'maplibre-gl';
 
-export const getLegendFromStyle = (style: Partial<maplibre.AnyLayer>) => {
+export const getLegendFromStyle = (style: Partial<maplibregl.LayerSpecification>) => {
     switch (style.type) {
         case 'fill':
             return (

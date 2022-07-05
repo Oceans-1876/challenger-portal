@@ -90,10 +90,9 @@ jobs:
         VERSION: ${{ env.VERSION }}
         BUILDNUMBER: ${{ github.run_number }}
         GITSHA1: ${{ github.sha }}
-        MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
       with:
         name: oceans-1876/frontend
         tags: "${{ env.TAGS }}"
-        buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1,MAPBOX_TOKEN,PUBLIC_PATH
+        buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1,PUBLIC_PATH
         no_push: true
         dockerfile: docker/Dockerfile

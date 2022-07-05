@@ -2,7 +2,6 @@ declare const ENV: 'development' | 'production' | 'test';
 declare const PUBLIC_PATH: string;
 declare const API_PATH: string;
 declare const API_FONTS: string;
-declare const MAPBOX_TOKEN: string;
 
 declare module '*.json' {
     const src: string;

@@ -1,7 +1,7 @@
-import maplibre from 'maplibre-gl';
+import { IControl } from 'maplibre-gl';
 
-export class MapControl implements maplibre.IControl {
-    map: maplibre.Map | undefined;
+export class MapControl implements IControl {
+    map: maplibregl.Map | undefined;
 
     _container: HTMLElement;
 
@@ -9,7 +9,7 @@ export class MapControl implements maplibre.IControl {
         this._container = container;
     }
 
-    onAdd(map: maplibre.Map): HTMLElement {
+    onAdd(map: maplibregl.Map): HTMLElement {
         this.map = map;
         this._container.classList.add('maplibregl-ctrl');
         this._container.classList.remove('hidden');
