@@ -18,12 +18,20 @@ const App = (): JSX.Element => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
 
     React.useEffect(() => {
-        getData<SpeciesSummary[]>('species/all/?order_by=matched_canonical_full_name', (species) => {
-            dataActionDispatcher({ type: 'updateAllSpecies', species });
-        });
-        getData<StationSummary[]>('stations/all/?order_by=order', (stations) => {
-            dataActionDispatcher({ type: 'updateStations', stations });
-        });
+        getData<SpeciesSummary[]>(
+            'species/all/?order_by=matched_canonical_full_name',
+            (species) => {
+                dataActionDispatcher({ type: 'updateAllSpecies', species });
+            },
+            () => undefined
+        );
+        getData<StationSummary[]>(
+            'stations/all/?order_by=order',
+            (stations) => {
+                dataActionDispatcher({ type: 'updateStations', stations });
+            },
+            () => undefined
+        );
     }, []);
 
     return (

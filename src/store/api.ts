@@ -1,11 +1,14 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Dayjs } from 'dayjs';
 
-export const getData = <T>(endpoint: string, success: (data: T) => void) => {
+export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
     axios
         .get(`${API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
-        .catch(console.error);
+        .catch((error) => {
+            console.error();
+            err(error);
+        });
 };
 
 export const searchStations = (
@@ -65,6 +68,53 @@ export const searchStations = (
 
         axios
             .post(`${API_PATH}/stations/search/`, data)
+            .then((resp) => success(resp.data))
+            .catch(console.error);
+    }
+};
+
+export const searchSpecies = (
+    searchTerm: string,
+    columns: string[],
+    stringSimilarityScore = 0.2,
+    success: (data: SpeciesSummary[]) => void
+) => {
+    const exp: SearchExpressionGroup = {
+        join: 'OR',
+        expressions: [
+            {
+                column_name: 'matched_canonical_full_name',
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            },
+            {
+                column_name: 'current_name',
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            }
+        ]
+    };
+
+    if (columns.length > 0) {
+        columns.forEach((value) => {
+            exp.expressions.push({
+                column_name: value,
+                search_term: searchTerm,
+                operator: 'eq',
+                fuzzy: true,
+                min_string_similarity: stringSimilarityScore
+            });
+        });
+    }
+    if (searchTerm.length > 2) {
+        axios
+            .post(`${API_PATH}/species/search/`, exp, {
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+            })
             .then((resp) => success(resp.data))
             .catch(console.error);
     }
