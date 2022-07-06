@@ -1,5 +1,7 @@
 import React from 'react';
 
+import type { Point, FeatureCollection } from 'geojson';
+
 import { searchStations } from '../../store/api';
 import {
     DataStateContext,
@@ -130,16 +132,16 @@ const ExploreMap = (): JSX.Element => {
 
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
-            if (e.features && e.features[0]) {
-                const feature = e.features[0];
-                const clusterId = feature.properties.cluster_id;
+            const feature = e.features?.[0];
+            if (feature) {
+                const clusterId = feature.properties?.cluster_id;
                 const stationsSource = map.getSource('clustered-stations') as maplibregl.GeoJSONSource;
                 stationsSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
                     if (err) return;
 
                     if (zoom) {
                         map.easeTo({
-                            center: feature.geometry.coordinates,
+                            center: (feature.geometry as Point).coordinates as [number, number],
                             zoom
                         });
                     }
@@ -178,7 +180,7 @@ const ExploreMap = (): JSX.Element => {
                     },
                     properties: stationProps
                 }))
-            };
+            } as FeatureCollection;
             ['stations', 'clustered-stations'].forEach((sourceName) => {
                 const source = map.getSource(sourceName) as maplibregl.GeoJSONSource;
                 if (source) {
@@ -307,33 +309,40 @@ const ExploreMap = (): JSX.Element => {
             basemaps={{
                 basemaps: [
                     {
-                        id: 'World_Ocean_Base',
+                        id: 'OSM',
                         tiles: [
-                            '//services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+                            'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
                         ],
                         sourceExtraParams: {
-                            tileSize: 256,
                             attribution:
-                                "Map tiles by <a href='http://stamen.com'>Stamen Design</a>, <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a> &mdash; Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/''>CC-BY-SA</a>",
-                            minzoom: 0,
-                            maxzoom: 20
+                                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
                         }
                     },
                     {
-                        id: 'World_Topo_Map',
+                        id: 'Carto',
                         tiles: [
-                            '//server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+                            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+                            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
                         ],
                         sourceExtraParams: {
-                            tileSize: 256,
-                            attribution:
-                                'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community',
-                            minzoom: 0,
-                            maxzoom: 22
+                            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
+                        }
+                    },
+                    {
+                        id: 'World_Imagery',
+                        tiles: [
+                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
                         }
                     }
                 ],
-                initialBasemap: 'World_Ocean_Base',
+                initialBasemap: 'World_Imagery',
                 expandDirection: 'top'
             }}
             LayersControlProps={[

@@ -32,15 +32,11 @@ const Details = ({ species }: Props) => (
                     Accepted status:
                     {species.species_extra[0].status ? 'Accepted' : 'Not accepted'}
                 </ListItem>
-                {species.species_extra[0].status ? (
-                    <></>
-                ) : (
+                {species.species_extra[0].status ? null : (
                     <ListItem>{species.species_extra[0].unaccepted_reason}</ListItem>
                 )}
             </>
-        ) : (
-            <></>
-        )}
+        ) : null}
 
         <ListItem>
             Species Common Names:
@@ -62,9 +58,7 @@ const Details = ({ species }: Props) => (
             <ListItem>
                 <a href={species.outlink}>OutLink to Species</a>
             </ListItem>
-        ) : (
-            <></>
-        )}
+        ) : null}
         <Typography variant="h5">Other Synonymous Species</Typography>
         {species.species_synonyms.length > 0 ? (
             <List>

@@ -7,7 +7,7 @@ import React from 'react';
  * @param layoutProps extra props to pass to the Layout component
  */
 export const withLayout = <P extends Record<string, unknown>>(
-    Layout: React.ComponentType,
+    Layout: React.ComponentType<P>,
     Component: React.ComponentType,
     layoutProps: P = {} as P
 ): React.ReactElement => {

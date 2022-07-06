@@ -32,7 +32,7 @@ const SpeciesList = ({ species_list }: Props) => {
     const count: number = Math.ceil(species_list.length / perPage);
     const speciesListPagination = usePagination(species_list, perPage);
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, p: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, p: number) => {
         setPage(p);
         speciesListPagination.jump(p);
     };
@@ -101,42 +101,35 @@ const SpeciesList = ({ species_list }: Props) => {
             </Box>
             <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', alignContent: 'space-around' }}>
                 {selectedSpecies && speciesDetails ? (
-                    <>
-                        <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
-                                onClick={() => {
-                                    setSelectedSpecies(undefined);
-                                }}
-                            >
-                                Back
-                            </Button>
-                            <SpeciesDetails species={speciesDetails} />
-                        </Stack>
-                    </>
+                    <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
+                            onClick={() => {
+                                setSelectedSpecies(undefined);
+                            }}
+                        >
+                            Back
+                        </Button>
+                        <SpeciesDetails species={speciesDetails} />
+                    </Stack>
                 ) : (
                     <>
                         {showAllSpecies ? (
                             <>
                                 {species_list.length ? (
-                                    <>
-                                        <Stack spacing={2} sx={{ mt: 1 }}>
-                                            <Pagination count={count} page={page} onChange={handlePageChange} />
-                                            <List>
-                                                {speciesListPagination.currentData().map((sp) => (
-                                                    <ListItemButton
-                                                        key={sp.id}
-                                                        onClick={() => setSelectedSpecies(sp.id)}
-                                                    >
-                                                        <ListItem>{sp.matched_canonical_full_name}</ListItem>
-                                                    </ListItemButton>
-                                                ))}
-                                            </List>
-                                            <Pagination count={count} page={page} onChange={handlePageChange} />
-                                        </Stack>
-                                    </>
+                                    <Stack spacing={2} sx={{ mt: 1 }}>
+                                        <Pagination count={count} page={page} onChange={handlePageChange} />
+                                        <List>
+                                            {speciesListPagination.currentData().map((sp) => (
+                                                <ListItemButton key={sp.id} onClick={() => setSelectedSpecies(sp.id)}>
+                                                    <ListItem>{sp.matched_canonical_full_name}</ListItem>
+                                                </ListItemButton>
+                                            ))}
+                                        </List>
+                                        <Pagination count={count} page={page} onChange={handlePageChange} />
+                                    </Stack>
                                 ) : (
                                     <Alert severity="info">Currently there are no records of any Species found</Alert>
                                 )}{' '}

@@ -1,4 +1,5 @@
 import React, { StrictMode, Suspense } from 'react';
+// eslint-disable-next-line import/no-unresolved
 import { createRoot } from 'react-dom/client';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
