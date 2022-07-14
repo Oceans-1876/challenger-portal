@@ -11,11 +11,12 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DatePicker from '@mui/lab/DatePicker';
-import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
+import { throttle } from 'lodash';
 
 import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import { useFAOAreas } from '../../utils/hooks';
+import { getData } from '../../store/api';
 import DatePickerClearableTextField, { DatePickerClearableInputProps } from '../ClearableDatePicker';
 
 const MAX_DATE = dayjs('1876-12-31');
@@ -25,15 +26,33 @@ const Filters = () => {
     const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
     const { filterCount, filteredFAOAreas, filteredSpecies, filteredStations, filterDates } =
         React.useContext(FilterStateContext);
-    const { stationsList, allSpeciesList } = React.useContext(DataStateContext);
+    const { stationsList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
+    const [speciesInputValue, setSpeciesInputValue] = React.useState<string>('');
     const faoAreas = useFAOAreas();
 
     const [startDate, endDate] = filterDates;
 
+    const memoizedGetData = React.useMemo(
+        throttle(() => getData<SpeciesSummary[]>, 200),
+        []
+    );
+
     React.useEffect(() => {
-        setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
-    }, [allSpeciesList]);
+        if (speciesInputValue !== '') {
+            memoizedGetData(
+                `species/fuzzymatch/?query_str=${speciesInputValue}`,
+                (data) => {
+                    if (data.length === 0) {
+                        setSpeciesOptions([]);
+                    } else {
+                        setSpeciesOptions(data);
+                    }
+                },
+                () => undefined
+            );
+        }
+    }, [speciesInputValue]);
 
     const handleDateRangeChange = (source: 'start' | 'end', value: Dayjs | null) => {
         if (!value || value.isValid()) {
@@ -222,20 +241,24 @@ const Filters = () => {
                     size="small"
                     multiple
                     limitTags={0}
+                    inputValue={speciesInputValue}
                     renderInput={(params) => <TextField {...params} label="Species" placeholder="Select Species" />}
-                    options={allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null)}
+                    options={speciesOptions.filter((sp) => sp.matched_canonical_full_name !== null)}
                     getOptionLabel={(option: SpeciesSummary) => option.matched_canonical_full_name}
-                    filterOptions={(optionsInp, { inputValue }) =>
-                        matchSorter(optionsInp, inputValue, { keys: ['matched_canonical_full_name', 'current_name'] })
-                    }
+                    filterOptions={(x) => x}
                     renderTags={() => null}
                     value={filteredSpecies.reduce((values: SpeciesSummary[], speciesId: string) => {
-                        const species = allSpeciesList.find(({ id }) => id === speciesId);
+                        const species = speciesOptions.find(({ id }) => id === speciesId);
                         if (species) {
                             values.push(species);
                         }
                         return values;
                     }, [])}
+                    onInputChange={(event: React.SyntheticEvent, newInputValue: string) => {
+                        // if (newInputValue !== '') {
+                        setSpeciesInputValue(newInputValue);
+                        // }
+                    }}
                     onChange={(_e, selectedOption) => {
                         filterActionDispatcher({
                             type: 'updateFilteredSpecies',
