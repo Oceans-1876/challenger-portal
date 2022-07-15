@@ -34,14 +34,14 @@ const Filters = () => {
     const [startDate, endDate] = filterDates;
 
     const memoizedGetData = React.useMemo(
-        throttle(() => getData<SpeciesSummary[]>, 200),
+        throttle(() => getData<SpeciesSummary[]>, 5000),
         []
     );
 
-    React.useEffect(() => {
-        if (speciesInputValue !== '') {
+    const handleSpeciesInputChange = (inputValue: string) => {
+        if (inputValue !== '') {
             memoizedGetData(
-                `species/fuzzymatch/?query_str=${speciesInputValue}`,
+                `species/fuzzymatch/?query_str=${inputValue}`,
                 (data) => {
                     if (data.length === 0) {
                         setSpeciesOptions([]);
@@ -52,7 +52,8 @@ const Filters = () => {
                 () => undefined
             );
         }
-    }, [speciesInputValue]);
+        setSpeciesInputValue(inputValue);
+    };
 
     const handleDateRangeChange = (source: 'start' | 'end', value: Dayjs | null) => {
         if (!value || value.isValid()) {
@@ -237,10 +238,9 @@ const Filters = () => {
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth
-                    disableCloseOnSelect
                     size="small"
                     multiple
-                    limitTags={0}
+                    disableCloseOnSelect
                     inputValue={speciesInputValue}
                     renderInput={(params) => <TextField {...params} label="Species" placeholder="Select Species" />}
                     options={speciesOptions.filter((sp) => sp.matched_canonical_full_name !== null)}
@@ -254,10 +254,10 @@ const Filters = () => {
                         }
                         return values;
                     }, [])}
-                    onInputChange={(event: React.SyntheticEvent, newInputValue: string) => {
-                        // if (newInputValue !== '') {
-                        setSpeciesInputValue(newInputValue);
-                        // }
+                    onInputChange={(event, newInputValue) => {
+                        if (event !== null) {
+                            handleSpeciesInputChange(newInputValue);
+                        }
                     }}
                     onChange={(_e, selectedOption) => {
                         filterActionDispatcher({
