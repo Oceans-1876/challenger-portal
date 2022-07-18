@@ -10,7 +10,7 @@ import configureMeasurements, {
 
 import { decimalFormat } from '../utils/format';
 
-// Meausres: The names of the measures being used
+// Measures: The names of the measures being used
 type Measures = 'length' | 'temperature';
 // Systems: The systems being used across all measures
 type Systems = LengthSystems | TemperatureSystems;

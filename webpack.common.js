@@ -89,7 +89,8 @@ module.exports = {
         new Webpack.DefinePlugin({
             PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
             API_PATH: JSON.stringify(`${process.env.API_SERVER}/api/v1`),
-            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`)
+            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`),
+            UNIT_PREF: JSON.stringify(`${process.env.UNIT_PREF}`)
         }),
         new FaviconsWebpackPlugin({
             logo: './src/images/favicon.png',
