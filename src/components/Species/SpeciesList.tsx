@@ -41,6 +41,33 @@ const SpeciesList = ({ species_list }: Props) => {
         setSearchFieldValue(event.target.value);
     };
 
+    const perfromQuery = () => {
+        if (searchFieldValue !== '') {
+            setShowAllSpecies(false);
+            setSearching(true);
+            getData<SpeciesSummary[]>(
+                `species/fuzzymatch/?query_str=${searchFieldValue}`,
+                (data) => {
+                    if (data.length === 0) {
+                        setSpeciesSearchResults(null);
+                    } else {
+                        setSpeciesSearchResults(data);
+                    }
+                    setSearching(false);
+                },
+                () => {
+                    setSearching(false);
+                }
+            );
+        }
+    };
+
+    const handleHitEnterEvent = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            perfromQuery();
+        }
+    };
+
     return (
         <Box>
             <Box
@@ -54,31 +81,13 @@ const SpeciesList = ({ species_list }: Props) => {
                         type="search"
                         value={searchFieldValue}
                         onChange={handleStringChange}
+                        onKeyDown={handleHitEnterEvent}
                     />
                     <Button
                         variant="outlined"
                         size="small"
                         startIcon={<Icon baseClassName="icons">search</Icon>}
-                        onClick={() => {
-                            if (searchFieldValue !== '') {
-                                setShowAllSpecies(false);
-                                setSearching(true);
-                                getData<SpeciesSummary[]>(
-                                    `species/fuzzymatch/?query_str=${searchFieldValue}`,
-                                    (data) => {
-                                        if (data.length === 0) {
-                                            setSpeciesSearchResults(null);
-                                        } else {
-                                            setSpeciesSearchResults(data);
-                                        }
-                                        setSearching(false);
-                                    },
-                                    () => {
-                                        setSearching(false);
-                                    }
-                                );
-                            }
-                        }}
+                        onClick={perfromQuery}
                     >
                         Search
                     </Button>
