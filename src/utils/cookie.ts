@@ -21,7 +21,3 @@ export const setUnitPreferences = (unitPref: UnitPref) => {
 export const removeUnitPref = () => {
     cookie.remove(UNIT_PREF);
 };
-
-export const testCookies = () => {
-    console.log(cookie.getAll());
-};
