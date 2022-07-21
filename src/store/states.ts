@@ -1,4 +1,4 @@
-import { getUnitPreferences } from '../utils/cookie';
+import { getUnitPreferences } from '../utils/localStorage';
 
 const unitPref = getUnitPreferences();
 

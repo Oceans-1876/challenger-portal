@@ -11,7 +11,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 
 import { DataActionDispatcherContext, DataStateContext } from '../store/contexts';
-import { setUnitPreferences } from '../utils/cookie';
+import { setUnitPreferences } from '../utils/localStorage';
 
 interface Props {
     open: boolean;
