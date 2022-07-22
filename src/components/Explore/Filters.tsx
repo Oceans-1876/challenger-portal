@@ -12,10 +12,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DatePicker from '@mui/lab/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { throttle } from 'lodash';
 
 import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
-import { useFAOAreas } from '../../utils/hooks';
+import { useFAOAreas, useDebounce } from '../../utils/hooks';
 import { getData } from '../../store/api';
 import DatePickerClearableTextField, { DatePickerClearableInputProps } from '../ClearableDatePicker';
 
@@ -28,32 +27,29 @@ const Filters = () => {
         React.useContext(FilterStateContext);
     const { stationsList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
+    const [filteredSpeciesDetails, setFilteredSpeciesDetails] = React.useState<SpeciesSummary[]>([]);
     const [speciesInputValue, setSpeciesInputValue] = React.useState<string>('');
     const faoAreas = useFAOAreas();
 
     const [startDate, endDate] = filterDates;
 
-    const memoizedGetData = React.useMemo(
-        throttle(() => getData<SpeciesSummary[]>, 5000),
-        []
-    );
-
-    const handleSpeciesInputChange = (inputValue: string) => {
-        if (inputValue !== '') {
-            memoizedGetData(
-                `species/fuzzymatch/?query_str=${inputValue}`,
-                (data) => {
-                    if (data.length === 0) {
-                        setSpeciesOptions([]);
-                    } else {
+    useDebounce(
+        () => {
+            if (speciesInputValue) {
+                getData<SpeciesSummary[]>(
+                    `species/fuzzymatch/?query_str=${speciesInputValue}`,
+                    (data) => {
                         setSpeciesOptions(data);
-                    }
-                },
-                () => undefined
-            );
-        }
-        setSpeciesInputValue(inputValue);
-    };
+                    },
+                    () => undefined
+                );
+            } else {
+                setSpeciesOptions([]);
+            }
+        },
+        [speciesInputValue],
+        500
+    );
 
     const handleDateRangeChange = (source: 'start' | 'end', value: Dayjs | null) => {
         if (!value || value.isValid()) {
@@ -256,39 +252,43 @@ const Filters = () => {
                     }, [])}
                     onInputChange={(event, newInputValue) => {
                         if (event !== null) {
-                            handleSpeciesInputChange(newInputValue);
+                            setSpeciesInputValue(newInputValue);
                         }
                     }}
                     onChange={(_e, selectedOption) => {
+                        setFilteredSpeciesDetails(Array.from(new Set([...selectedOption, ...filteredSpeciesDetails])));
                         filterActionDispatcher({
                             type: 'updateFilteredSpecies',
                             species: selectedOption.map((species) => species.id)
                         });
                     }}
                 />
-                {filteredSpecies.length ? (
+                {filteredSpeciesDetails.length ? (
                     <Accordion square disableGutters>
                         <AccordionSummary expandIcon={<Icon baseClassName="icons">expand_more</Icon>}>
-                            <Typography variant="subtitle2">Matched {filteredSpecies.length} species</Typography>
+                            <Typography variant="subtitle2">Matched {filteredSpeciesDetails.length} species</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-                                {speciesOptions
-                                    .filter(({ id }) => filteredSpecies.includes(id))
-                                    .map(({ id, matched_canonical_full_name }) => (
-                                        <Chip
-                                            key={id}
-                                            sx={{ mt: 1 }}
-                                            variant="outlined"
-                                            label={matched_canonical_full_name}
-                                            onDelete={() => {
-                                                filterActionDispatcher({
-                                                    type: 'updateFilteredSpecies',
-                                                    species: filteredSpecies.filter((speciesId) => speciesId !== id)
-                                                });
-                                            }}
-                                        />
-                                    ))}
+                                {filteredSpeciesDetails.map(({ id, matched_canonical_full_name }) => (
+                                    <Chip
+                                        key={id}
+                                        sx={{ mt: 1 }}
+                                        variant="outlined"
+                                        label={matched_canonical_full_name}
+                                        onDelete={() => {
+                                            setFilteredSpeciesDetails(
+                                                filteredSpeciesDetails.filter((species) => species.id !== id)
+                                            );
+                                            filterActionDispatcher({
+                                                type: 'updateFilteredSpecies',
+                                                species: filteredSpeciesDetails
+                                                    .filter((species) => species.id !== id)
+                                                    .map((species) => species.id)
+                                            });
+                                        }}
+                                    />
+                                ))}
                             </Box>
                         </AccordionDetails>
                     </Accordion>

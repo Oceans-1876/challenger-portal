@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, { DependencyList } from 'react';
 
 import { getData } from '../store/api';
 import { DataActionDispatcherContext, DataStateContext } from '../store/contexts';
@@ -121,4 +121,13 @@ export const usePagination = (data: SpeciesSummary[], itemsPerPage: number) => {
     };
 
     return { next, prev, jump, currentData, currentPage, maxPage };
+};
+
+export const useDebounce = (callback: () => void, deps: DependencyList, delay?: number) => {
+    // Based on https://stackoverflow.com/a/61127960/2074794
+    React.useEffect(() => {
+        const handler = setTimeout(() => callback(), delay);
+
+        return () => clearTimeout(handler);
+    }, [...(deps || []), Number.isNaN(delay) ? 0 : delay]);
 };
