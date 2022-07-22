@@ -11,11 +11,11 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DatePicker from '@mui/lab/DatePicker';
-import { matchSorter } from 'match-sorter';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
-import { useFAOAreas } from '../../utils/hooks';
+import { useFAOAreas, useDebounce } from '../../utils/hooks';
+import { getData } from '../../store/api';
 import DatePickerClearableTextField, { DatePickerClearableInputProps } from '../ClearableDatePicker';
 
 const MAX_DATE = dayjs('1876-12-31');
@@ -25,15 +25,31 @@ const Filters = () => {
     const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
     const { filterCount, filteredFAOAreas, filteredSpecies, filteredStations, filterDates } =
         React.useContext(FilterStateContext);
-    const { stationsList, allSpeciesList } = React.useContext(DataStateContext);
+    const { stationsList } = React.useContext(DataStateContext);
     const [speciesOptions, setSpeciesOptions] = React.useState<SpeciesSummary[]>([]);
+    const [filteredSpeciesDetails, setFilteredSpeciesDetails] = React.useState<SpeciesSummary[]>([]);
+    const [speciesInputValue, setSpeciesInputValue] = React.useState<string>('');
     const faoAreas = useFAOAreas();
 
     const [startDate, endDate] = filterDates;
 
-    React.useEffect(() => {
-        setSpeciesOptions(allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null));
-    }, [allSpeciesList]);
+    useDebounce(
+        () => {
+            if (speciesInputValue) {
+                getData<SpeciesSummary[]>(
+                    `species/fuzzymatch/?query_str=${speciesInputValue}`,
+                    (data) => {
+                        setSpeciesOptions(data);
+                    },
+                    () => undefined
+                );
+            } else {
+                setSpeciesOptions([]);
+            }
+        },
+        [speciesInputValue],
+        500
+    );
 
     const handleDateRangeChange = (source: 'start' | 'end', value: Dayjs | null) => {
         if (!value || value.isValid()) {
@@ -218,54 +234,61 @@ const Filters = () => {
             <Stack direction="column" spacing={1}>
                 <Autocomplete
                     fullWidth
-                    disableCloseOnSelect
                     size="small"
                     multiple
-                    limitTags={0}
+                    disableCloseOnSelect
+                    inputValue={speciesInputValue}
                     renderInput={(params) => <TextField {...params} label="Species" placeholder="Select Species" />}
-                    options={allSpeciesList.filter((sp) => sp.matched_canonical_full_name !== null)}
+                    options={speciesOptions.filter((sp) => sp.matched_canonical_full_name !== null)}
                     getOptionLabel={(option: SpeciesSummary) => option.matched_canonical_full_name}
-                    filterOptions={(optionsInp, { inputValue }) =>
-                        matchSorter(optionsInp, inputValue, { keys: ['matched_canonical_full_name', 'current_name'] })
-                    }
+                    filterOptions={(x) => x}
                     renderTags={() => null}
                     value={filteredSpecies.reduce((values: SpeciesSummary[], speciesId: string) => {
-                        const species = allSpeciesList.find(({ id }) => id === speciesId);
+                        const species = speciesOptions.find(({ id }) => id === speciesId);
                         if (species) {
                             values.push(species);
                         }
                         return values;
                     }, [])}
+                    onInputChange={(event, newInputValue) => {
+                        if (event !== null) {
+                            setSpeciesInputValue(newInputValue);
+                        }
+                    }}
                     onChange={(_e, selectedOption) => {
+                        setFilteredSpeciesDetails(Array.from(new Set([...selectedOption, ...filteredSpeciesDetails])));
                         filterActionDispatcher({
                             type: 'updateFilteredSpecies',
                             species: selectedOption.map((species) => species.id)
                         });
                     }}
                 />
-                {filteredSpecies.length ? (
+                {filteredSpeciesDetails.length ? (
                     <Accordion square disableGutters>
                         <AccordionSummary expandIcon={<Icon baseClassName="icons">expand_more</Icon>}>
-                            <Typography variant="subtitle2">Matched {filteredSpecies.length} species</Typography>
+                            <Typography variant="subtitle2">Matched {filteredSpeciesDetails.length} species</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-                                {speciesOptions
-                                    .filter(({ id }) => filteredSpecies.includes(id))
-                                    .map(({ id, matched_canonical_full_name }) => (
-                                        <Chip
-                                            key={id}
-                                            sx={{ mt: 1 }}
-                                            variant="outlined"
-                                            label={matched_canonical_full_name}
-                                            onDelete={() => {
-                                                filterActionDispatcher({
-                                                    type: 'updateFilteredSpecies',
-                                                    species: filteredSpecies.filter((speciesId) => speciesId !== id)
-                                                });
-                                            }}
-                                        />
-                                    ))}
+                                {filteredSpeciesDetails.map(({ id, matched_canonical_full_name }) => (
+                                    <Chip
+                                        key={id}
+                                        sx={{ mt: 1 }}
+                                        variant="outlined"
+                                        label={matched_canonical_full_name}
+                                        onDelete={() => {
+                                            setFilteredSpeciesDetails(
+                                                filteredSpeciesDetails.filter((species) => species.id !== id)
+                                            );
+                                            filterActionDispatcher({
+                                                type: 'updateFilteredSpecies',
+                                                species: filteredSpeciesDetails
+                                                    .filter((species) => species.id !== id)
+                                                    .map((species) => species.id)
+                                            });
+                                        }}
+                                    />
+                                ))}
                             </Box>
                         </AccordionDetails>
                     </Accordion>
