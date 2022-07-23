@@ -6,7 +6,6 @@ set -e
 # use DEBUG=echo ./docker.sh to print all commands
 export DEBUG=${DEBUG:-""}
 export PUBLIC_PATH=${PUBLIC_PATH:-""}
-# export UNIT_PREF=unit_pref # TODO: Add this line to add this required environment variable? 
 
 
 # Build docker image
