@@ -11,7 +11,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 
 import { DataActionDispatcherContext, DataStateContext } from '../store/contexts';
-import { setUnitPreferences } from '../utils/localStorage';
 
 interface Props {
     open: boolean;
@@ -63,16 +62,8 @@ const UnitPreferencesDialog = ({ open, onClose }: Props) => {
     const handleToUnitChange = (e: SelectChangeEvent, unit: string) => {
         if (unit === 'temp') {
             dataActionDispatcher({ type: 'updateTempToUnit', unit: e.target.value as string });
-            setUnitPreferences({
-                Temp: e.target.value as string,
-                Depth: depthToUnit
-            });
         } else if (unit === 'depth') {
             dataActionDispatcher({ type: 'updateDepthToUnit', unit: e.target.value as string });
-            setUnitPreferences({
-                Temp: tempToUnit,
-                Depth: e.target.value as string
-            });
         }
     };
 

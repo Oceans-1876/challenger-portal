@@ -1,5 +1,6 @@
 const path = require('path');
 const Webpack = require('webpack');
+require('dotenv').config();
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
@@ -89,8 +90,7 @@ module.exports = {
         new Webpack.DefinePlugin({
             PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
             API_PATH: JSON.stringify(`${process.env.API_SERVER}/api/v1`),
-            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`),
-            UNIT_PREF: JSON.stringify(`${process.env.UNIT_PREF}`)
+            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`)
         }),
         new FaviconsWebpackPlugin({
             logo: './src/images/favicon.png',

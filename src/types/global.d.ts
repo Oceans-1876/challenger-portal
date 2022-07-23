@@ -2,7 +2,6 @@ declare const ENV: 'development' | 'production' | 'test';
 declare const PUBLIC_PATH: string;
 declare const API_PATH: string;
 declare const API_FONTS: string;
-declare const UNIT_PREF: string;
 
 interface UnitPref {
     Temp: string;

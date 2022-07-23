@@ -1,3 +1,5 @@
+const UNIT_PREF = 'unit_pref';
+
 export const getUnitPreferences = (): UnitPref => {
     let unitPref: UnitPref = { Temp: 'C', Depth: 'm' };
     if (localStorage.getItem(UNIT_PREF)) {
