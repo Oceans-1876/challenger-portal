@@ -1,5 +1,6 @@
 const path = require('path');
 const Webpack = require('webpack');
+require('dotenv').config();
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');

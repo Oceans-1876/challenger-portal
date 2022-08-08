@@ -1,4 +1,5 @@
 import { createJourneyPathFromStationPoints, getFeatureBounds } from '../components/Map/utils';
+import { setUnitPreferences } from '../utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
@@ -35,11 +36,19 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 faoAreas: action.faoAreas
             };
         case 'updateTempToUnit':
+            setUnitPreferences({
+                Temp: action.unit,
+                Depth: state.depthToUnit
+            });
             return {
                 ...state,
                 tempToUnit: action.unit
             };
         case 'updateDepthToUnit':
+            setUnitPreferences({
+                Temp: state.tempToUnit,
+                Depth: action.unit
+            });
             return {
                 ...state,
                 depthToUnit: action.unit
