@@ -25,7 +25,6 @@ jobs:
       fail-fast: true
       matrix:
         node:
-          - "14"
           - "16"
     steps:
     # checkout source code

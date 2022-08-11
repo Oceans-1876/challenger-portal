@@ -4,8 +4,8 @@ import { createRoot } from 'react-dom/client';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import DatejsAdapter from '@mui/lab/AdapterDayjs';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { getData } from './store/api';
 import { DataActionDispatcherContext, DataStateContext } from './store/contexts';
@@ -44,7 +44,7 @@ const App = (): JSX.Element => {
                         <Suspense fallback={<Loading />}>
                             <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
                                 <DataStateContext.Provider value={dataState}>
-                                    <LocalizationProvider dateAdapter={DatejsAdapter}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <Routes>
                                             {Object.entries(routes).map(([path, props]) => (
                                                 <Route key={path} path={path} {...props} />

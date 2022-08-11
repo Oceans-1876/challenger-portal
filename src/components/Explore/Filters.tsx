@@ -10,7 +10,7 @@ import Icon from '@mui/material/Icon';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import DatePicker from '@mui/lab/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { FilterStateContext, FilterActionDispatcherContext, DataStateContext } from '../../store/contexts';
@@ -92,7 +92,6 @@ const Filters = () => {
                     minDate={MIN_DATE}
                     maxDate={endDate || MAX_DATE}
                     openTo="year"
-                    clearable
                     onChange={(newVal) => {
                         handleDateRangeChange('start', newVal);
                     }}
@@ -115,7 +114,6 @@ const Filters = () => {
                     minDate={startDate || MIN_DATE}
                     maxDate={MAX_DATE}
                     openTo="year"
-                    clearable
                     onChange={(newVal) => {
                         handleDateRangeChange('end', newVal);
                     }}

@@ -2,7 +2,7 @@
 
 ### Setup
 
-> Requires node > 14
+> Tested with node v16.6
 
 - Install dependencies: `npm install`.
 - Create a Mapbox account (mapbox.com) and get an API access token from your account page (https://account.mapbox.com).
