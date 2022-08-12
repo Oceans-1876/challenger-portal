@@ -1,6 +1,17 @@
 declare const ENV: 'development' | 'production' | 'test';
-declare const PUBLIC_URL: string;
-declare const MAPBOX_TOKEN: string;
+declare const PUBLIC_PATH: string;
+declare const API_PATH: string;
+declare const API_FONTS: string;
+
+interface UnitPref {
+    Temp: string;
+    Depth: string;
+}
+
+declare module '*.json' {
+    const src: string;
+    export default src;
+}
 
 declare module '*.geojson' {
     const src: string;

@@ -7,12 +7,14 @@ const commonConfig = require('./webpack.common');
 module.exports = merge(commonConfig, {
     mode: 'development',
 
+    devtool: 'eval-source-map',
+
+    stats: 'minimal',
+
     devServer: {
         hot: true,
         host: 'localhost',
         port: 8080,
-        inline: true,
-        stats: 'minimal',
         historyApiFallback: true,
         allowedHosts: JSON.parse(process.env.ALLOWED_HOSTS || '["localhost"]'),
         headers: { 'Access-Control-Allow-Origin': '*' }

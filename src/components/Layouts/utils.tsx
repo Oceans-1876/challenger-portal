@@ -1,5 +1,4 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 
 /**
  * A higher-order component that wraps a component with the given Layout
@@ -9,14 +8,14 @@ import { RouteComponentProps } from 'react-router-dom';
  */
 export const withLayout = <P extends Record<string, unknown>>(
     Layout: React.ComponentType<P>,
-    Component: React.ComponentType<RouteComponentProps>,
+    Component: React.ComponentType,
     layoutProps: P = {} as P
-): ((routeProps: RouteComponentProps) => JSX.Element) => {
-    const ComponentWithLayout = (routeProps: RouteComponentProps) => (
+): React.ReactElement => {
+    const ComponentWithLayout = () => (
         <Layout {...layoutProps}>
-            <Component {...routeProps} />
+            <Component />
         </Layout>
     );
     ComponentWithLayout.displayName = `${Component.displayName}With${Layout.displayName}`;
-    return ComponentWithLayout;
+    return <ComponentWithLayout />;
 };

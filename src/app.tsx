@@ -1,28 +1,67 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/styles';
-import Container from '@material-ui/core/Container';
+import React, { StrictMode, Suspense } from 'react';
+// eslint-disable-next-line import/no-unresolved
+import { createRoot } from 'react-dom/client';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import DatejsAdapter from '@mui/lab/AdapterDayjs';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+import { getData } from './store/api';
+import { DataActionDispatcherContext, DataStateContext } from './store/contexts';
+import { dataReducers } from './store/reducers';
+import { dataStateInitialValue } from './store/states';
 import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
 
-const App = (): JSX.Element => (
-    <Container className="fillContainer" disableGutters maxWidth={false}>
-        <Suspense fallback={<Loading />}>
-            {Object.entries(routes).map(([path, props]) => (
-                <Route key={path} path={path} {...props} />
-            ))}
-        </Suspense>
-    </Container>
-);
+const App = (): JSX.Element => {
+    const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
 
-ReactDOM.render(
-    <Router>
-        <ThemeProvider theme={theme}>
-            <App />
-        </ThemeProvider>
-    </Router>,
-    document.getElementById('root')
-);
+    React.useEffect(() => {
+        getData<SpeciesSummary[]>(
+            'species/all/?order_by=matched_canonical_full_name',
+            (species) => {
+                dataActionDispatcher({ type: 'updateAllSpecies', species });
+            },
+            () => undefined
+        );
+        getData<StationSummary[]>(
+            'stations/all/?order_by=order',
+            (stations) => {
+                dataActionDispatcher({ type: 'updateStations', stations });
+            },
+            () => undefined
+        );
+    }, []);
+
+    return (
+        <StrictMode>
+            <Router>
+                <CssBaseline />
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={theme}>
+                        <Suspense fallback={<Loading />}>
+                            <DataActionDispatcherContext.Provider value={dataActionDispatcher}>
+                                <DataStateContext.Provider value={dataState}>
+                                    <LocalizationProvider dateAdapter={DatejsAdapter}>
+                                        <Routes>
+                                            {Object.entries(routes).map(([path, props]) => (
+                                                <Route key={path} path={path} {...props} />
+                                            ))}
+                                        </Routes>
+                                    </LocalizationProvider>
+                                </DataStateContext.Provider>
+                            </DataActionDispatcherContext.Provider>
+                        </Suspense>
+                    </ThemeProvider>
+                </StyledEngineProvider>
+            </Router>
+        </StrictMode>
+    );
+};
+
+const rootEl = document.getElementById('root');
+if (rootEl) {
+    createRoot(rootEl).render(<App />);
+}

@@ -1,7 +1,9 @@
 const path = require('path');
 const Webpack = require('webpack');
+require('dotenv').config();
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -11,14 +13,11 @@ module.exports = {
     context: __dirname,
 
     entry: {
+        maplibre: 'maplibre-gl/dist/maplibre-gl.css',
+        maplibreBasemapsControl: 'maplibre-gl-basemaps/lib/basemaps.css',
+        appStyle: './src/styles/main.scss',
         polyfill: './src/polyfill.js',
-        maplibre: 'maplibre-gl',
-        maplibreStyle: 'maplibre-gl/dist/mapbox-gl.css',
-        style: './src/styles/main.scss',
-        app: {
-            import: './src/app.tsx',
-            dependOn: 'maplibre'
-        }
+        app: './src/app.tsx'
     },
 
     output: {
@@ -34,16 +33,7 @@ module.exports = {
                 // Use babel-loader for ts, tsx, js, and jsx files
                 test: /\.[tj]sx?$/,
                 exclude: /node_modules/,
-                use: [
-                    'babel-loader',
-                    {
-                        // Show eslint messages in the output
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true
-                        }
-                    }
-                ]
+                use: 'babel-loader'
             },
             {
                 test: /\.(s[ac]ss|css)$/,
@@ -93,47 +83,38 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     },
 
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-            cacheGroups: {
-                // Create a commons chunk, which includes all code shared between entry points.
-                commons: {
-                    name: 'commons',
-                    chunks: 'initial',
-                    minChunks: 2
-                }
-            }
-        }
-    },
-
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.html'
         }),
         new Webpack.DefinePlugin({
-            PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),   // The base path for the app
-            MAPBOX_TOKEN: JSON.stringify(process.env.MAPBOX_TOKEN)
+            PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
+            API_PATH: JSON.stringify(`${process.env.API_SERVER}/api/v1`),
+            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`)
         }),
-        // new FaviconsWebpackPlugin({
-        //     logo: './src/images/favicon.png',
-        //     prefix: 'icons/',
-        //     emitStats: false,
-        //     inject: true,
-        //     favicons: {
-        //         icons: {
-        //             android: false,
-        //             appleIcon: false,
-        //             appleStartup: false,
-        //             coast: false,
-        //             favicons: true,
-        //             firefox: false,
-        //             windows: false,
-        //             yandex: false
-        //         }
-        //     }
-        // }),
+        new FaviconsWebpackPlugin({
+            logo: './src/images/favicon.png',
+            prefix: 'icons/',
+            emitStats: false,
+            inject: true,
+            favicons: {
+                icons: {
+                    android: false,
+                    appleIcon: false,
+                    appleStartup: false,
+                    coast: false,
+                    favicons: true,
+                    firefox: false,
+                    windows: false,
+                    yandex: false
+                }
+            }
+        }),
         new MiniCssExtractPlugin({ filename: 'css/[name]-[fullhash].css' }),
+        new ESLintPlugin({
+            emitWarning: true,
+            failOnError: false
+        }),
         new CleanWebpackPlugin()
     ]
 };

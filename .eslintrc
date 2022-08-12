@@ -2,41 +2,20 @@
   "extends": [
     "airbnb",
     "prettier",
-    "plugin:prettier/recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "prettier",
-    "react"
+    "react",
+    "@typescript-eslint"
   ],
-  "parser": "@babel/eslint-parser",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./"
   },
-  "overrides": [
-    {
-      "files": [
-        "*.ts",
-        "*.tsx"
-      ],
-      "extends": [
-        "prettier/@typescript-eslint",
-        "plugin:@typescript-eslint/recommended"
-      ],
-      "plugins": [
-        "@typescript-eslint"
-      ],
-      "parser": "@typescript-eslint/parser",
-      "parserOptions": {
-        "project": "./tsconfig.json",
-        "tsconfigRootDir": "./"
-      }
-    }
-  ],
   "env": {
     "browser": true,
     "es6": true,
@@ -51,8 +30,6 @@
           "node_modules"
         ],
         "extensions": [
-          ".js",
-          ".jsx",
           ".ts",
           ".tsx"
         ]
@@ -139,7 +116,13 @@
     ],
     "operator-linebreak": [
       "warn",
-      "after"
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
+      }
     ],
     "prefer-destructuring": "off",
     "quotes": [
@@ -163,6 +146,12 @@
       "always"
     ],
     "react/destructuring-assignment": "off",
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function"
+      }
+    ],
     "react/jsx-curly-newline": "off",
     "react/jsx-filename-extension": [
       "error",
@@ -180,6 +169,12 @@
     "react/jsx-indent-props": [
       "error",
       4
+    ],
+    "react/jsx-no-useless-fragment": [
+      "error",
+      {
+        "allowExpressions": true
+      }
     ],
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
