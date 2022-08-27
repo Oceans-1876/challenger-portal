@@ -2,13 +2,17 @@
 # First stage, compile application
 # ----------------------------------------------------------------------
 
-FROM node:14 AS builder
+FROM node:16.6-alpine AS builder
 
 WORKDIR /usr/src/app
 
 # Public Path when building application
 ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}
+
+# API Server
+ARG API_SERVER
+ENV API_SERVER=${API_SERVER}
 
 # Copy application and install dependencies
 COPY . /usr/src/app/
