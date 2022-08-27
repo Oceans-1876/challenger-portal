@@ -83,19 +83,20 @@ jobs:
           echo "TAGS=${BRANCH}" >> $GITHUB_ENV
         fi
 
-    # build image
+      # build image
     - name: Build image
       uses: elgohr/Publish-Docker-Github-Action@3.04
       env:
         BRANCH: ${{ env.GITHUB_BRANCH }}
-        VERSION: ${{ env.VERSION }}
         BUILDNUMBER: ${{ github.run_number }}
         GITSHA1: ${{ github.sha }}
       with:
-        name: oceans-1876/frontend
+        name: Oceans-1876/challenger-portal
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: ghcr.io
         tags: "${{ env.TAGS }}"
-        buildargs: BRANCH,VERSION,BUILDNUMBER,GITSHA1,PUBLIC_PATH
-        no_push: true
+        buildargs: BRANCH,BUILDNUMBER,GITSHA1
         dockerfile: docker/Dockerfile
 
     - name: Deploy to prod server
