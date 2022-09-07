@@ -64,10 +64,10 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
     },
     faoAreas: {
         default: {
-            type: 'fill',
+            type: 'line',
             paint: {
-                'fill-color': '#794c5a',
-                'fill-opacity': 0.25
+                'line-color': '#794c5a',
+                'line-opacity': 0.5
             }
         }
     }

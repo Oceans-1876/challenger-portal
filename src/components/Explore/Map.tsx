@@ -325,15 +325,22 @@ const ExploreMap = (): JSX.Element => {
             basemaps={{
                 basemaps: [
                     {
-                        id: 'OSM',
+                        id: 'World_Ocean_Base',
                         tiles: [
-                            'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
                         ],
                         sourceExtraParams: {
                             attribution:
                                 '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
+                        }
+                    },
+                    {
+                        id: 'World_Imagery',
+                        tiles: [
+                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                        ],
+                        sourceExtraParams: {
+                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
                         }
                     },
                     {
@@ -347,30 +354,22 @@ const ExploreMap = (): JSX.Element => {
                         sourceExtraParams: {
                             attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
                         }
-                    },
-                    {
-                        id: 'World_Imagery',
-                        tiles: [
-                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-                        }
                     }
                 ],
-                initialBasemap: 'World_Imagery',
+                initialBasemap: 'World_Ocean_Base',
                 expandDirection: 'top'
             }}
             LayersControlProps={[
                 {
                     id: 'faoAreas',
                     label: 'FAO Areas',
-                    initialOpacity: 0.25,
+                    initialOpacity: 0.5,
                     attribution: {
                         text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
                         url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
                     },
-                    style: layerStyles.faoAreas.default
+                    style: layerStyles.faoAreas.default,
+                    opacityType: 'line'
                 }
             ]}
             onLoad={onMapLoad}

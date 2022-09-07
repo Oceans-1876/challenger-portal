@@ -24,7 +24,7 @@ const LayersControl = ({ map, layers }: Props) => {
 
     return (
         <>
-            {layers.map(({ id, label, initialOpacity, attribution: layerAttribution, style }) => (
+            {layers.map(({ id, label, initialOpacity, attribution: layerAttribution, style, opacityType }) => (
                 <Box key={id} sx={{ p: 2 }}>
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <Typography variant="subtitle1">{label}</Typography>
@@ -56,7 +56,7 @@ const LayersControl = ({ map, layers }: Props) => {
                             step={0.1}
                             defaultValue={initialOpacity}
                             onChange={(_e, value) => {
-                                map?.setPaintProperty(id, 'fill-opacity', value);
+                                map?.setPaintProperty(id, `${opacityType}-opacity`, value);
                             }}
                         />
                     </Stack>

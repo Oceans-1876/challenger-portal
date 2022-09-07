@@ -21,4 +21,5 @@ interface LayersControlProps {
         url?: string;
     };
     style: Partial<import('maplibre-gl').AnyLayer>;
+    opacityType: 'fill' | 'line';
 }
