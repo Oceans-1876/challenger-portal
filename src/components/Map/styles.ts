@@ -1,12 +1,10 @@
-import { themeOptions } from '../../theme';
-
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
         default: {
             type: 'circle',
             paint: {
                 'circle-radius': 7,
-                'circle-color': themeOptions.palette.primary.dark,
+                'circle-color': '#d5ab1a',
                 'circle-opacity': 0.9
             }
         },
