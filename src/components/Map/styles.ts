@@ -1,12 +1,10 @@
-import { themeOptions } from '../../theme';
-
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
         default: {
             type: 'circle',
             paint: {
                 'circle-radius': 7,
-                'circle-color': themeOptions.palette.primary.dark,
+                'circle-color': '#d5ab1a',
                 'circle-opacity': 0.9
             }
         },
@@ -66,10 +64,10 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
     },
     faoAreas: {
         default: {
-            type: 'fill',
+            type: 'line',
             paint: {
-                'fill-color': '#794c5a',
-                'fill-opacity': 0.25
+                'line-color': '#794c5a',
+                'line-opacity': 0.5
             }
         }
     }
