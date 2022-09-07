@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { Point, FeatureCollection } from 'geojson';
+import type { Point } from 'geojson';
 
 import { searchStations } from '../../store/api';
 import {
@@ -170,23 +170,39 @@ const ExploreMap = (): JSX.Element => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            const stationsGeoJSON = {
-                type: 'FeatureCollection',
-                features: stationsList.map((stationProps) => ({
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: stationProps.coordinates
-                    },
-                    properties: stationProps
-                }))
-            } as FeatureCollection;
-            ['stations', 'clustered-stations'].forEach((sourceName) => {
-                const source = map.getSource(sourceName) as maplibregl.GeoJSONSource;
-                if (source) {
-                    source.setData(stationsGeoJSON);
-                }
-            });
+            const stationsSource = map.getSource('stations') as maplibregl.GeoJSONSource;
+            if (stationsSource) {
+                stationsSource.setData({
+                    type: 'FeatureCollection',
+                    features: stationsList.map((stationProps) => ({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: stationProps.coordinates
+                        },
+                        properties: stationProps
+                    }))
+                });
+            }
+            const clusteredStationsSource = map.getSource('clustered-stations') as maplibregl.GeoJSONSource;
+            if (clusteredStationsSource) {
+                clusteredStationsSource.setData({
+                    type: 'FeatureCollection',
+                    features: stationsList.map((stationProps) => ({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                stationProps.coordinates[0] > 180
+                                    ? stationProps.coordinates[0] - 360
+                                    : stationProps.coordinates[0],
+                                stationProps.coordinates[1]
+                            ]
+                        },
+                        properties: stationProps
+                    }))
+                });
+            }
             map.fitBounds(stationsBounds);
 
             const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
