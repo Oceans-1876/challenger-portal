@@ -15,7 +15,7 @@
     "docs": "typedoc"
   },
   "author": "Kaveh Karimi <kaveh@illinois.edu>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@emotion/react": "~11.10",
     "@emotion/styled": "~11.10",
