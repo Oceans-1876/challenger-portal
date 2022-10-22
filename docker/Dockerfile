@@ -10,10 +10,6 @@ WORKDIR /usr/src/app
 ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}
 
-# API Server
-ARG API_SERVER
-ENV API_SERVER=${API_SERVER}
-
 # Copy application and install dependencies
 COPY . /usr/src/app/
 RUN npm install

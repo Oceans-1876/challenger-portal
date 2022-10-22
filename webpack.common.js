@@ -17,13 +17,19 @@ module.exports = {
         maplibreBasemapsControl: 'maplibre-gl-basemaps/lib/basemaps.css',
         appStyle: './src/styles/main.scss',
         polyfill: './src/polyfill.js',
+        config: './src/config.js',
         app: './src/app.tsx'
     },
 
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: process.env.PUBLIC_PATH || '/',
-        filename: 'js/[name]-[fullhash].js',
+        filename: (pathData) => {
+            if (pathData.chunk.name === 'config') {
+                return 'js/config.js';
+            }
+            return `js/${pathData.chunk.name}-${pathData.chunk.hash}.js`;
+        },
         crossOriginLoading: 'anonymous'
     },
 
@@ -86,11 +92,6 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.html'
-        }),
-        new Webpack.DefinePlugin({
-            PUBLIC_PATH: JSON.stringify(process.env.PUBLIC_PATH || '/'),
-            API_PATH: JSON.stringify(`${process.env.API_SERVER}/api/v1`),
-            API_FONTS: JSON.stringify(`${process.env.API_SERVER}/fonts`)
         }),
         new FaviconsWebpackPlugin({
             logo: './src/images/favicon.png',
