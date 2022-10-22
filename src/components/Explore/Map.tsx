@@ -330,6 +330,7 @@ const ExploreMap = (): JSX.Element => {
                             'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
                         ],
                         sourceExtraParams: {
+                            tileSize: 256,
                             attribution:
                                 '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
                         }
@@ -340,6 +341,7 @@ const ExploreMap = (): JSX.Element => {
                             'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                         ],
                         sourceExtraParams: {
+                            tileSize: 256,
                             attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
                         }
                     },
@@ -352,6 +354,7 @@ const ExploreMap = (): JSX.Element => {
                             'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
                         ],
                         sourceExtraParams: {
+                            tileSize: 256,
                             attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
                         }
                     }
