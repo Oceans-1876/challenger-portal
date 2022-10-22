@@ -1,6 +1,10 @@
 declare const ENV: 'development' | 'production' | 'test';
-declare const API_PATH: string;
-declare const API_FONTS: string;
+
+interface Window {
+    API_SERVER: string;
+    API_PATH: string;
+    API_FONTS: string;
+}
 
 interface UnitPref {
     Temp: string;
