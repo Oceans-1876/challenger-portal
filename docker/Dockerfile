@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 # Public Path when building application
 ARG PUBLIC_PATH=""
 ENV PUBLIC_PATH=${PUBLIC_PATH}
+RUN echo "Building with PUBLIC_PATH=${PUBLIC_PATH}"
 
 # Copy application and install dependencies
 COPY . /usr/src/app/

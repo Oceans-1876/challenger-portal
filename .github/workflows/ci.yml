@@ -54,7 +54,7 @@ jobs:
           BUILDNUMBER: ${{ github.run_number }}
           GITSHA1: ${{ github.sha }}
         with:
-          name: Oceans-1876/challenger-portal
+          name: oceans-1876/challenger-portal
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
