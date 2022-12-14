@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../store/contexts';
 import { useStationDetails } from '../../utils/hooks';
-import About from '../About';
 import DownloadButton from '../DownloadButton';
 import Loading from '../Loading';
 import TabsGroup from '../TabsGroup';
@@ -143,10 +142,6 @@ const Sidebar = () => {
                         {
                             Panel: Filters,
                             label: 'Filters'
-                        },
-                        {
-                            Panel: About,
-                            label: 'About'
                         }
                     ]}
                 />

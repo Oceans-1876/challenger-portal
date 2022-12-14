@@ -116,11 +116,54 @@ const Home = (): JSX.Element => (
             })}
         />
 
+        <Box
+            sx={{
+                position: 'absolute',
+                top: 0,
+                height: 64,
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                p: 2,
+                background: 'rgba(255, 255, 255, 0.2)',
+                borderBottom: '2px solid #90FFF3'
+            }}
+        >
+            <Typography sx={{ color: '#fff' }} variant="subtitle1">
+                Challenger Expedition
+                <br />
+                <i>HMS Challenger</i> journey
+            </Typography>
+            <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'end' }}>
+                <Typography
+                    sx={{ color: '#90FFF3', textDecorationLine: 'none', p: 1 }}
+                    component={Link}
+                    to="/explore"
+                    variant="subtitle1"
+                >
+                    Explore Voyage
+                </Typography>
+                <Typography sx={{ color: '#eee', textDecorationLine: 'none', p: 1 }} component="a" variant="subtitle1">
+                    Analysis
+                </Typography>
+                <Typography
+                    sx={{ color: '#90FFF3', textDecorationLine: 'none', p: 1 }}
+                    component="a"
+                    href={`${window.API_PATH}/docs`}
+                    target="_blank"
+                    variant="subtitle1"
+                >
+                    Data API
+                </Typography>
+            </Box>
+        </Box>
+
         <Typography
             sx={(theme) => ({
                 position: 'absolute',
                 top: 134,
                 left: 35,
+                fontFamily: 'Proza Libre',
                 fontStyle: 'italic',
                 fontWeight: 500,
                 fontSize: '10em',
@@ -147,6 +190,7 @@ const Home = (): JSX.Element => (
                 position: 'absolute',
                 top: 204,
                 left: 35,
+                fontFamily: 'Proza Libre',
                 fontStyle: 'italic',
                 fontWeight: 500,
                 fontSize: '10em',
@@ -173,6 +217,7 @@ const Home = (): JSX.Element => (
                 position: 'absolute',
                 top: 292,
                 left: 35,
+                fontFamily: 'Proza Libre',
                 fontStyle: 'italic',
                 fontWeight: 500,
                 fontSize: '10em',
@@ -196,15 +241,18 @@ const Home = (): JSX.Element => (
         <Typography
             sx={(theme) => ({
                 position: 'absolute',
-                top: 484,
+                top: 435,
                 left: 55,
+                fontFamily: 'Proza Libre',
                 fontStyle: 'normal',
                 fontWeight: 500,
                 fontSize: '9em',
                 [theme.breakpoints.down('lg')]: {
+                    top: 480,
                     fontSize: '6em'
                 },
                 [theme.breakpoints.down('md')]: {
+                    top: 460,
                     fontSize: '4.5rem'
                 },
                 letterSpacing: -7.5,
@@ -245,7 +293,7 @@ const Home = (): JSX.Element => (
                 left: 412,
                 width: 450,
                 height: 116,
-                fontFamily: 'sans-serif',
+                fontFamily: 'Quattrocento Sans, sans-serif',
                 fontWeight: 400,
                 fontSize: 20,
                 lineHeight: '143%',
@@ -294,7 +342,7 @@ const Home = (): JSX.Element => (
                 left: 445,
                 width: 635,
                 height: 116,
-                fontFamily: 'sans-serif',
+                fontFamily: 'Quattrocento Sans, sans-serif',
                 fontWeight: 400,
                 fontSize: 20,
                 textAlign: 'center',
@@ -335,7 +383,7 @@ const Home = (): JSX.Element => (
                 left: 445,
                 width: 592,
                 height: 116,
-                fontFamily: 'sans-serif',
+                fontFamily: 'Quattrocento Sans, sans-serif',
                 fontWeight: 400,
                 fontSize: 20,
                 textAlign: 'center',
@@ -361,7 +409,7 @@ const Home = (): JSX.Element => (
         >
             <Typography
                 sx={{
-                    fontFamily: 'sans-serif',
+                    fontFamily: 'Quattrocento Sans, sans-serif',
                     fontWeight: 400,
                     fontSize: 20,
                     letterSpacing: 0.03,
@@ -416,7 +464,7 @@ const Home = (): JSX.Element => (
                         left: '35%',
                         width: '60%',
                         height: 88,
-                        fontFamily: 'sans-serif',
+                        fontFamily: 'Quattrocento Sans, sans-serif',
                         fontWeight: 400,
                         fontSize: '0.85em',
                         [theme.breakpoints.down('lg')]: {
@@ -499,7 +547,7 @@ const Home = (): JSX.Element => (
                         left: '15%',
                         width: '60%',
                         height: 88,
-                        fontFamily: 'sans-serif',
+                        fontFamily: 'Quattrocento Sans, sans-serif',
                         fontWeight: 400,
                         fontSize: '0.85em',
                         [theme.breakpoints.down('lg')]: {
@@ -522,7 +570,10 @@ const Home = (): JSX.Element => (
         <Box
             sx={(theme) => ({
                 position: 'absolute',
-                top: 3550,
+                top: 3600,
+                [theme.breakpoints.up('lg')]: {
+                    top: 3550
+                },
                 [theme.breakpoints.up('lg')]: {
                     top: 3500
                 },
@@ -578,9 +629,9 @@ const Home = (): JSX.Element => (
         <Box
             sx={(theme) => ({
                 position: 'absolute',
-                top: 4000,
+                top: 4100,
                 [theme.breakpoints.down('lg')]: {
-                    top: 4200
+                    top: 4250
                 },
                 width: '100%',
                 p: 8,
@@ -615,7 +666,7 @@ const Home = (): JSX.Element => (
                         '&:hover': {
                             backgroundImage: `url(${logoColorSAMS})`,
                             backgroundColor: '#fff',
-                            height: 150
+                            height: 100
                         }
                     }}
                     component="a"
@@ -636,7 +687,7 @@ const Home = (): JSX.Element => (
                         '&:hover': {
                             backgroundImage: `url(${logoColorNHM})`,
                             backgroundColor: '#fff',
-                            height: 150
+                            height: 100
                         }
                     }}
                     component="a"
@@ -657,7 +708,7 @@ const Home = (): JSX.Element => (
                         '&:hover': {
                             backgroundImage: `url(${logoColorUIUC})`,
                             backgroundColor: '#fff',
-                            height: 150
+                            height: 100
                         }
                     }}
                     component="a"
@@ -678,7 +729,7 @@ const Home = (): JSX.Element => (
                         '&:hover': {
                             backgroundImage: `url(${logoColorCarnegie})`,
                             backgroundColor: '#fff',
-                            height: 150
+                            height: 100
                         }
                     }}
                     component="a"
@@ -699,7 +750,7 @@ const Home = (): JSX.Element => (
                         '&:hover': {
                             backgroundImage: `url(${logoColorPlymouth})`,
                             backgroundColor: '#fff',
-                            height: 150
+                            height: 100
                         }
                     }}
                     component="a"
@@ -727,16 +778,28 @@ const Home = (): JSX.Element => (
                 background: 'rgba(36, 60, 89, 0.65)'
             })}
         >
-            <Typography sx={{ color: '#90FFF3' }} component={Link} to="#" variant="subtitle1">
-                Copyright
+            <Typography sx={{ color: '#90FFF3' }} variant="subtitle1">
+                Copyright © University of Illinois 2022
             </Typography>
-            <Typography sx={{ color: '#90FFF3' }} component={Link} to="#" variant="subtitle1">
+            <Typography
+                sx={{ color: '#90FFF3' }}
+                component="a"
+                href="https://github.com/Oceans-1876/"
+                target="_blank"
+                variant="subtitle1"
+            >
                 License
             </Typography>
-            <Typography sx={{ color: '#90FFF3' }} component={Link} to="#" variant="subtitle1">
-                Contact: admin@illinois.edu
+            <Typography sx={{ color: '#90FFF3' }} component="a" href="mailto:gdwood@illinois.edu" variant="subtitle1">
+                Contact: gdwood@illinois.edu
             </Typography>
-            <Typography sx={{ color: '#90FFF3' }} component={Link} to="#" variant="subtitle1">
+            <Typography
+                sx={{ color: '#90FFF3' }}
+                component="a"
+                href={`${window.API_PATH}/docs`}
+                target="_blank"
+                variant="subtitle1"
+            >
                 API
             </Typography>
             <Typography sx={{ color: '#90FFF3' }} variant="subtitle1">
