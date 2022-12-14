@@ -75,7 +75,7 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
 
 export const mapStyle: maplibregl.StyleSpecification = {
     version: 8,
-    glyphs: `${API_FONTS}/{fontstack}/{range}.pbf`,
+    glyphs: `${window.API_FONTS}/{fontstack}/{range}.pbf`,
     sources: {},
     layers: []
 };

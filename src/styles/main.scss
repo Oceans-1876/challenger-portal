@@ -1,7 +1,3 @@
-html, body, #root {
-  height: 100%;
-}
-
 .icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -15,4 +11,10 @@ html, body, #root {
   direction: ltr;
   -moz-font-feature-settings: 'liga';
   -moz-osx-font-smoothing: grayscale;
+}
+
+.center-horizontal {
+  margin: 0 auto;
+  left: 0;
+  right: 0;
 }
