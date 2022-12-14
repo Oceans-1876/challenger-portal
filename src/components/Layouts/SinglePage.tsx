@@ -11,8 +11,9 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import { getRandomBackground } from './backgrounds';
 import UnitPreferencesDialog from '../UnitPreferencesDialog';
+import { getRandomBackground } from './backgrounds';
+import './singlePage.scss';
 
 export const headerHeight = 60;
 
@@ -92,7 +93,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                             variant="outlined"
                             startIcon={<Icon baseClassName="icons">data_exploration</Icon>}
                             size="small"
-                            href={`${API_PATH}/docs`}
+                            href={`${window.API_PATH}/docs`}
                             target="_blank"
                         >
                             API
@@ -138,7 +139,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                                 </IconButton>
                                 <p>Analysis</p>
                             </MenuItem>
-                            <MenuItem dense component="a" href={`${API_PATH}/docs`} target="_blank">
+                            <MenuItem dense component="a" href={`${window.API_PATH}/docs`} target="_blank">
                                 <IconButton size="small">
                                     <Icon baseClassName="icons">data_exploration</Icon>
                                 </IconButton>

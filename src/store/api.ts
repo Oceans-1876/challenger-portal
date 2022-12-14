@@ -3,7 +3,7 @@ import { Dayjs } from 'dayjs';
 
 export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
     axios
-        .get(`${API_PATH}/${endpoint}`)
+        .get(`${window.API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
         .catch((error) => {
             console.error();
@@ -67,7 +67,7 @@ export const searchStations = (
                 : expressions[0];
 
         axios
-            .post(`${API_PATH}/stations/search/`, data)
+            .post(`${window.API_PATH}/stations/search/`, data)
             .then((resp) => success(resp.data))
             .catch(console.error);
     }

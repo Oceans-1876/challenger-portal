@@ -1,13 +1,17 @@
-import { lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 
 import { withLayout } from './components/Layouts/utils';
 import layouts from './components/Layouts';
+import Loading from './components/Loading';
+
+const LazyHome = lazy(() => import('./components/Home'));
 
 const routes: { [key: string]: import('react-router-dom').RouteProps } = {
     '/': {
-        element: withLayout(
-            layouts.Scrollable,
-            lazy(() => import('./components/Home'))
+        element: (
+            <Suspense fallback={<Loading />}>
+                <LazyHome />
+            </Suspense>
         )
     },
     '/explore': {
