@@ -78,7 +78,7 @@ const ExploreMap = (): JSX.Element => {
                 type: 'FeatureCollection',
                 features: []
             },
-            cluster: true,
+            cluster: false, // FIXME - Temporarily disable clustering because it is broken with some server configurations.
             clusterMinPoints: 5
         });
 
