@@ -1,3 +1,9 @@
+/**
+ * Various context storage that hold data and functions that can be used by different components.
+ * These are accessible in any place in the app that `React.useContext` can be used.
+ * For clarity, data and dispatchers (functions that update the state) are store in separate contexts.
+ */
+
 import React from 'react';
 
 import { dataStateInitialValue, filtersStateInitialValue } from './states';

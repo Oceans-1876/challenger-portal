@@ -281,7 +281,7 @@ const Home = (): JSX.Element => (
             }}
             variant="h2"
         >
-            The World&apos;s First Expedition of the Deep Sea
+            The World&apos;s First Exploration of the Deep Sea
         </Typography>
 
         <Typography
