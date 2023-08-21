@@ -15,8 +15,8 @@ module.exports = {
         maplibre: 'maplibre-gl/dist/maplibre-gl.css',
         maplibreBasemapsControl: 'maplibre-gl-basemaps/lib/basemaps.css',
         appStyle: './src/styles/main.scss',
-        polyfill: './src/polyfill.js',
-        config: './src/config.js',
+        polyfill: './src/polyfill.ts',
+        config: './src/config.ts',
         app: './src/app.tsx'
     },
 

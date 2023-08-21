@@ -7,6 +7,7 @@ import BasemapsControl, { MapLibreBasemapsControlOptions } from 'maplibre-gl-bas
 import { MapControl } from './Control';
 import Help from './Help';
 import LayersControl from './LayersControl';
+import { isWebglSupported } from './utils';
 
 interface Props {
     mapOptions: Partial<maplibregl.MapOptions>;
@@ -41,7 +42,7 @@ const Map = ({
     const layersControlRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
-        if (maplibre.supported() && mapContainerRef.current) {
+        if (isWebglSupported() && mapContainerRef.current) {
             const map = new maplibre.Map({
                 container: mapContainerRef.current,
                 bounds: initialBounds,
@@ -84,7 +85,7 @@ const Map = ({
 
     return (
         <Box ref={mapContainerRef} sx={{ height: '100%', flexGrow: 1, background: 'white' }}>
-            {maplibre.supported() ? null : 'Your browser does not support the map features.'}
+            {isWebglSupported() ? null : 'Your browser does not support the map features.'}
 
             {LayersControlProps ? (
                 <Box ref={layersControlRef} className="maplibregl-ctrl-group">
