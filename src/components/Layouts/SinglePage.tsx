@@ -42,7 +42,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const location = useLocation();
 
-    const openPreferencesDialog = () => setDialogOpen(true);
+    // const openPreferencesDialog = () => setDialogOpen(true);
     const closePreferencesDialog = () => setDialogOpen(false);
 
     const handleMobileMenuClose = () => {
@@ -116,11 +116,11 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                         }}
                         component={Stack}
                         direction="row"
-                        spacing={'32px'}
+                        spacing="32px"
                     >
-                        {menuItems.map((item, i) => (
+                        {menuItems.map((item) => (
                             <Button
-                                key={i}
+                                key={item.path}
                                 variant="text"
                                 size="small"
                                 component={Link}
@@ -174,9 +174,9 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                             open={isMobileMenuOpen}
                             onClose={handleMobileMenuClose}
                         >
-                            {menuItems.map((item, i) => (
+                            {menuItems.map((item) => (
                                 <MenuItem
-                                    key={i}
+                                    key={item.path}
                                     dense
                                     component={Link}
                                     to={item.path}
