@@ -15,9 +15,6 @@ import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
 
-window.API_PATH = `${window.API_SERVER}/api/v1`;
-window.API_FONTS = `${window.API_SERVER}/fonts`;
-
 const App = (): JSX.Element => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
 

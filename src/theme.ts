@@ -1,5 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+    interface Palette {
+        explore: typeof themeOptions.palette.explore;
+    }
+    interface PaletteOptions {
+        explore: typeof themeOptions.palette.explore;
+    }
+}
+
 export const themeOptions = {
     breakpoints: {
         values: {
@@ -22,6 +31,10 @@ export const themeOptions = {
             main: '#a2a77f',
             light: '#eff1c5',
             contrastText: '#fff'
+        },
+        explore: {
+            secondary: '#90fff3',
+            highlight: '#ffff00'
         }
     },
     typography: {
