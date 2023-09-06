@@ -42,7 +42,7 @@ export const searchStations = (
                             column_name,
                             search_term: value,
                             operator
-                        } as SearchExpression)
+                        }) as SearchExpression
                 )
             });
         } else if (values.length === 1) {
