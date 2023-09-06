@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,10 +14,23 @@ import Typography from '@mui/material/Typography';
 import UnitPreferencesDialog from '../UnitPreferencesDialog';
 import { getRandomBackground } from './backgrounds';
 import './singlePage.scss';
+import { theme } from '../../theme';
 
-export const headerHeight = 60;
+export const headerHeight = 64;
 
 const backgroundImage = getRandomBackground();
+
+const menuItems: Array<{ title: string; path: string; newTab?: boolean }> = [
+    {
+        title: 'Explore Voyage',
+        path: '/explore'
+    },
+    {
+        title: 'Data API',
+        path: `${window.API_PATH}/docs`,
+        newTab: true
+    }
+];
 
 type Props = {
     children?: React.ReactNode;
@@ -27,8 +40,9 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<HTMLElement | null>(null);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const [dialogOpen, setDialogOpen] = React.useState(false);
+    const location = useLocation();
 
-    const openPreferencesDialog = () => setDialogOpen(true);
+    // const openPreferencesDialog = () => setDialogOpen(true);
     const closePreferencesDialog = () => setDialogOpen(false);
 
     const handleMobileMenuClose = () => {
@@ -51,9 +65,9 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
             <AppBar
                 sx={{
                     'height': headerHeight,
-                    'color': 'primary.contrastText',
-                    'backgroundColor': 'primary.light',
-                    'justifyContent': 'center',
+                    'backgroundColor': 'rgba(29, 51, 70, 0.75)',
+                    'backdropFilter': 'blur(4px)',
+                    'borderBottom': `2px solid ${theme.palette.explore.secondary}`,
                     '& a': {
                         textDecoration: 'none',
                         color: 'primary.contrastText'
@@ -64,49 +78,82 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                 color="transparent"
             >
                 <Toolbar>
-                    <Typography sx={{ marginRight: 2 }} variant="h4" component={Link} to="/">
-                        Oceans 1876
-                    </Typography>
-                    <Typography variant="h5">HMS Challenger Journey</Typography>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }} component={Stack} direction="row" spacing={1}>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Icon baseClassName="icons">search</Icon>}
-                            component={Link}
-                            to="/explore"
+                    <Box
+                        component={Link}
+                        to="/"
+                        sx={{
+                            flex: 'none',
+                            color: 'white'
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                fontFamily: 'Proza Libre',
+                                fontSize: 16,
+                                fontStyle: 'italic',
+                                fontWeight: 600
+                            }}
                         >
-                            Explore
-                        </Button>
-                        <Button
-                            disabled
-                            variant="outlined"
-                            startIcon={<Icon baseClassName="icons">bar_chart</Icon>}
-                            size="small"
-                            component={Link}
-                            to="/analysis"
+                            Challenger Expedition
+                        </Typography>
+                        <Typography
+                            sx={{
+                                fontFamily: 'Inter',
+                                fontSize: 10
+                            }}
                         >
-                            Analysis
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            startIcon={<Icon baseClassName="icons">data_exploration</Icon>}
-                            size="small"
-                            href={`${window.API_PATH}/docs`}
-                            target="_blank"
-                        >
-                            API
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Icon baseClassName="icons">build</Icon>}
-                            onClick={openPreferencesDialog}
-                            sx={{ color: 'white' }}
-                        >
+                            HMS Challenger Journey
+                        </Typography>
+                    </Box>
+                    <Box flex="1" />
+                    <Box
+                        sx={{
+                            display: {
+                                xs: 'none',
+                                md: 'flex'
+                            },
+                            height: '100%'
+                        }}
+                        component={Stack}
+                        direction="row"
+                        spacing="32px"
+                    >
+                        {menuItems.map((item) => (
+                            <Button
+                                key={item.path}
+                                variant="text"
+                                size="small"
+                                component={Link}
+                                to={item.path}
+                                target={item.newTab ? '_blank' : '_self'}
+                                sx={{
+                                    'ml': '32px',
+                                    'textTransform': 'none',
+                                    'fontFamily': 'JetBrains Mono',
+                                    'fontWeight': 800,
+                                    'height': '100%',
+                                    'color': `${
+                                        location.pathname.startsWith(item.path)
+                                            ? theme.palette.explore.highlight
+                                            : theme.palette.explore.secondary
+                                    } !important`,
+                                    '::after': {
+                                        content: '""',
+                                        display: location.pathname.startsWith(item.path) ? 'block' : 'none',
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        height: 17,
+                                        width: '100%',
+                                        backgroundColor: theme.palette.explore.highlight
+                                    }
+                                }}
+                            >
+                                {item.title}
+                            </Button>
+                        ))}
+                        {/* <Button variant="text" size="small" onClick={openPreferencesDialog} sx={{ color: 'white' }}>
                             Preferences
-                        </Button>
+                        </Button> */}
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton onClick={handleMobileMenuOpen}>
@@ -127,24 +174,17 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                             open={isMobileMenuOpen}
                             onClose={handleMobileMenuClose}
                         >
-                            <MenuItem dense component={Link} to="/explore">
-                                <IconButton size="small">
-                                    <Icon baseClassName="icons">search</Icon>
-                                </IconButton>
-                                <p>Explore</p>
-                            </MenuItem>
-                            <MenuItem dense disabled component={Link} to="/analysis">
-                                <IconButton size="small">
-                                    <Icon baseClassName="icons">bar_chart</Icon>
-                                </IconButton>
-                                <p>Analysis</p>
-                            </MenuItem>
-                            <MenuItem dense component="a" href={`${window.API_PATH}/docs`} target="_blank">
-                                <IconButton size="small">
-                                    <Icon baseClassName="icons">data_exploration</Icon>
-                                </IconButton>
-                                <p>API</p>
-                            </MenuItem>
+                            {menuItems.map((item) => (
+                                <MenuItem
+                                    key={item.path}
+                                    dense
+                                    component={Link}
+                                    to={item.path}
+                                    target={item.newTab ? '_blank' : '_self'}
+                                >
+                                    <p>{item.title}</p>
+                                </MenuItem>
+                            ))}
                         </Menu>
                     </Box>
                 </Toolbar>
