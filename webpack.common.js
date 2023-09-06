@@ -23,12 +23,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: process.env.PUBLIC_PATH || '/',
-        filename: (pathData) => {
-            if (pathData.chunk.name === 'config') {
-                return 'js/config.js';
-            }
-            return `js/${pathData.chunk.name}-${pathData.chunk.hash}.js`;
-        },
+        filename: (pathData) => `js/${pathData.chunk.name}-${pathData.chunk.hash}.js`,
         crossOriginLoading: 'anonymous'
     },
 
