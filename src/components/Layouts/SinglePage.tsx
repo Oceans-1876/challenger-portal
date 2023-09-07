@@ -27,7 +27,7 @@ const menuItems: Array<{ title: string; path: string; newTab?: boolean }> = [
     },
     {
         title: 'Data API',
-        path: `${window.API_PATH}/docs`,
+        path: `${window.API_SERVER}/api/v1/docs`,
         newTab: true
     }
 ];
