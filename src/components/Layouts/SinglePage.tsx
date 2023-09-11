@@ -12,13 +12,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 import UnitPreferencesDialog from '../UnitPreferencesDialog';
-import { getRandomBackground } from './backgrounds';
-import './singlePage.scss';
 import { theme } from '../../theme';
 
 export const headerHeight = 64;
-
-const backgroundImage = getRandomBackground();
 
 const menuItems: Array<{ title: string; path: string; newTab?: boolean }> = [
     {
@@ -54,16 +50,11 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                background: `url(${backgroundImage.url})`
-            }}
-        >
+        <Box>
             <AppBar
                 sx={{
+                    'position': 'fixed',
+                    'z-index': 1,
                     'height': headerHeight,
                     'backgroundColor': 'rgba(29, 51, 70, 0.75)',
                     'backdropFilter': 'blur(4px)',
@@ -190,9 +181,7 @@ const Layout: React.FC<Props> = ({ children }: Props) => {
                 </Toolbar>
             </AppBar>
             <UnitPreferencesDialog open={dialogOpen} onClose={closePreferencesDialog} />
-            <Box sx={{ padding: '30px', borderColor: 'secondary.light', height: `calc( 100% - ${headerHeight}px)` }}>
-                {children}
-            </Box>
+            <Box sx={{ height: '100vh' }}>{children}</Box>
         </Box>
     );
 };

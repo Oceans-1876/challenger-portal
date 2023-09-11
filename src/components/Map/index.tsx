@@ -55,13 +55,13 @@ const Map = ({
             }
 
             if (navigation) {
-                map.addControl(new maplibre.NavigationControl({}));
                 if (resetPitchButtonRef.current) {
-                    map.addControl(new MapControl(resetPitchButtonRef.current));
+                    map.addControl(new MapControl(resetPitchButtonRef.current), 'bottom-right');
                 }
                 if (resetBoundsButtonRef.current) {
-                    map.addControl(new MapControl(resetBoundsButtonRef.current));
+                    map.addControl(new MapControl(resetBoundsButtonRef.current), 'bottom-right');
                 }
+                map.addControl(new maplibre.NavigationControl({}), 'bottom-right');
             }
 
             if (basemaps) {
@@ -73,7 +73,7 @@ const Map = ({
             }
 
             if (LayersControlProps && layersControlRef.current) {
-                map.addControl(new MapControl(layersControlRef.current), 'top-left');
+                // map.addControl(new MapControl(layersControlRef.current), 'top-left');
             }
 
             map.on('load', () => {
@@ -81,6 +81,9 @@ const Map = ({
             });
             mapRef.current = map;
         }
+        return () => {
+            mapRef.current?.remove();
+        };
     }, []);
 
     return (
