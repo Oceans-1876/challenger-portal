@@ -28,11 +28,6 @@ interface UpdateFAOAreas {
     faoAreas: FAOArea[];
 }
 
-interface UpdateFilterCount {
-    type: 'updateFilterCount';
-    count: number | null;
-}
-
 interface UpdateFilteredSpecies {
     type: 'updateFilteredSpecies';
     species: string[];
@@ -50,17 +45,7 @@ interface RemoveFromFilteredSpecies {
 
 interface UpdateFilteredStations {
     type: 'updateFilteredStations';
-    stations: string[];
-}
-
-interface UpdateFilteredFAOAreas {
-    type: 'updateFilteredFAOAreas';
-    faoAreas: string[];
-}
-
-interface UpdateFilterDates {
-    type: 'updateFilterDates';
-    dates: (import('dayjs').Dayjs | null)[];
+    stations: StationSummary[] | null;
 }
 
 interface UpdateTempToUnit {
@@ -77,17 +62,9 @@ type DataAction =
     | UpdateTempToUnit
     | UpdateDepthToUnit
     | UpdateStations
+    | UpdateFilteredStations
     | UpdateSelectedStation
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
     | UpdateFAOAreas;
-
-type FilterAction =
-    | UpdateFilterCount
-    | UpdateFilteredSpecies
-    | AddToFilteredSpecies
-    | RemoveFromFilteredSpecies
-    | UpdateFilteredStations
-    | UpdateFilteredFAOAreas
-    | UpdateFilterDates;

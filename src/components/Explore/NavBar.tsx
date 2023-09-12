@@ -29,10 +29,6 @@ const menuItems: Array<{ title: string; path: string; newTab?: boolean }> = [
     }
 ];
 
-type Props = {
-    children?: React.ReactNode;
-};
-
 const NavBar: FC = () => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<HTMLElement | null>(null);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);

@@ -65,10 +65,10 @@ export const themeOptions = {
                     props: { variant: 'explore-contained' },
                     style: {
                         'textTransform': 'none',
-                        'backgroundColor': `#90fff3`,
-                        'color': `#243c59f2`,
+                        'backgroundColor': '#90fff3',
+                        'color': '#243c59f2',
                         '&:active, &:hover': {
-                            backgroundColor: `#90fff3`
+                            backgroundColor: '#90fff3'
                         },
                         'height': '36px',
                         'borderRadius': '18px'
@@ -81,7 +81,7 @@ export const themeOptions = {
                             backgroundColor: 'transparent !important'
                         },
                         'textTransform': 'none',
-                        'color': `#90fff3`
+                        'color': '#90fff3'
                     }
                 }
             ]

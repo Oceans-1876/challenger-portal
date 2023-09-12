@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Icon from '@mui/material/Icon';
@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { DataActionDispatcherContext, DataStateContext, FilterStateContext } from '../../../store/contexts';
+import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
 import { useStationDetails } from '../../../utils/hooks';
 import DownloadButton from '../../DownloadButton';
 import Loading from '../../Loading';
@@ -15,36 +15,11 @@ import StationDetails from '../../Station/Details';
 import StationEnvironment from '../../Station/Environment';
 import StationSpecies from '../../Station/Species';
 import StationText from '../../Station/Text';
-import { searchStations } from '../../../store/api';
 
 const Sidebar = () => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
+    const { filteredStations, stationsList, selectedStation } = useContext(DataStateContext);
 
-    const [stationsList, setStationList] = useState<StationSummary[]>([]);
-    const { filteredStations, filteredSpecies, filteredFAOAreas } = useContext(FilterStateContext);
-
-    useEffect(() => {
-        searchStations(
-            {
-                stationNames: filteredStations,
-                faoAreas: filteredFAOAreas,
-                species: filteredSpecies,
-                dates: []
-            },
-            (stations) => {
-                setStationList(stations);
-            }
-        );
-    }, [filteredFAOAreas, filteredSpecies, filteredStations]);
-
-    useEffect(() => {
-        dataActionDispatcher({
-            type: 'updateSelectedStation',
-            station: stationsList[0]
-        });
-    }, [stationsList]);
-
-    const { selectedStation } = useContext(DataStateContext);
     const selectedStationDetails = useStationDetails(selectedStation?.name);
 
     const StationPanel = React.useCallback(
@@ -65,14 +40,15 @@ const Sidebar = () => {
     );
 
     const onNavigate = (selectedStationName: string, navigate_to: string) => {
-        const index = stationsList.findIndex((station) => station.name === selectedStation?.name);
+        const stations = filteredStations?.length ? filteredStations : stationsList;
+        const index = stations.findIndex((station) => station.name === selectedStation?.name);
         const newIndex =
             navigate_to === 'forward'
-                ? (index + 1 + stationsList.length) % stationsList.length
-                : (index - 1 + stationsList.length) % stationsList.length;
+                ? (index + 1 + stations.length) % stations.length
+                : (index - 1 + stations.length) % stations.length;
         dataActionDispatcher({
             type: 'updateSelectedStation',
-            station: stationsList[newIndex]
+            station: stations[newIndex]
         });
     };
 

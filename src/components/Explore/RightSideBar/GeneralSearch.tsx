@@ -1,20 +1,10 @@
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import {
-    Autocomplete,
-    Box,
-    Button,
-    Chip,
-    FormControlLabel,
-    Radio,
-    RadioGroup,
-    Stack,
-    SxProps,
-    TextField
-} from '@mui/material';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { theme } from '../../../theme';
-import { DataStateContext, FilterActionDispatcherContext } from '../../../store/contexts';
+import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
 import { useDebounce, useFAOAreas } from '../../../utils/hooks';
-import { getData } from '../../../store/api';
+import { getData, searchStations } from '../../../store/api';
+import { chipStyleOverride, selectStyleOverride } from './theme';
 
 type GeneralSearchType = 'species' | 'station' | 'oceanic-region';
 
@@ -33,35 +23,13 @@ const searchTypes: Array<{ type: GeneralSearchType; label: string }> = [
     }
 ];
 
-const chipStyleOverride: SxProps = {
-    color: theme.palette.explore.mainText,
-    borderColor: theme.palette.explore.secondary
+type Props = {
+    toggle: ReactNode;
 };
 
-const autocompleteStyleOverride: SxProps = {
-    '.MuiFormLabel-root': {
-        'color': `${theme.palette.explore.secondaryText} !important`,
-        '&.Mui-focused': {
-            color: `${theme.palette.explore.secondary} !important`
-        }
-    },
-    '.MuiSvgIcon-root': {
-        color: `${theme.palette.explore.secondary} !important`
-    },
-    '.MuiOutlinedInput-notchedOutline': {
-        borderColor: `${theme.palette.explore.secondary} !important`,
-        color: theme.palette.explore.secondaryText
-    },
-    'input': {
-        color: theme.palette.explore.mainText,
-        border: theme.palette.explore.secondary
-    }
-};
-
-const GeneralSearch: FC = () => {
-    const filterActionDispatcher = useContext(FilterActionDispatcherContext);
-
+const GeneralSearch: FC<Props> = ({ toggle }) => {
     const { stationsList, allSpeciesList } = useContext(DataStateContext);
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const speciesDefaultRanks = useMemo(() => new Map(allSpeciesList.map((s, rank) => [s.id, rank])), [allSpeciesList]);
 
     const [speciesFilter, setSpeciesFilter] = useState<SpeciesSummary[]>([]);
@@ -97,71 +65,59 @@ const GeneralSearch: FC = () => {
 
     const [searchType, setSearchType] = useState<GeneralSearchType>('species');
 
-    useEffect(() => {
-        setSpeciesFilter([]);
-        setStationFilter([]);
-        setFaoAreaFilter([]);
-        filterActionDispatcher({
-            type: 'updateFilteredSpecies',
-            species: []
-        });
-        filterActionDispatcher({
-            type: 'updateFilteredStations',
-            stations: []
-        });
-        filterActionDispatcher({
-            type: 'updateFilteredFAOAreas',
-            faoAreas: []
-        });
-    }, [searchType]);
-
     const clearFilter = useCallback(() => {
         switch (searchType) {
             case 'species':
                 setSpeciesFilter([]);
-                filterActionDispatcher({
-                    type: 'updateFilteredSpecies',
-                    species: []
-                });
                 break;
             case 'station':
                 setStationFilter([]);
-                filterActionDispatcher({
-                    type: 'updateFilteredStations',
-                    stations: []
-                });
                 break;
             case 'oceanic-region':
                 setFaoAreaFilter([]);
-                filterActionDispatcher({
-                    type: 'updateFilteredFAOAreas',
-                    faoAreas: []
-                });
                 break;
         }
+        dataActionDispatcher({
+            type: 'updateFilteredStations',
+            stations: null
+        });
+        dataActionDispatcher({
+            type: 'updateSelectedStation',
+            station: null
+        });
+    }, [searchType]);
+
+    useEffect(() => {
+        setSpeciesFilter([]);
+        setStationFilter([]);
+        setFaoAreaFilter([]);
+        dataActionDispatcher({
+            type: 'updateFilteredStations',
+            stations: null
+        });
+        dataActionDispatcher({
+            type: 'updateSelectedStation',
+            station: null
+        });
     }, [searchType]);
 
     const applyFilter = useCallback(() => {
-        switch (searchType) {
-            case 'species':
-                filterActionDispatcher({
-                    type: 'updateFilteredSpecies',
-                    species: speciesFilter.map((species) => species.id)
-                });
-                break;
-            case 'station':
-                filterActionDispatcher({
-                    type: 'updateFilteredStations',
-                    stations: stationFilter.map((station) => station.name)
-                });
-                break;
-            case 'oceanic-region':
-                filterActionDispatcher({
-                    type: 'updateFilteredFAOAreas',
-                    faoAreas: faoAreaFilter.map((faoArea) => faoArea.code)
-                });
-                break;
-        }
+        const searchExpr: StationSearchExpressions = {
+            species: searchType === 'species' ? speciesFilter.map((s) => s.id) : [],
+            stationNames: searchType === 'station' ? stationFilter.map((s) => s.name) : [],
+            faoAreas: searchType === 'oceanic-region' ? faoAreaFilter.map((a) => a.code) : [],
+            dates: []
+        };
+        searchStations(searchExpr, (stations) => {
+            dataActionDispatcher({
+                type: 'updateFilteredStations',
+                stations
+            });
+            dataActionDispatcher({
+                type: 'updateSelectedStation',
+                station: stations.length == 1 ? stations[0] : null
+            });
+        });
     }, [searchType, speciesFilter, stationFilter, faoAreaFilter]);
 
     return (
@@ -173,7 +129,7 @@ const GeneralSearch: FC = () => {
                         sx={{
                             '& .MuiTypography-root': {
                                 color:
-                                    type == searchType
+                                    type === searchType
                                         ? theme.palette.explore.mainText
                                         : theme.palette.explore.secondaryText,
                                 fontWeight: '500',
@@ -196,7 +152,7 @@ const GeneralSearch: FC = () => {
             </RadioGroup>
 
             <Box sx={{ mt: '16px' }}>
-                {searchType == 'species' ? (
+                {searchType === 'species' ? (
                     <Autocomplete
                         fullWidth
                         multiple
@@ -207,7 +163,7 @@ const GeneralSearch: FC = () => {
                                 onChange={(e) => setSpeciesFilterInput(e.target.value)}
                                 label="Species"
                                 placeholder="Species"
-                                sx={autocompleteStyleOverride}
+                                sx={selectStyleOverride}
                             />
                         )}
                         getOptionLabel={(option) => option.matched_canonical_full_name || option.record_id}
@@ -216,7 +172,10 @@ const GeneralSearch: FC = () => {
                             options
                                 .filter((option) => speciesFilterOptionRanks.has(option.id))
                                 .sort((a, b) => {
-                                    return speciesFilterOptionRanks.get(a.id)! - speciesFilterOptionRanks.get(b.id)!;
+                                    return (
+                                        (speciesFilterOptionRanks.get(a.id) ?? 0) -
+                                        (speciesFilterOptionRanks.get(b.id) ?? 0)
+                                    );
                                 })
                         }
                         renderTags={(tagValue) =>
@@ -227,7 +186,7 @@ const GeneralSearch: FC = () => {
                                     key={option.id}
                                     label={option.matched_canonical_full_name}
                                     onDelete={() => {
-                                        setSpeciesFilter(speciesFilter.filter((species) => species.id != option.id));
+                                        setSpeciesFilter(speciesFilter.filter((species) => species.id !== option.id));
                                     }}
                                 />
                             ))
@@ -237,19 +196,14 @@ const GeneralSearch: FC = () => {
                             setSpeciesFilter([...selectedOptions]);
                         }}
                     />
-                ) : searchType == 'station' ? (
+                ) : searchType === 'station' ? (
                     <Autocomplete
                         fullWidth
                         multiple
                         renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Stations"
-                                placeholder="Stations"
-                                sx={autocompleteStyleOverride}
-                            />
+                            <TextField {...params} label="Stations" placeholder="Stations" sx={selectStyleOverride} />
                         )}
-                        getOptionLabel={(option) => option.name}
+                        getOptionLabel={(option) => `Station ${option.name}`}
                         options={stationsList}
                         renderTags={(tagValue) =>
                             tagValue.map((option) => (
@@ -260,7 +214,7 @@ const GeneralSearch: FC = () => {
                                     label={option.name}
                                     onDelete={() => {
                                         setStationFilter(
-                                            stationFilter.filter((station) => station.name != option.name)
+                                            stationFilter.filter((station) => station.name !== option.name)
                                         );
                                     }}
                                 />
@@ -280,7 +234,7 @@ const GeneralSearch: FC = () => {
                                 {...params}
                                 label="Oceanic Regions"
                                 placeholder="Oceanic Regions"
-                                sx={autocompleteStyleOverride}
+                                sx={selectStyleOverride}
                             />
                         )}
                         getOptionLabel={(option) => option.name}
@@ -294,7 +248,7 @@ const GeneralSearch: FC = () => {
                                     label={option.name}
                                     onDelete={() => {
                                         setFaoAreaFilter(
-                                            faoAreaFilter.filter((station) => station.code != option.code)
+                                            faoAreaFilter.filter((station) => station.code !== option.code)
                                         );
                                     }}
                                 />
@@ -315,7 +269,7 @@ const GeneralSearch: FC = () => {
                     py: '16px'
                 }}
             >
-                <Button variant="explore-text">Advanced Search</Button>
+                {toggle}
                 <Box flex="1" />
                 <Button variant="explore-text" onClick={clearFilter}>
                     Clear

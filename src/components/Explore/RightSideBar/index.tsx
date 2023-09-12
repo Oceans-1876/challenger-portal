@@ -1,13 +1,13 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
-import { theme } from '../../../theme';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, LayersOutlined } from '@mui/icons-material';
+import { theme } from '../../../theme';
 import SearchPanel from './SearchPanel';
 
 const RightSideBar: FC = () => {
     const [expanded, setExpanded] = useState(false);
-    const [searchPanelOpen, setSearchPanelOpen] = useState(true);
+    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
     return (
         <Stack

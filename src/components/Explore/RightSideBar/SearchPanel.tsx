@@ -1,7 +1,7 @@
-import { Box, Button, Divider, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Stack } from '@mui/material';
+import { Box, Button, Divider, MenuItem, Select, Stack } from '@mui/material';
 import React, { FC, useState } from 'react';
-import { theme } from '../../../theme';
 import { CloseOutlined } from '@mui/icons-material';
+import { theme } from '../../../theme';
 import GeneralSearch from './GeneralSearch';
 import AdvancedSearch from './AdvancedSearch';
 
@@ -13,6 +13,16 @@ type Props = {
 
 const SearchPanel: FC<Props> = ({ onClose }) => {
     const [searchType, setSearchType] = useState<SearchType>('general');
+    const toggle = (
+        <Button
+            variant="explore-text"
+            onClick={() => {
+                setSearchType(searchType === 'advanced' ? 'general' : 'advanced');
+            }}
+        >
+            {searchType === 'advanced' ? 'General' : 'Advanced'} Search
+        </Button>
+    );
     return (
         <Box
             sx={{
@@ -51,7 +61,7 @@ const SearchPanel: FC<Props> = ({ onClose }) => {
             </Stack>
             <Divider sx={{ background: theme.palette.explore.divider, mt: '16px', mb: '16px' }} />
 
-            {searchType == 'general' ? <GeneralSearch /> : <AdvancedSearch />}
+            {searchType === 'general' ? <GeneralSearch toggle={toggle} /> : <AdvancedSearch toggle={toggle} />}
         </Box>
     );
 };

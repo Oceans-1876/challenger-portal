@@ -2,13 +2,7 @@ import React from 'react';
 
 import type { Point } from 'geojson';
 
-import { searchStations } from '../../store/api';
-import {
-    DataStateContext,
-    DataActionDispatcherContext,
-    FilterStateContext,
-    FilterActionDispatcherContext
-} from '../../store/contexts';
+import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
 import Map from '../Map';
@@ -17,9 +11,8 @@ import faoAreasUrl from '../../files/fao_areas.geojson';
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, stationsList, selectedStation } = React.useContext(DataStateContext);
-    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
-    const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
+    const { journeyPath, stationsBounds, stationsList, selectedStation, filteredStations } =
+        React.useContext(DataStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
     const mapRef = React.useRef<maplibregl.Map>();
@@ -249,7 +242,7 @@ const ExploreMap = (): JSX.Element => {
             if (selectedStation) {
                 map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 7 });
             } else {
-                map.flyTo({ center: [0, 0], zoom: 2 });
+                map.fitBounds([-180, -90, 180, 90]);
             }
         }
     }, [selectedStation, isMapLoaded]);
@@ -258,52 +251,35 @@ const ExploreMap = (): JSX.Element => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            if (
-                filteredStations.length ||
-                filteredFAOAreas.length ||
-                filteredSpecies.length ||
-                filterDates[0] !== null ||
-                filterDates[1] !== null
-            ) {
-                searchStations(
-                    {
-                        stationNames: filteredStations,
-                        faoAreas: filteredFAOAreas,
-                        species: filteredSpecies,
-                        dates: filterDates
-                    },
-                    (stations) => {
-                        map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
-                        // Move the map to filtered stations
-                        if (stations.length === 1) {
-                            map.flyTo({
-                                center: stations[0].coordinates,
-                                zoom: 6
-                            });
-                        } else {
-                            const bounds = getFeatureBounds(
-                                stations.map(({ coordinates }) => coordinates) as LineCoordinates
-                            );
-                            if (!bounds.isEmpty()) {
-                                map.fitBounds(bounds, {
-                                    maxZoom: 10,
-                                    // TODO: find a better way to set these values
-                                    padding: {
-                                        left: 600,
-                                        right: 600,
-                                        top: 100,
-                                        bottom: 10
-                                    }
-                                });
-                            }
-                        }
-
-                        if (selectedStation && !stations.find(({ name }) => name === selectedStation.name)) {
-                            dataActionDispatcher({ type: 'updateSelectedStation', station: null });
-                        }
-                        filterActionDispatcher({ type: 'updateFilterCount', count: stations.length });
+            if (filteredStations) {
+                map.setFilter('stations', ['in', 'name', ...filteredStations.map((station) => station.name)]);
+                // Move the map to filtered stations
+                if (filteredStations.length === 1) {
+                    map.flyTo({
+                        center: filteredStations[0].coordinates,
+                        zoom: 6
+                    });
+                } else {
+                    const bounds = getFeatureBounds(
+                        filteredStations.map(({ coordinates }) => coordinates) as LineCoordinates
+                    );
+                    if (!bounds.isEmpty()) {
+                        // map.fitBounds(bounds, {
+                        //     maxZoom: 10,
+                        //     // TODO: find a better way to set these values
+                        //     padding: {
+                        //         left: 600,
+                        //         right: 600,
+                        //         top: 100,
+                        //         bottom: 10
+                        //     }
+                        // });
                     }
-                );
+                }
+
+                if (selectedStation && !filteredStations.find(({ name }) => name === selectedStation.name)) {
+                    dataActionDispatcher({ type: 'updateSelectedStation', station: null });
+                }
 
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
@@ -318,10 +294,9 @@ const ExploreMap = (): JSX.Element => {
                     }
                 );
                 map.setLayoutProperty('stations', 'visibility', 'none');
-                filterActionDispatcher({ type: 'updateFilterCount', count: null });
             }
         }
-    }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded, filterDates]);
+    }, [filteredStations, isMapLoaded]);
 
     return (
         <Map

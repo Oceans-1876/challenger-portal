@@ -14,6 +14,12 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 stationsList: action.stations
             };
         }
+        case 'updateFilteredStations': {
+            return {
+                ...state,
+                filteredStations: action.stations
+            };
+        }
         case 'updateSelectedStation':
             return {
                 ...state,
@@ -52,47 +58,6 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
             return {
                 ...state,
                 depthToUnit: action.unit
-            };
-    }
-    throw Error(`Received invalid action: ${action}`);
-};
-
-export const filterReducers = (state: FilterState, action: FilterAction): FilterState => {
-    switch (action.type) {
-        case 'updateFilterCount':
-            return {
-                ...state,
-                filterCount: action.count
-            };
-        case 'updateFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: action.species
-            };
-        case 'addToFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: Array.from(new Set([...state.filteredSpecies, ...action.species]))
-            };
-        case 'removeFromFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: state.filteredSpecies.filter((speciesId) => !action.species.includes(speciesId))
-            };
-        case 'updateFilteredStations':
-            return {
-                ...state,
-                filteredStations: action.stations
-            };
-        case 'updateFilteredFAOAreas':
-            return {
-                ...state,
-                filteredFAOAreas: action.faoAreas
-            };
-        case 'updateFilterDates':
-            return {
-                ...state,
-                filterDates: action.dates
             };
     }
     throw Error(`Received invalid action: ${action}`);

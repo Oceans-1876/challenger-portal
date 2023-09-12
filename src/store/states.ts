@@ -5,6 +5,7 @@ const unitPref = getUnitPreferences();
 // This is a fallback value for when a component that is not in a DataStateContext provider tries to access its value.
 export const dataStateInitialValue: DataState = {
     stationsList: [],
+    filteredStations: null,
     stationsObject: {},
     stationsBounds: [-180, -90, 180, 90],
     journeyPath: [],
@@ -14,12 +15,4 @@ export const dataStateInitialValue: DataState = {
     faoAreas: [],
     tempToUnit: unitPref.Temp,
     depthToUnit: unitPref.Depth
-};
-
-export const filtersStateInitialValue: FilterState = {
-    filterCount: null,
-    filteredStations: [],
-    filteredSpecies: [],
-    filteredFAOAreas: [],
-    filterDates: [null, null]
 };
