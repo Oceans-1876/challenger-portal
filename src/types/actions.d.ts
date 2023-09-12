@@ -28,21 +28,6 @@ interface UpdateFAOAreas {
     faoAreas: FAOArea[];
 }
 
-interface UpdateFilteredSpecies {
-    type: 'updateFilteredSpecies';
-    species: string[];
-}
-
-interface AddToFilteredSpecies {
-    type: 'addToFilteredSpecies';
-    species: string[];
-}
-
-interface RemoveFromFilteredSpecies {
-    type: 'removeFromFilteredSpecies';
-    species: string[];
-}
-
 interface UpdateFilteredStations {
     type: 'updateFilteredStations';
     stations: StationSummary[] | null;
