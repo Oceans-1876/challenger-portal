@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Box, Stack } from '@mui/material';
 import Map from './Map';
-import RightSideBar from './RightSideBar';
-import LeftSideBar from './LeftSidebar';
-import NavBar from './NavBar';
+import RightSidebar from './RightSidebar';
+import LeftSidebar from './LeftSidebar';
+import Navbar from './Navbar';
 
 const Explore = (): JSX.Element => {
     return (
@@ -22,15 +22,15 @@ const Explore = (): JSX.Element => {
                 }}
             >
                 <Box sx={{ pointerEvents: 'auto' }}>
-                    <NavBar />
+                    <Navbar />
                 </Box>
                 <Box sx={{ flex: 'auto', position: 'relative' }}>
                     <Box sx={{ pointerEvents: 'auto' }}>
-                        <LeftSideBar />
+                        <LeftSidebar />
                     </Box>
                     <Box flex="1" />
                     <Box sx={{ pointerEvents: 'auto' }}>
-                        <RightSideBar />
+                        <RightSidebar />
                     </Box>
                 </Box>
             </Stack>

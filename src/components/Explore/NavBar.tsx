@@ -29,7 +29,7 @@ const menuItems: Array<{ title: string; path: string; newTab?: boolean }> = [
     }
 ];
 
-const NavBar: FC = () => {
+const Navbar: FC = () => {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<HTMLElement | null>(null);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const location = useLocation();
@@ -173,4 +173,4 @@ const NavBar: FC = () => {
     );
 };
 
-export default NavBar;
+export default Navbar;

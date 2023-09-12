@@ -5,7 +5,7 @@ import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, Laye
 import { theme } from '../../../theme';
 import SearchPanel from './SearchPanel';
 
-const RightSideBar: FC = () => {
+const RightSidebar: FC = () => {
     const [expanded, setExpanded] = useState(false);
     const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
@@ -66,4 +66,4 @@ const RightSideBar: FC = () => {
     );
 };
 
-export default RightSideBar;
+export default RightSidebar;
