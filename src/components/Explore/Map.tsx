@@ -247,7 +247,9 @@ const ExploreMap = (): JSX.Element => {
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
             if (selectedStation) {
-                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
+                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 7 });
+            } else {
+                map.flyTo({ center: [0, 0], zoom: 2 });
             }
         }
     }, [selectedStation, isMapLoaded]);
@@ -283,7 +285,16 @@ const ExploreMap = (): JSX.Element => {
                                 stations.map(({ coordinates }) => coordinates) as LineCoordinates
                             );
                             if (!bounds.isEmpty()) {
-                                map.fitBounds(bounds, { padding: 50 });
+                                map.fitBounds(bounds, {
+                                    maxZoom: 10,
+                                    // TODO: find a better way to set these values
+                                    padding: {
+                                        left: 600,
+                                        right: 600,
+                                        top: 100,
+                                        bottom: 10
+                                    }
+                                });
                             }
                         }
 
@@ -362,19 +373,21 @@ const ExploreMap = (): JSX.Element => {
                 initialBasemap: 'World_Ocean_Base',
                 expandDirection: 'top'
             }}
-            LayersControlProps={[
-                {
-                    id: 'faoAreas',
-                    label: 'FAO Areas',
-                    initialOpacity: 0.5,
-                    attribution: {
-                        text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
-                        url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
-                    },
-                    style: layerStyles.faoAreas.default,
-                    opacityType: 'line'
-                }
-            ]}
+            LayersControlProps={
+                [
+                    // {
+                    //     id: 'faoAreas',
+                    //     label: 'FAO Areas',
+                    //     initialOpacity: 0.5,
+                    //     attribution: {
+                    //         text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
+                    //         url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
+                    //     },
+                    //     style: layerStyles.faoAreas.default,
+                    //     opacityType: 'line'
+                    // }
+                ]
+            }
             onLoad={onMapLoad}
         />
     );

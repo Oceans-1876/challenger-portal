@@ -87,7 +87,15 @@ const Map = ({
     }, []);
 
     return (
-        <Box ref={mapContainerRef} sx={{ height: '100%', flexGrow: 1, background: 'white' }}>
+        <Box
+            ref={mapContainerRef}
+            sx={{
+                'height': '100%',
+                '& .maplibregl-ctrl-bottom-right': {
+                    right: 64
+                }
+            }}
+        >
             {isWebglSupported() ? null : 'Your browser does not support the map features.'}
 
             {LayersControlProps ? (

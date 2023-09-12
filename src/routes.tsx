@@ -21,10 +21,7 @@ const routes: { [key: string]: import('react-router-dom').RouteProps } = {
         )
     },
     '/explore': {
-        element: withLayout(
-            layouts.SinglePage,
-            lazy(() => import('./components/Explore'))
-        )
+        Component: lazy(() => import('./components/Explore'))
     },
     '/species': {
         element: withLayout(

@@ -70,5 +70,8 @@ export const searchStations = (
             .post(`${window.API_PATH}/stations/search/`, data)
             .then((resp) => success(resp.data))
             .catch(console.error);
+    } else {
+        // TODO: handle empty filter list on backend
+        success([]);
     }
 };
