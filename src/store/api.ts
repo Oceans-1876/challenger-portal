@@ -84,11 +84,11 @@ export const searchStations = (
                 : expressions[0];
 
         axios
-            .post(`${window.API_PATH}/stations/search/`, data)
+            .post(`${window.API_PATH}/stations/search/?order_by=order`, data)
             .then((resp) => success(resp.data))
             .catch(console.error);
     } else {
         // TODO: handle empty filter list on backend
-        success([]);
+        getData<StationSummary[]>('stations/all/?order_by=order', success, () => undefined);
     }
 };
