@@ -115,7 +115,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
             });
             dataActionDispatcher({
                 type: 'updateSelectedStation',
-                station: stations.length == 1 ? stations[0] : null
+                station: stations.length === 1 ? stations[0] : null
             });
         });
     }, [searchType, speciesFilter, stationFilter, faoAreaFilter]);
