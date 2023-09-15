@@ -5,6 +5,7 @@ import { DataActionDispatcherContext, DataStateContext } from '../../../store/co
 import { useDebounce, useFAOAreas } from '../../../utils/hooks';
 import { getData, searchStations } from '../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from './theme';
+import SpeciesListbox from './SpeciesListbox';
 
 type GeneralSearchType = 'species' | 'station' | 'oceanic-region';
 
@@ -144,17 +145,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                     <Autocomplete
                         fullWidth
                         multiple
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                value={speciesFilterInput}
-                                onChange={(e) => setSpeciesFilterInput(e.target.value)}
-                                label="Species"
-                                placeholder="Species"
-                                sx={selectStyleOverride}
-                            />
-                        )}
-                        getOptionLabel={(option) => option.matched_canonical_full_name || option.record_id}
                         options={allSpeciesList}
                         filterOptions={(options) =>
                             options
@@ -166,6 +156,19 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                                     );
                                 })
                         }
+                        ListboxComponent={SpeciesListbox}
+                        getOptionLabel={(option) => option.record_id}
+                        renderOption={(props, option, state) => [props, option, state] as ReactNode}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                value={speciesFilterInput}
+                                onChange={(e) => setSpeciesFilterInput(e.target.value)}
+                                label="Species"
+                                placeholder="Species"
+                                sx={selectStyleOverride}
+                            />
+                        )}
                         renderTags={(tagValue) =>
                             tagValue.map((option) => (
                                 <Chip

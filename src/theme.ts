@@ -1,17 +1,21 @@
 import { ThemeOptions, createTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
+    type ExplorePaletteKey =
+        | 'main'
+        | 'mainTransparent'
+        | 'selected'
+        | 'selectedSecondary'
+        | 'secondary'
+        | 'highlight'
+        | 'divider'
+        | 'mainText'
+        | 'secondaryText';
     interface Palette {
-        explore: Record<
-            'main' | 'selected' | 'secondary' | 'highlight' | 'divider' | 'mainText' | 'secondaryText',
-            string
-        >;
+        explore: Record<ExplorePaletteKey, string>;
     }
     interface PaletteOptions {
-        explore: Record<
-            'main' | 'selected' | 'secondary' | 'highlight' | 'divider' | 'mainText' | 'secondaryText',
-            string
-        >;
+        explore: Record<ExplorePaletteKey, string>;
     }
 }
 
@@ -46,8 +50,10 @@ export const themeOptions = {
             contrastText: '#fff'
         },
         explore: {
-            main: '#1d3346bf',
+            main: '#1d3346',
+            mainTransparent: '#1d3346bf',
             selected: '#243c59f2',
+            selectedSecondary: '#89f3e94d',
             secondary: '#90fff3',
             highlight: '#ffff00',
             divider: '#90fff380',
@@ -85,6 +91,25 @@ export const themeOptions = {
                     }
                 }
             ]
+        },
+        MuiAutocomplete: {
+            styleOverrides: {
+                listbox: {
+                    'color': 'white',
+                    'background': '#1d3346',
+                    '.MuiAutocomplete-option': {
+                        '&.Mui-focused': {
+                            backgroundColor: '#89f3e94d'
+                        },
+                        '&[aria-selected="true"]': {
+                            backgroundColor: '#89f3e94d'
+                        },
+                        '&.Mui-focused[aria-selected="true"]': {
+                            backgroundColor: '#89f3e94d'
+                        }
+                    }
+                }
+            }
         }
     }
 } as ThemeOptions;

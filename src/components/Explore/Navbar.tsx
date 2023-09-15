@@ -46,7 +46,7 @@ const Navbar: FC = () => {
         <AppBar
             sx={{
                 'height': headerHeight,
-                'backgroundColor': theme.palette.explore.main,
+                'backgroundColor': theme.palette.explore.mainTransparent,
                 'backdropFilter': 'blur(4px)',
                 'borderBottom': `2px solid ${theme.palette.explore.secondary}`,
                 '& a': {

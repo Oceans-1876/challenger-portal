@@ -24,7 +24,7 @@ const RightSidebar: FC = () => {
             <Stack
                 sx={{
                     width: expanded ? 118 : 48,
-                    background: theme.palette.explore.main,
+                    background: theme.palette.explore.mainTransparent,
                     backdropFilter: 'blur(4px)'
                 }}
             >

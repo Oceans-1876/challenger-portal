@@ -31,7 +31,8 @@
     "match-sorter": "~6.3",
     "react": "~18.2",
     "react-dom": "~18.2",
-    "react-router-dom": "~6.15"
+    "react-router-dom": "~6.15",
+    "react-window": "^1.8.9"
   },
   "devDependencies": {
     "@babel/core": "~7.22",
@@ -44,6 +45,7 @@
     "@types/jest": "~29.5",
     "@types/react": "~18.2",
     "@types/react-dom": "~18.2",
+    "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "~5.46",
     "@typescript-eslint/parser": "~5.46",
     "babel-jest": "~29.6",
