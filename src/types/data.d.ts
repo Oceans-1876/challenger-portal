@@ -30,6 +30,7 @@ interface SpeciesSummary {
     id: string;
     record_id: string;
     matched_canonical_full_name: string;
+    current_name: string;
 }
 
 interface SpeciesDetails extends SpeciesSummary {

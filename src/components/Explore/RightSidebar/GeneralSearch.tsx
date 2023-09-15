@@ -81,10 +81,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
             type: 'updateFilteredStations',
             stations: null
         });
-        dataActionDispatcher({
-            type: 'updateSelectedStation',
-            station: null
-        });
     }, [searchType]);
 
     useEffect(() => {
@@ -94,10 +90,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         dataActionDispatcher({
             type: 'updateFilteredStations',
             stations: null
-        });
-        dataActionDispatcher({
-            type: 'updateSelectedStation',
-            station: null
         });
     }, [searchType]);
 
@@ -112,10 +104,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
             dataActionDispatcher({
                 type: 'updateFilteredStations',
                 stations
-            });
-            dataActionDispatcher({
-                type: 'updateSelectedStation',
-                station: stations.length === 1 ? stations[0] : null
             });
         });
     }, [searchType, speciesFilter, stationFilter, faoAreaFilter]);

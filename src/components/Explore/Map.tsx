@@ -4,7 +4,7 @@ import type { Point } from 'geojson';
 
 import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
+import { directionArrow, pulsingDot } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
@@ -240,7 +240,7 @@ const ExploreMap = (): JSX.Element => {
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
             if (selectedStation) {
-                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 7 });
+                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
             } else {
                 map.fitBounds([-180, -90, 180, 90]);
             }
@@ -253,34 +253,6 @@ const ExploreMap = (): JSX.Element => {
         if (map && isMapLoaded) {
             if (filteredStations) {
                 map.setFilter('stations', ['in', 'name', ...filteredStations.map((station) => station.name)]);
-                // Move the map to filtered stations
-                if (filteredStations.length === 1) {
-                    map.flyTo({
-                        center: filteredStations[0].coordinates,
-                        zoom: 6
-                    });
-                } else {
-                    const bounds = getFeatureBounds(
-                        filteredStations.map(({ coordinates }) => coordinates) as LineCoordinates
-                    );
-                    if (!bounds.isEmpty()) {
-                        // map.fitBounds(bounds, {
-                        //     maxZoom: 10,
-                        //     // TODO: find a better way to set these values
-                        //     padding: {
-                        //         left: 600,
-                        //         right: 600,
-                        //         top: 100,
-                        //         bottom: 10
-                        //     }
-                        // });
-                    }
-                }
-
-                if (selectedStation && !filteredStations.find(({ name }) => name === selectedStation.name)) {
-                    dataActionDispatcher({ type: 'updateSelectedStation', station: null });
-                }
-
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
                         map.setLayoutProperty(layerName, 'visibility', 'none');

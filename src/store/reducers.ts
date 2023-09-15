@@ -17,7 +17,8 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateFilteredStations': {
             return {
                 ...state,
-                filteredStations: action.stations
+                filteredStations: action.stations,
+                selectedStation: action.stations ? action.stations[0] : null
             };
         }
         case 'updateSelectedStation':

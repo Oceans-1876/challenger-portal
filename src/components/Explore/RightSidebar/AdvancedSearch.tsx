@@ -77,10 +77,6 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
             type: 'updateFilteredStations',
             stations: null
         });
-        dataActionDispatcher({
-            type: 'updateSelectedStation',
-            station: null
-        });
     }, []);
 
     const applyFilter = useCallback(() => {
@@ -95,10 +91,6 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
             dataActionDispatcher({
                 type: 'updateFilteredStations',
                 stations
-            });
-            dataActionDispatcher({
-                type: 'updateSelectedStation',
-                station: stations.length === 1 ? stations[0] : null
             });
         });
     }, [joinOperator, speciesFilter, stationFilter, faoAreaFilter, startDate, endDate]);
