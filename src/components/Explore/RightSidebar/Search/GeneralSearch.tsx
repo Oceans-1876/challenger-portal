@@ -1,10 +1,10 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
-import { theme } from '../../../theme';
-import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
-import { useDebounce, useFAOAreas } from '../../../utils/hooks';
-import { getData, searchStations } from '../../../store/api';
-import { chipStyleOverride, selectStyleOverride } from './theme';
+import { theme } from '../../../../theme';
+import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
+import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
+import { getData, searchStations } from '../../../../store/api';
+import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
 
 type GeneralSearchType = 'species' | 'station' | 'oceanic-region';

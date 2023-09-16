@@ -63,3 +63,13 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
     }
     throw Error(`Received invalid action: ${action}`);
 };
+
+export const mapReducers = (state: MapState, action: MapAction): MapState => {
+    switch (action.type) {
+        case 'updateBaseMap':
+            return {
+                ...state,
+                activeBasemap: action.id
+            };
+    }
+};

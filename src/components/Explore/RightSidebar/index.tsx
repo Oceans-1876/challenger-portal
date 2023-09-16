@@ -3,11 +3,14 @@ import React, { FC, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, LayersOutlined } from '@mui/icons-material';
 import { theme } from '../../../theme';
-import SearchPanel from './SearchPanel';
+import SearchPanel from './Search/SearchPanel';
+import LayerControl from './Layer/LayerControl';
+
+type SideBarState = 'search' | 'layer';
 
 const RightSidebar: FC = () => {
     const [expanded, setExpanded] = useState(false);
-    const [searchPanelOpen, setSearchPanelOpen] = useState(false);
+    const [state, setState] = useState<SideBarState | null>('layer');
 
     return (
         <Stack
@@ -18,8 +21,11 @@ const RightSidebar: FC = () => {
                 height: '100%'
             }}
         >
-            <Box sx={{ height: '100%', display: searchPanelOpen ? 'block' : 'none' }}>
-                <SearchPanel onClose={() => setSearchPanelOpen(false)} />
+            <Box sx={{ height: '100%', display: state == 'search' ? 'block' : 'none' }}>
+                <SearchPanel onClose={() => setState(null)} />
+            </Box>
+            <Box sx={{ height: '100%', display: state == 'layer' ? 'block' : 'none' }}>
+                <LayerControl onClose={() => setState(null)} />
             </Box>
             <Stack
                 sx={{
@@ -29,7 +35,7 @@ const RightSidebar: FC = () => {
                 }}
             >
                 <Button
-                    onClick={() => setSearchPanelOpen(!searchPanelOpen)}
+                    onClick={() => setState(state === 'search' ? null : 'search')}
                     sx={{
                         justifyContent: 'start',
                         padding: '12px',
@@ -42,6 +48,7 @@ const RightSidebar: FC = () => {
                     {expanded ? <Typography ml="12px">Filter</Typography> : null}
                 </Button>
                 <Button
+                    onClick={() => setState(state === 'layer' ? null : 'layer')}
                     sx={{
                         justifyContent: 'start',
                         padding: '12px',

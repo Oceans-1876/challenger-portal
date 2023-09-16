@@ -1,7 +1,7 @@
 import { Box, Button, Divider, MenuItem, Select, Stack } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { CloseOutlined } from '@mui/icons-material';
-import { theme } from '../../../theme';
+import { theme } from '../../../../theme';
 import GeneralSearch from './GeneralSearch';
 import AdvancedSearch from './AdvancedSearch';
 

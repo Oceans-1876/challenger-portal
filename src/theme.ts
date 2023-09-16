@@ -1,10 +1,11 @@
-import { ThemeOptions, createTheme } from '@mui/material/styles';
+import { PaletteOptions, ThemeOptions, createTheme } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
     type ExplorePaletteKey =
         | 'main'
         | 'mainTransparent'
         | 'selected'
+        | 'unselectedSecondary'
         | 'selectedSecondary'
         | 'secondary'
         | 'highlight'
@@ -26,6 +27,33 @@ declare module '@mui/material/Button' {
     }
 }
 
+const palette: PaletteOptions = {
+    primary: {
+        dark: '#002e2c',
+        main: '#024654',
+        light: '#035e7b',
+        contrastText: '#fff'
+    },
+    secondary: {
+        dark: '#e3e7af',
+        main: '#a2a77f',
+        light: '#eff1c5',
+        contrastText: '#fff'
+    },
+    explore: {
+        main: '#1d3346',
+        mainTransparent: '#1d3346bf',
+        selected: '#243c59f2',
+        selectedSecondary: '#89f3e94d',
+        unselectedSecondary: '#8af8ed4d',
+        secondary: '#90fff3',
+        highlight: '#ffff00',
+        divider: '#90fff380',
+        mainText: '#ffffff',
+        secondaryText: '#ffffff99'
+    }
+};
+
 export const themeOptions = {
     breakpoints: {
         values: {
@@ -36,31 +64,7 @@ export const themeOptions = {
             xl: 1536
         }
     },
-    palette: {
-        primary: {
-            dark: '#002e2c',
-            main: '#024654',
-            light: '#035e7b',
-            contrastText: '#fff'
-        },
-        secondary: {
-            dark: '#e3e7af',
-            main: '#a2a77f',
-            light: '#eff1c5',
-            contrastText: '#fff'
-        },
-        explore: {
-            main: '#1d3346',
-            mainTransparent: '#1d3346bf',
-            selected: '#243c59f2',
-            selectedSecondary: '#89f3e94d',
-            secondary: '#90fff3',
-            highlight: '#ffff00',
-            divider: '#90fff380',
-            mainText: '#ffffff',
-            secondaryText: '#ffffff99'
-        }
-    },
+    palette,
     typography: {
         fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(',')
     },
@@ -99,14 +103,44 @@ export const themeOptions = {
                     'background': '#1d3346',
                     '.MuiAutocomplete-option': {
                         '&.Mui-focused': {
-                            backgroundColor: '#89f3e94d'
+                            backgroundColor: palette.explore.selectedSecondary
                         },
                         '&[aria-selected="true"]': {
-                            backgroundColor: '#89f3e94d'
+                            backgroundColor: palette.explore.selectedSecondary
                         },
                         '&.Mui-focused[aria-selected="true"]': {
-                            backgroundColor: '#89f3e94d'
+                            backgroundColor: palette.explore.selectedSecondary
                         }
+                    }
+                }
+            }
+        },
+        MuiSlider: {
+            styleOverrides: {
+                root: {
+                    color: palette.explore.secondary
+                }
+            }
+        },
+        MuiFormControlLabel: {
+            styleOverrides: {
+                root: {
+                    '.MuiTypography-root': {
+                        color: palette.explore.secondaryText,
+                        fontFamily: 'Roboto',
+                        fontSize: 14,
+                        fontWeight: 500,
+                        textTransform: 'capitalize'
+                    }
+                }
+            }
+        },
+        MuiRadio: {
+            styleOverrides: {
+                root: {
+                    'color': palette.explore.secondary,
+                    '&.Mui-checked': {
+                        color: palette.explore.secondary
                     }
                 }
             }

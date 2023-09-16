@@ -1,13 +1,57 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import type { Point } from 'geojson';
 
-import { DataStateContext, DataActionDispatcherContext } from '../../store/contexts';
+import { DataStateContext, DataActionDispatcherContext, MapStateContext, MapContext } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, pulsingDot } from '../Map/utils';
+import { directionArrow, pulsingDot, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
+
+interface BasemapControlOption {
+    id: string;
+    tiles: string[];
+    sourceExtraParams?: Partial<maplibregl.RasterSourceSpecification>;
+    layerExtraParams?: Partial<maplibregl.RasterLayerSpecification>;
+}
+
+const INITIAL_BASEMAP = 'World_Ocean_Base';
+
+const basemaps: Array<BasemapControlOption> = [
+    {
+        id: 'World_Ocean_Base',
+        tiles: [
+            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+        ],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution:
+                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
+        }
+    },
+    {
+        id: 'World_Imagery',
+        tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+        }
+    },
+    {
+        id: 'Carto',
+        tiles: [
+            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
+        ],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
+        }
+    }
+];
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
@@ -15,8 +59,21 @@ const ExploreMap = (): JSX.Element => {
         React.useContext(DataStateContext);
     const selectedStationRef = React.useRef<StationSummary | null>(null);
 
-    const mapRef = React.useRef<maplibregl.Map>();
     const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+
+    const mapRef = useContext(MapContext);
+    const { activeBasemap } = useContext(MapStateContext);
+
+    useEffect(() => {
+        const map = mapRef.current;
+        if (map) {
+            runWhenReady(map, () => {
+                for (const { id } of basemaps) {
+                    map.setLayoutProperty(id, 'visibility', id === activeBasemap ? 'visible' : 'none');
+                }
+            });
+        }
+    }, [activeBasemap]);
 
     const onMapLoad = (map: maplibregl.Map) => {
         // Add a pulsing dot image to the map to be used for selected station
@@ -24,6 +81,17 @@ const ExploreMap = (): JSX.Element => {
 
         // Add direction arrow to the map to be used for journey path
         directionArrow(map);
+
+        // Add basemaps
+        for (const { id, tiles, sourceExtraParams, layerExtraParams } of basemaps) {
+            map.addSource(id, {
+                ...sourceExtraParams,
+                type: 'raster',
+                tiles
+            });
+            map.addLayer({ ...layerExtraParams, id, source: id, type: 'raster' });
+            map.setLayoutProperty(id, 'visibility', id === INITIAL_BASEMAP ? 'visible' : 'none');
+        }
 
         // Add FAO Areas
         map.addSource('faoAreas', {
@@ -280,61 +348,6 @@ const ExploreMap = (): JSX.Element => {
             attribution
             help
             navigation
-            basemaps={{
-                basemaps: [
-                    {
-                        id: 'World_Ocean_Base',
-                        tiles: [
-                            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution:
-                                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
-                        }
-                    },
-                    {
-                        id: 'World_Imagery',
-                        tiles: [
-                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-                        }
-                    },
-                    {
-                        id: 'Carto',
-                        tiles: [
-                            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
-                        }
-                    }
-                ],
-                initialBasemap: 'World_Ocean_Base',
-                expandDirection: 'top'
-            }}
-            LayersControlProps={
-                [
-                    // {
-                    //     id: 'faoAreas',
-                    //     label: 'FAO Areas',
-                    //     initialOpacity: 0.5,
-                    //     attribution: {
-                    //         text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
-                    //         url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
-                    //     },
-                    //     style: layerStyles.faoAreas.default,
-                    //     opacityType: 'line'
-                    // }
-                ]
-            }
             onLoad={onMapLoad}
         />
     );

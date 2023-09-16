@@ -2,11 +2,9 @@ import React from 'react';
 import maplibre from 'maplibre-gl';
 import Box from '@mui/material/Box';
 import Icon from '@mui/material/Icon';
-import BasemapsControl, { MapLibreBasemapsControlOptions } from 'maplibre-gl-basemaps';
 
 import { MapControl } from './Control';
 import Help from './Help';
-import LayersControl from './LayersControl';
 import { IS_WEBGL_SUPPORTED } from './utils';
 
 interface Props {
@@ -15,21 +13,10 @@ interface Props {
     attribution?: boolean;
     help?: boolean;
     navigation?: boolean;
-    basemaps?: MapLibreBasemapsControlOptions;
-    LayersControlProps?: LayersControlProps[];
     onLoad: (map: maplibregl.Map) => void;
 }
 
-const Map = ({
-    mapOptions,
-    initialBounds,
-    attribution,
-    help,
-    navigation,
-    basemaps,
-    LayersControlProps,
-    onLoad
-}: Props): JSX.Element => {
+const Map = ({ mapOptions, initialBounds, attribution, help, navigation, onLoad }: Props): JSX.Element => {
     const mapContainerRef = React.useRef<HTMLDivElement>(null);
     const mapRef = React.useRef<maplibregl.Map>();
 
@@ -38,8 +25,6 @@ const Map = ({
 
     const helpButtonRef = React.useRef<HTMLButtonElement>(null);
     const [showHelp, updateShowHelp] = React.useState(false);
-
-    const layersControlRef = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
         if (IS_WEBGL_SUPPORTED && mapContainerRef.current) {
@@ -64,21 +49,14 @@ const Map = ({
                 map.addControl(new maplibre.NavigationControl({}), 'bottom-right');
             }
 
-            if (basemaps) {
-                map.addControl(new BasemapsControl(basemaps), 'bottom-left');
-            }
-
             if (help && helpButtonRef.current) {
                 map.addControl(new MapControl(helpButtonRef.current), 'bottom-right');
-            }
-
-            if (LayersControlProps && layersControlRef.current) {
-                // map.addControl(new MapControl(layersControlRef.current), 'top-left');
             }
 
             map.on('load', () => {
                 onLoad(map);
             });
+
             mapRef.current = map;
         }
         return () => {
@@ -97,12 +75,6 @@ const Map = ({
             }}
         >
             {IS_WEBGL_SUPPORTED ? null : 'Your browser does not support the map features.'}
-
-            {LayersControlProps ? (
-                <Box ref={layersControlRef} className="maplibregl-ctrl-group">
-                    <LayersControl map={mapRef.current} layers={LayersControlProps} />
-                </Box>
-            ) : null}
 
             {navigation ? (
                 <>

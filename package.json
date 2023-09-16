@@ -27,7 +27,6 @@
     "dayjs": "~1.11",
     "dotenv": "~16.3",
     "maplibre-gl": "~3.3",
-    "maplibre-gl-basemaps": "~0.1",
     "match-sorter": "~6.3",
     "react": "~18.2",
     "react-dom": "~18.2",

@@ -104,6 +104,17 @@ export const directionArrow = (map: maplibregl.Map): void => {
 };
 
 /**
+ * See discussions here: https://github.com/mapbox/mapbox-gl-js/issues/6707
+ */
+export function runWhenReady(map: maplibregl.Map, fn: () => void) {
+    if (map.loaded()) {
+        fn();
+    } else {
+        map.once('render', fn);
+    }
+}
+
+/**
  * MapLibre GL JS v3 has removed `mapbox-gl-supported` from their API.
  * This function is copied from: https://maplibre.org/maplibre-gl-js/docs/examples/check-for-support/
  *

@@ -43,6 +43,11 @@ interface UpdateDepthToUnit {
     unit: string;
 }
 
+interface UpdateBasemap {
+    type: 'updateBaseMap';
+    id: string;
+}
+
 type DataAction =
     | UpdateTempToUnit
     | UpdateDepthToUnit
@@ -53,3 +58,5 @@ type DataAction =
     | UpdateAllSpecies
     | UpdateSpeciesDetails
     | UpdateFAOAreas;
+
+type MapAction = UpdateBasemap;

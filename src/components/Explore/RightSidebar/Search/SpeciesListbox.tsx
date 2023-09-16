@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, createContext, forwardRef, useContext, useEffect, useRef } from 'react';
 import { AutocompleteRenderOptionState, Box, Typography } from '@mui/material';
 import { VariableSizeList, ListChildComponentProps } from 'react-window';
-import { theme } from '../../../theme';
+import { theme } from '../../../../theme';
 
 const LISTBOX_PADDING = 8;
 const ROW_HEIGHT = 64;
