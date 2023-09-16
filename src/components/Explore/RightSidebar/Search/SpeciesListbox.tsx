@@ -48,7 +48,7 @@ function renderRow(props: ListChildComponentProps<Array<RowType>>) {
                         textOverflow: 'ellipsis'
                     }}
                 >
-                    Current: {species.current_name ?? '(none)'}
+                    {species.current_name ?? '(none)'}
                 </Typography>
             </Box>
         </Box>
