@@ -10,7 +10,7 @@ type SideBarState = 'search' | 'layer';
 
 const RightSidebar: FC = () => {
     const [expanded, setExpanded] = useState(false);
-    const [state, setState] = useState<SideBarState | null>('layer');
+    const [state, setState] = useState<SideBarState | null>(null);
 
     return (
         <Stack
