@@ -21,10 +21,10 @@ const RightSidebar: FC = () => {
                 height: '100%'
             }}
         >
-            <Box sx={{ height: '100%', display: state == 'search' ? 'block' : 'none' }}>
+            <Box sx={{ height: '100%', display: state === 'search' ? 'block' : 'none' }}>
                 <SearchPanel onClose={() => setState(null)} />
             </Box>
-            <Box sx={{ height: '100%', display: state == 'layer' ? 'block' : 'none' }}>
+            <Box sx={{ height: '100%', display: state === 'layer' ? 'block' : 'none' }}>
                 <LayerControl onClose={() => setState(null)} />
             </Box>
             <Stack

@@ -68,9 +68,9 @@ const ExploreMap = (): JSX.Element => {
         const map = mapRef.current;
         if (map) {
             runWhenReady(map, () => {
-                for (const { id } of basemaps) {
+                basemaps.forEach(({ id }) => {
                     map.setLayoutProperty(id, 'visibility', id === activeBasemap ? 'visible' : 'none');
-                }
+                });
             });
         }
     }, [activeBasemap]);
@@ -83,7 +83,7 @@ const ExploreMap = (): JSX.Element => {
         directionArrow(map);
 
         // Add basemaps
-        for (const { id, tiles, sourceExtraParams, layerExtraParams } of basemaps) {
+        basemaps.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
             map.addSource(id, {
                 ...sourceExtraParams,
                 type: 'raster',
@@ -91,7 +91,7 @@ const ExploreMap = (): JSX.Element => {
             });
             map.addLayer({ ...layerExtraParams, id, source: id, type: 'raster' });
             map.setLayoutProperty(id, 'visibility', id === INITIAL_BASEMAP ? 'visible' : 'none');
-        }
+        });
 
         // Add FAO Areas
         map.addSource('faoAreas', {

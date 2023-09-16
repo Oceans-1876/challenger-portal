@@ -15,6 +15,7 @@ declare module '@mui/material/styles' {
     interface Palette {
         explore: Record<ExplorePaletteKey, string>;
     }
+    /* eslint no-shadow: "off" */
     interface PaletteOptions {
         explore: Record<ExplorePaletteKey, string>;
     }

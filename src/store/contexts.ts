@@ -14,4 +14,5 @@ export const MapStateContext = React.createContext<MapState>({ activeBasemap: ''
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const DataActionDispatcherContext = React.createContext<React.Dispatch<DataAction>>(() => {});
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export const MapActionDispatcherContext = React.createContext<React.Dispatch<MapAction>>(() => {});

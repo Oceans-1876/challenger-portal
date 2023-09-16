@@ -27,7 +27,7 @@ const BasemapOption: FC<Props> = ({ name, basemapId, previewImgUrl }) => {
                     'backgroundImage': `url(${previewImgUrl})`,
                     'width': 180,
                     'height': 136,
-                    'backgroundSize': `180px 136px`,
+                    'backgroundSize': '180px 136px',
                     'borderRadius': '16px',
                     'overflow': 'hidden',
                     'cursor': 'pointer',
@@ -52,7 +52,7 @@ const BasemapOption: FC<Props> = ({ name, basemapId, previewImgUrl }) => {
                     sx={{
                         '.MuiTypography-root': {
                             color:
-                                activeBasemap == basemapId
+                                activeBasemap === basemapId
                                     ? theme.palette.explore.mainText
                                     : theme.palette.explore.secondaryText
                         }

@@ -72,4 +72,5 @@ export const mapReducers = (state: MapState, action: MapAction): MapState => {
                 activeBasemap: action.id
             };
     }
+    throw Error(`Received invalid action: ${action}`);
 };
