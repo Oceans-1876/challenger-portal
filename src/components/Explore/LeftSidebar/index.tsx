@@ -147,9 +147,7 @@ const Sidebar = () => {
                     )}
                 </Box>
             ) : null}
-            <Box sx={{ mt: '10px', ml: '10px' }}>
-                <InsetMap />
-            </Box>
+            <InsetMap />
         </Stack>
     );
 };
