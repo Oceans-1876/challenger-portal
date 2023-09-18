@@ -15,6 +15,7 @@ import StationDetails from '../../Station/Details';
 import StationEnvironment from '../../Station/Environment';
 import StationSpecies from '../../Station/Species';
 import StationText from '../../Station/Text';
+import InsetMap from './InsetMap';
 
 const Sidebar = () => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
@@ -52,91 +53,103 @@ const Sidebar = () => {
         });
     };
 
-    return selectedStationDetails ? (
-        <Box
+    return (
+        <Stack
+            direction="row"
             sx={{
                 position: 'absolute',
                 left: 0,
-                display: 'flex',
-                height: '100%',
-                flexDirection: 'column',
-                background: '#fff',
-                width: 500,
-                p: 1,
-                zIndex: 1,
-                boxShadow: '1px 0 5px gray'
+                height: '100%'
             }}
         >
-            <Stack direction="row">
-                <IconButton
-                    size="medium"
-                    sx={{ mx: 'auto' }}
-                    onClick={() => onNavigate(selectedStationDetails.name, 'backward')}
-                >
-                    <Icon baseClassName="icons">arrow_back</Icon>
-                </IconButton>
-                <Typography variant="h5" align="center" sx={{ mx: 'auto' }}>
-                    Station {selectedStationDetails?.name}
-                </Typography>
-                <IconButton
-                    size="medium"
-                    sx={{ mx: 'auto' }}
-                    onClick={() => onNavigate(selectedStationDetails.name, 'forward')}
-                >
-                    <Icon baseClassName="icons">arrow_forward</Icon>
-                </IconButton>
-            </Stack>
             {selectedStationDetails ? (
-                <>
-                    <TabsGroup
-                        sx={{ flexGrow: 1 }}
-                        initialPanel="Station"
-                        panels={[
-                            {
-                                Panel: StationPanel,
-                                label: 'Station'
-                            },
-                            {
-                                Panel: EnvironmentPanel,
-                                label: 'Environment'
-                            },
-                            {
-                                Panel: SpeciesPanel,
-                                label: 'Species'
-                            },
-                            {
-                                Panel: TextPanel,
-                                label: 'Text'
-                            }
-                        ]}
-                    />
-                    <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
-                        <Stack direction="row" spacing={1} justifyContent="space-between">
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => dataActionDispatcher({ type: 'updateSelectedStation', station: null })}
-                            >
-                                Go Back
-                            </Button>
-                            <DownloadButton
-                                data={selectedStationDetails}
-                                filename={`Station-${selectedStationDetails.name}-details`}
-                                message="Download Data"
-                            />
-                            <DownloadButton
-                                data={selectedStationDetails.species}
-                                filename={`Station-${selectedStationDetails.name}-Species`}
-                                message="Download All Species"
-                            />
-                        </Stack>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        background: '#fff',
+                        width: 500,
+                        p: 1,
+                        zIndex: 1,
+                        boxShadow: '1px 0 5px gray',
+                        pointerEvents: 'all'
+                    }}
+                >
+                    <Stack direction="row">
+                        <IconButton
+                            size="medium"
+                            sx={{ mx: 'auto' }}
+                            onClick={() => onNavigate(selectedStationDetails.name, 'backward')}
+                        >
+                            <Icon baseClassName="icons">arrow_back</Icon>
+                        </IconButton>
+                        <Typography variant="h5" align="center" sx={{ mx: 'auto' }}>
+                            Station {selectedStationDetails?.name}
+                        </Typography>
+                        <IconButton
+                            size="medium"
+                            sx={{ mx: 'auto' }}
+                            onClick={() => onNavigate(selectedStationDetails.name, 'forward')}
+                        >
+                            <Icon baseClassName="icons">arrow_forward</Icon>
+                        </IconButton>
                     </Stack>
-                </>
-            ) : (
-                <Loading />
-            )}
-        </Box>
-    ) : null;
+                    {selectedStationDetails ? (
+                        <>
+                            <TabsGroup
+                                sx={{ flexGrow: 1 }}
+                                initialPanel="Station"
+                                panels={[
+                                    {
+                                        Panel: StationPanel,
+                                        label: 'Station'
+                                    },
+                                    {
+                                        Panel: EnvironmentPanel,
+                                        label: 'Environment'
+                                    },
+                                    {
+                                        Panel: SpeciesPanel,
+                                        label: 'Species'
+                                    },
+                                    {
+                                        Panel: TextPanel,
+                                        label: 'Text'
+                                    }
+                                ]}
+                            />
+                            <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
+                                <Stack direction="row" spacing={1} justifyContent="space-between">
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        onClick={() =>
+                                            dataActionDispatcher({ type: 'updateSelectedStation', station: null })
+                                        }
+                                    >
+                                        Go Back
+                                    </Button>
+                                    <DownloadButton
+                                        data={selectedStationDetails}
+                                        filename={`Station-${selectedStationDetails.name}-details`}
+                                        message="Download Data"
+                                    />
+                                    <DownloadButton
+                                        data={selectedStationDetails.species}
+                                        filename={`Station-${selectedStationDetails.name}-Species`}
+                                        message="Download All Species"
+                                    />
+                                </Stack>
+                            </Stack>
+                        </>
+                    ) : (
+                        <Loading />
+                    )}
+                </Box>
+            ) : null}
+            <InsetMap />
+        </Stack>
+    );
 };
 
 export default Sidebar;

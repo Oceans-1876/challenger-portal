@@ -32,7 +32,7 @@ const Explore = (): JSX.Element => {
                             <Navbar />
                         </Box>
                         <Box sx={{ flex: 'auto', position: 'relative' }}>
-                            <Box sx={{ pointerEvents: 'auto' }}>
+                            <Box>
                                 <LeftSidebar />
                             </Box>
                             <Box flex="1" />
