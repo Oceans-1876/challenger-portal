@@ -1,8 +1,14 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import type { Point } from 'geojson';
 
-import { DataStateContext, DataActionDispatcherContext, MapStateContext, MapContext } from '../../store/contexts';
+import {
+    DataStateContext,
+    DataActionDispatcherContext,
+    MapStateContext,
+    MapContext,
+    MapActionDispatcherContext
+} from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
 import { directionArrow, pulsingDot, runWhenReady } from '../Map/utils';
 import Map from '../Map';
@@ -54,14 +60,15 @@ const basemaps: Array<BasemapControlOption> = [
 ];
 
 const ExploreMap = (): JSX.Element => {
-    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const { journeyPath, stationsBounds, stationsList, selectedStation, filteredStations } =
-        React.useContext(DataStateContext);
-    const selectedStationRef = React.useRef<StationSummary | null>(null);
+        useContext(DataStateContext);
+    const selectedStationRef = useRef<StationSummary | null>(null);
 
-    const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+    const [isMapLoaded, setIsMapLoaded] = useState(false);
 
     const mapRef = useContext(MapContext);
+    const mapActionDispatch = useContext(MapActionDispatcherContext);
     const { activeBasemap } = useContext(MapStateContext);
 
     useEffect(() => {
@@ -92,6 +99,8 @@ const ExploreMap = (): JSX.Element => {
             map.addLayer({ ...layerExtraParams, id, source: id, type: 'raster' });
             map.setLayoutProperty(id, 'visibility', id === INITIAL_BASEMAP ? 'visible' : 'none');
         });
+
+        mapActionDispatch({ type: 'updateBaseMap', id: INITIAL_BASEMAP });
 
         // Add FAO Areas
         map.addSource('faoAreas', {

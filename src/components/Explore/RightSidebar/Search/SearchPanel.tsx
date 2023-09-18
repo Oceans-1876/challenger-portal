@@ -1,9 +1,10 @@
 import { Box, Button, Divider, MenuItem, Select, Stack } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { CloseOutlined } from '@mui/icons-material';
 import { theme } from '../../../../theme';
 import GeneralSearch from './GeneralSearch';
 import AdvancedSearch from './AdvancedSearch';
+import { DataActionDispatcherContext } from '../../../../store/contexts';
 
 type SearchType = 'general' | 'advanced';
 
@@ -13,6 +14,15 @@ type Props = {
 
 const SearchPanel: FC<Props> = ({ onClose }) => {
     const [searchType, setSearchType] = useState<SearchType>('general');
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
+
+    useEffect(() => {
+        dataActionDispatcher({
+            type: 'updateFilteredStations',
+            stations: null
+        });
+    }, [searchType]);
+
     const toggle = (
         <Button
             variant="explore-text"
