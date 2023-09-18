@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { theme } from '../../../../theme';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
@@ -6,6 +6,7 @@ import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
 import { getData, searchStations } from '../../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
+import Loading from './Loading';
 
 type GeneralSearchType = 'species' | 'station' | 'oceanic-region';
 
@@ -66,6 +67,8 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
 
     const [searchType, setSearchType] = useState<GeneralSearchType>('species');
 
+    const [loading, setLoading] = useState(false);
+
     const clearFilter = useCallback(() => {
         switch (searchType) {
             case 'species':
@@ -94,6 +97,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         });
     }, [searchType]);
 
+    const timerRef = useRef(-1);
     const applyFilter = useCallback(() => {
         const searchExpr: StationSearchExpressions = {
             species: searchType === 'species' ? speciesFilter.map((s) => s.id) : [],
@@ -101,7 +105,10 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
             faoAreas: searchType === 'oceanic-region' ? faoAreaFilter.map((a) => a.code) : [],
             dates: []
         };
+        timerRef.current = window.setTimeout(() => setLoading(true), 200);
         searchStations(searchExpr, (stations) => {
+            clearTimeout(timerRef.current);
+            setLoading(false);
             dataActionDispatcher({
                 type: 'updateFilteredStations',
                 stations
@@ -111,6 +118,8 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
 
     return (
         <>
+            <Loading open={loading} />
+
             <RadioGroup value={searchType} onChange={(_, value) => setSearchType(value as GeneralSearchType)}>
                 {searchTypes.map(({ type, label }) => (
                     <FormControlLabel

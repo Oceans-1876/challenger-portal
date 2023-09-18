@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
     Autocomplete,
     Box,
@@ -19,6 +19,7 @@ import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
 import { getData, searchStations } from '../../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
+import Loading from './Loading';
 
 const MAX_DATE = dayjs('1876-12-31');
 const MIN_DATE = dayjs('1872-01-01');
@@ -37,6 +38,8 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
     const [speciesFilter, setSpeciesFilter] = useState<SpeciesSummary[]>([]);
     const [speciesFilterInput, setSpeciesFilterInput] = useState('');
     const [speciesFilterOptionRanks, setSpeciesFilterOptionRanks] = useState<Map<string, number>>(speciesDefaultRanks);
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setSpeciesFilterOptionRanks(speciesDefaultRanks);
@@ -80,6 +83,7 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
         });
     }, []);
 
+    const timerRef = useRef(-1);
     const applyFilter = useCallback(() => {
         const searchExpr: StationSearchExpressions = {
             join: joinOperator,
@@ -88,7 +92,10 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
             faoAreas: faoAreaFilter.map((a) => a.code),
             dates: [startDate, endDate]
         };
+        timerRef.current = window.setTimeout(() => setLoading(true), 200);
         searchStations(searchExpr, (stations) => {
+            clearTimeout(timerRef.current);
+            setLoading(false);
             dataActionDispatcher({
                 type: 'updateFilteredStations',
                 stations
@@ -98,6 +105,8 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
 
     return (
         <>
+            <Loading open={loading} />
+
             <Typography sx={{ fontSize: 12, color: theme.palette.explore.secondaryText }}>Search Rules</Typography>
 
             <RadioGroup row value={joinOperator} onChange={(_, op) => setJoinOperator(op as BooleanOperator)}>
