@@ -1,32 +1,49 @@
-import React from 'react';
-import Box from '@mui/material/Box';
+import React, { useReducer, useRef } from 'react';
 
+import { Box, Stack } from '@mui/material';
 import Map from './Map';
-import Sidebar from './Sidebar';
-import { FilterStateContext, FilterActionDispatcherContext } from '../../store/contexts';
-import { filterReducers } from '../../store/reducers';
-import { filtersStateInitialValue } from '../../store/states';
+import RightSidebar from './RightSidebar';
+import LeftSidebar from './LeftSidebar';
+import Navbar from './Navbar';
+import { MapActionDispatcherContext, MapContext, MapStateContext } from '../../store/contexts';
+import { mapReducers } from '../../store/reducers';
 
 const Explore = (): JSX.Element => {
-    const [filterState, filterActionDispatcher] = React.useReducer(filterReducers, filtersStateInitialValue);
+    const [mapState, mapStateDispatcher] = useReducer(mapReducers, { activeBasemap: '' });
+    const mapRef = useRef<maplibregl.Map | null>(null);
 
     return (
-        <FilterActionDispatcherContext.Provider value={filterActionDispatcher}>
-            <FilterStateContext.Provider value={filterState}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        height: '100%',
-                        m: 0,
-                        justifyContent: 'center',
-                        alignContent: 'space-around'
-                    }}
-                >
-                    <Sidebar />
-                    <Map />
-                </Box>
-            </FilterStateContext.Provider>
-        </FilterActionDispatcherContext.Provider>
+        <MapStateContext.Provider value={mapState}>
+            <MapActionDispatcherContext.Provider value={mapStateDispatcher}>
+                <MapContext.Provider value={mapRef}>
+                    <Box sx={{ position: 'fixed', width: '100vw', height: '100vh' }}>
+                        <Map />
+                    </Box>
+                    <Stack
+                        direction="column"
+                        sx={{
+                            position: 'fixed',
+                            width: '100vw',
+                            height: '100vh',
+                            pointerEvents: 'none'
+                        }}
+                    >
+                        <Box sx={{ pointerEvents: 'auto' }}>
+                            <Navbar />
+                        </Box>
+                        <Box sx={{ flex: 'auto', position: 'relative' }}>
+                            <Box sx={{ pointerEvents: 'auto' }}>
+                                <LeftSidebar />
+                            </Box>
+                            <Box flex="1" />
+                            <Box sx={{ pointerEvents: 'auto' }}>
+                                <RightSidebar />
+                            </Box>
+                        </Box>
+                    </Stack>
+                </MapContext.Provider>
+            </MapActionDispatcherContext.Provider>
+        </MapStateContext.Provider>
     );
 };
 

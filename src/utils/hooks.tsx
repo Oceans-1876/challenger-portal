@@ -28,6 +28,8 @@ export const useStationDetails = (stationName?: string): StationDetails | null =
                     () => undefined
                 );
             }
+        } else {
+            setStationDetails(null);
         }
     }, [stationName]);
 

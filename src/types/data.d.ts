@@ -30,6 +30,7 @@ interface SpeciesSummary {
     id: string;
     record_id: string;
     matched_canonical_full_name: string;
+    current_name: string;
 }
 
 interface SpeciesDetails extends SpeciesSummary {
@@ -88,6 +89,7 @@ interface FAOArea {
 
 interface DataState {
     stationsList: StationSummary[];
+    filteredStations: StationSummary[] | null;
     stationsObject: { [name: string]: StationDetails };
     stationsBounds: import('maplibre-gl').LngLatBoundsLike;
     journeyPath: LineCoordinates;
@@ -97,12 +99,4 @@ interface DataState {
     faoAreas: FAOArea[];
     tempToUnit: string;
     depthToUnit: string;
-}
-
-interface FilterState {
-    filterCount: number | null;
-    filteredStations: string[];
-    filteredSpecies: string[];
-    filteredFAOAreas: string[];
-    filterDates: (import('dayjs').Dayjs | null)[];
 }

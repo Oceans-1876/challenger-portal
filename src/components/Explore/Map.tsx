@@ -1,29 +1,86 @@
-import React from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import type { Point } from 'geojson';
 
-import { searchStations } from '../../store/api';
 import {
     DataStateContext,
     DataActionDispatcherContext,
-    FilterStateContext,
-    FilterActionDispatcherContext
+    MapStateContext,
+    MapContext,
+    MapActionDispatcherContext
 } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
+import { directionArrow, pulsingDot, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
 
-const ExploreMap = (): JSX.Element => {
-    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, stationsList, selectedStation } = React.useContext(DataStateContext);
-    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
-    const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
-    const selectedStationRef = React.useRef<StationSummary | null>(null);
+interface BasemapControlOption {
+    id: string;
+    tiles: string[];
+    sourceExtraParams?: Partial<maplibregl.RasterSourceSpecification>;
+    layerExtraParams?: Partial<maplibregl.RasterLayerSpecification>;
+}
 
-    const mapRef = React.useRef<maplibregl.Map>();
-    const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+const INITIAL_BASEMAP = 'World_Ocean_Base';
+
+const basemaps: Array<BasemapControlOption> = [
+    {
+        id: 'World_Ocean_Base',
+        tiles: [
+            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
+        ],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution:
+                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
+        }
+    },
+    {
+        id: 'World_Imagery',
+        tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+        }
+    },
+    {
+        id: 'Carto',
+        tiles: [
+            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
+        ],
+        sourceExtraParams: {
+            tileSize: 256,
+            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
+        }
+    }
+];
+
+const ExploreMap = (): JSX.Element => {
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
+    const { journeyPath, stationsBounds, stationsList, selectedStation, filteredStations } =
+        useContext(DataStateContext);
+    const selectedStationRef = useRef<StationSummary | null>(null);
+
+    const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+    const mapRef = useContext(MapContext);
+    const mapActionDispatch = useContext(MapActionDispatcherContext);
+    const { activeBasemap } = useContext(MapStateContext);
+
+    useEffect(() => {
+        const map = mapRef.current;
+        if (map) {
+            runWhenReady(map, () => {
+                basemaps.forEach(({ id }) => {
+                    map.setLayoutProperty(id, 'visibility', id === activeBasemap ? 'visible' : 'none');
+                });
+            });
+        }
+    }, [activeBasemap]);
 
     const onMapLoad = (map: maplibregl.Map) => {
         // Add a pulsing dot image to the map to be used for selected station
@@ -31,6 +88,19 @@ const ExploreMap = (): JSX.Element => {
 
         // Add direction arrow to the map to be used for journey path
         directionArrow(map);
+
+        // Add basemaps
+        basemaps.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
+            map.addSource(id, {
+                ...sourceExtraParams,
+                type: 'raster',
+                tiles
+            });
+            map.addLayer({ ...layerExtraParams, id, source: id, type: 'raster' });
+            map.setLayoutProperty(id, 'visibility', id === INITIAL_BASEMAP ? 'visible' : 'none');
+        });
+
+        mapActionDispatch({ type: 'updateBaseMap', id: INITIAL_BASEMAP });
 
         // Add FAO Areas
         map.addSource('faoAreas', {
@@ -248,6 +318,8 @@ const ExploreMap = (): JSX.Element => {
             map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
             if (selectedStation) {
                 map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
+            } else {
+                map.fitBounds([-180, -90, 180, 90]);
             }
         }
     }, [selectedStation, isMapLoaded]);
@@ -256,44 +328,8 @@ const ExploreMap = (): JSX.Element => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            if (
-                filteredStations.length ||
-                filteredFAOAreas.length ||
-                filteredSpecies.length ||
-                filterDates[0] !== null ||
-                filterDates[1] !== null
-            ) {
-                searchStations(
-                    {
-                        stationNames: filteredStations,
-                        faoAreas: filteredFAOAreas,
-                        species: filteredSpecies,
-                        dates: filterDates
-                    },
-                    (stations) => {
-                        map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
-                        // Move the map to filtered stations
-                        if (stations.length === 1) {
-                            map.flyTo({
-                                center: stations[0].coordinates,
-                                zoom: 6
-                            });
-                        } else {
-                            const bounds = getFeatureBounds(
-                                stations.map(({ coordinates }) => coordinates) as LineCoordinates
-                            );
-                            if (!bounds.isEmpty()) {
-                                map.fitBounds(bounds, { padding: 50 });
-                            }
-                        }
-
-                        if (selectedStation && !stations.find(({ name }) => name === selectedStation.name)) {
-                            dataActionDispatcher({ type: 'updateSelectedStation', station: null });
-                        }
-                        filterActionDispatcher({ type: 'updateFilterCount', count: stations.length });
-                    }
-                );
-
+            if (filteredStations) {
+                map.setFilter('stations', ['in', 'name', ...filteredStations.map((station) => station.name)]);
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
                         map.setLayoutProperty(layerName, 'visibility', 'none');
@@ -307,10 +343,9 @@ const ExploreMap = (): JSX.Element => {
                     }
                 );
                 map.setLayoutProperty('stations', 'visibility', 'none');
-                filterActionDispatcher({ type: 'updateFilterCount', count: null });
             }
         }
-    }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded, filterDates]);
+    }, [filteredStations, isMapLoaded]);
 
     return (
         <Map
@@ -322,59 +357,6 @@ const ExploreMap = (): JSX.Element => {
             attribution
             help
             navigation
-            basemaps={{
-                basemaps: [
-                    {
-                        id: 'World_Ocean_Base',
-                        tiles: [
-                            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution:
-                                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
-                        }
-                    },
-                    {
-                        id: 'World_Imagery',
-                        tiles: [
-                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-                        }
-                    },
-                    {
-                        id: 'Carto',
-                        tiles: [
-                            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
-                        }
-                    }
-                ],
-                initialBasemap: 'World_Ocean_Base',
-                expandDirection: 'top'
-            }}
-            LayersControlProps={[
-                {
-                    id: 'faoAreas',
-                    label: 'FAO Areas',
-                    initialOpacity: 0.5,
-                    attribution: {
-                        text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
-                        url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
-                    },
-                    style: layerStyles.faoAreas.default,
-                    opacityType: 'line'
-                }
-            ]}
             onLoad={onMapLoad}
         />
     );
