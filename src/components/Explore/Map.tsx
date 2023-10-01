@@ -10,16 +10,24 @@ import {
     MapActionDispatcherContext
 } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, pulsingDot, runWhenReady } from '../Map/utils';
+import { directionArrow, getFeatureBounds, pulsingDot, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
 import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
 
+const MAX_ZOOM = 6;
+const BASE_PADDING = 32;
+const APPBAR_H = 64;
+const LEFT_PANEL_W = 324;
+const INSET_MAP_EXTRA_W = 226;
+const DETAIL_W = 478;
+const RIGHT_TOOLBAR_W = 48;
+const MAP_CONTROL_EXTRA = 32;
+
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, selectedStation, filteredStations, selectedFaoArea } =
-        useContext(DataStateContext);
+    const { journeyPath, selectedStation, filteredStations, selectedFaoArea } = useContext(DataStateContext);
     const selectedStationRef = useRef<StationSummary | null>(null);
 
     const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -232,6 +240,7 @@ const ExploreMap = (): JSX.Element => {
                     }))
                 });
             }
+
             const clusteredStationsSource = map.getSource('clustered-stations') as maplibregl.GeoJSONSource;
             if (clusteredStationsSource) {
                 clusteredStationsSource.setData({
@@ -251,7 +260,6 @@ const ExploreMap = (): JSX.Element => {
                     }))
                 });
             }
-            map.fitBounds(stationsBounds);
 
             // Update selected station on click on the following layers
             ['stations', 'clustered-stations-single'].forEach((layerName) => {
@@ -274,7 +282,7 @@ const ExploreMap = (): JSX.Element => {
                 });
             });
         }
-    }, [filteredStations, isMapLoaded]);
+    }, [filteredStations, selectedFaoArea, isMapLoaded]);
 
     React.useEffect(() => {
         // Update the filter on `stations-selected` when selected station changes
@@ -282,22 +290,67 @@ const ExploreMap = (): JSX.Element => {
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation?.name ?? '']);
             if (selectedStation) {
-                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
+                map.flyTo({
+                    center: [selectedStation.coordinates[0], selectedStation.coordinates[1]],
+                    zoom: 8,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + DETAIL_W, // left panel width + detail panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
+                    }
+                });
+            } else if (selectedFaoArea) {
+                const stationGroup = filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code);
+                if (!stationGroup) throw '[Invalid State]: FAO Area must be selected from filtered stations!';
+
+                const coordinates = stationGroup.stations.map((s) => s.coordinates);
+                const maxLng = Math.max(...coordinates.map((c) => c[0]));
+                const minLng = Math.min(...coordinates.map((c) => c[0]));
+                const bounds = getFeatureBounds(
+                    coordinates.map(([lng, lat]) => [maxLng - minLng > 180 && lng > 180 ? lng - 360 : lng, lat])
+                );
+                map.setPadding({ left: 0, right: 0, top: 0, bottom: 0 });
+                map.fitBounds(bounds, {
+                    maxZoom: MAX_ZOOM,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + INSET_MAP_EXTRA_W, // left panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
+                    }
+                });
             } else {
-                map.fitBounds([-180, -90, 180, 90]);
+                const coordinates = filteredStations.flatMap((g) => g.stations.map((s) => s.coordinates));
+                const maxLng = Math.max(...coordinates.map((c) => c[0]));
+                const minLng = Math.min(...coordinates.map((c) => c[0]));
+                const bounds = getFeatureBounds(
+                    coordinates.map(([lng, lat]) => [maxLng - minLng > 180 && lng > 180 ? lng - 360 : lng, lat])
+                );
+                map.setPadding({ left: 0, right: 0, top: 0, bottom: 0 });
+                map.fitBounds(bounds, {
+                    maxZoom: MAX_ZOOM,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + INSET_MAP_EXTRA_W, // left panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
+                    }
+                });
             }
         }
-    }, [selectedStation, isMapLoaded]);
+    }, [selectedFaoArea, selectedStation, filteredStations, isMapLoaded]);
 
     React.useEffect(() => {
         // Update visible stations when the given dependencies change
         const map = mapRef.current;
         if (map && isMapLoaded) {
+            const visibleStations = selectedFaoArea
+                ? filteredStations.find((g) => g.faoArea.code == selectedFaoArea.code)?.stations ?? []
+                : filteredStations.flatMap((g) => g.stations);
+
             if (filteredStations) {
-                const filteredStationNames = filteredStations.flatMap((group) =>
-                    group.stations.map((station) => station.name)
-                );
-                map.setFilter('stations', ['in', 'name', ...filteredStationNames]);
+                map.setFilter('stations', ['in', 'name', ...visibleStations.map((s) => s.name)]);
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
                         map.setLayoutProperty(layerName, 'visibility', 'none');
@@ -313,7 +366,7 @@ const ExploreMap = (): JSX.Element => {
                 map.setLayoutProperty('stations', 'visibility', 'none');
             }
         }
-    }, [filteredStations, isMapLoaded]);
+    }, [filteredStations, selectedFaoArea, isMapLoaded]);
 
     return (
         <Map

@@ -1,4 +1,4 @@
-import { createJourneyPathFromStationPoints, getFeatureBounds } from '../components/Map/utils';
+import { createJourneyPathFromStationPoints } from '../components/Map/utils';
 import { setUnitPreferences } from '../utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
@@ -8,6 +8,15 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 ...state,
                 faoAreas: action.faoAreas
             };
+        case 'cacheFAOAreaIcons': {
+            return {
+                ...state,
+                faoAreaIcons: {
+                    ...state.faoAreaIcons,
+                    [action.faoArea]: action.base64Encoded
+                }
+            };
+        }
         case 'loadStations': {
             const journeyPath = createJourneyPathFromStationPoints(
                 action.stations.map((station) => station.coordinates)
@@ -15,7 +24,6 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
             return {
                 ...state,
                 journeyPath,
-                stationsBounds: getFeatureBounds(journeyPath),
                 allStationsList: action.stations,
                 filteredStations: groupStationsByFaoArea(action.stations, state.faoAreas)
             };
@@ -33,7 +41,9 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateSelectedFaoArea': {
             return {
                 ...state,
-                selectedFaoArea: action.faoArea
+                selectedFaoArea: action.faoArea,
+                focusedStation: null,
+                selectedStation: null
             };
         }
         case 'updateFocusedStation': {

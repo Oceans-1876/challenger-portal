@@ -26,9 +26,10 @@ const MIN_DATE = dayjs('1872-01-01');
 
 type Props = {
     toggle: ReactNode;
+    onClose: () => void;
 };
 
-const AdvancedSearch: FC<Props> = ({ toggle }) => {
+const AdvancedSearch: FC<Props> = ({ toggle, onClose }) => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const { faoAreas, allStationsList, allSpeciesList } = useContext(DataStateContext);
 
@@ -99,8 +100,9 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
                 type: 'updateFilteredStations',
                 stations
             });
+            onClose();
         });
-    }, [joinOperator, speciesFilter, stationFilter, faoAreaFilter, startDate, endDate]);
+    }, [joinOperator, speciesFilter, stationFilter, faoAreaFilter, startDate, endDate, onClose]);
 
     return (
         <>

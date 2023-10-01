@@ -17,6 +17,8 @@ import Loading from './components/Loading';
 import axios from 'axios';
 
 import faoAreasUrl from './files/fao_areas.geojson';
+import { Feature, MultiPolygon, Polygon } from '@turf/turf';
+import { normalizeFaoAreaGeometry } from './components/Map/utils';
 
 window.API_PATH = `${window.API_SERVER}/api/v1`;
 window.API_FONTS = `${window.API_SERVER}/fonts`;
@@ -27,14 +29,22 @@ const App = (): JSX.Element => {
 
     React.useEffect(function initialize() {
         axios.get(faoAreasUrl).then((res) => {
-            const features = res.data.features as Array<{
-                properties: { OCEAN: string; F_AREA: string; NAME_EN: string };
-            }>;
+            const features = res.data.features as Array<
+                Feature<
+                    Polygon | MultiPolygon,
+                    {
+                        F_AREA: string;
+                        NAME_EN: string;
+                        OCEAN: string;
+                    }
+                >
+            >;
             const data = features
-                .map<FAOArea>(({ properties: { OCEAN, F_AREA, NAME_EN } }) => ({
+                .map<FAOArea>(({ geometry, properties: { F_AREA, NAME_EN, OCEAN } }) => ({
                     code: Number(F_AREA),
                     name: NAME_EN,
-                    ocean: OCEAN
+                    ocean: OCEAN,
+                    geometry: normalizeFaoAreaGeometry(geometry)
                 }))
                 .sort((a, b) => a.name.localeCompare(b.name));
 

@@ -1,6 +1,21 @@
 import maplibre from 'maplibre-gl';
+import * as turf from '@turf/turf';
 
 import directionArrowIcon from '../../images/direction_arrow_icon.png';
+
+export function normalizeFaoAreaGeometry(geometry: turf.Polygon | turf.MultiPolygon): turf.Polygon | turf.MultiPolygon {
+    if (geometry.type == 'Polygon') return geometry;
+    return {
+        type: 'MultiPolygon',
+        coordinates: geometry.coordinates.map((polyCoords) =>
+            polyCoords.map((lineCoords) => {
+                // When the region straddles the 180th meridian, we need to swap subregions on different sides of the meridian
+                const minLng = Math.min(...lineCoords.map(([lng]) => lng));
+                return minLng == -180 ? lineCoords.map(([lng, lat]) => [lng + 360, lat]) : lineCoords;
+            })
+        )
+    };
+}
 
 export const createJourneyPathFromStationPoints = (coordinates: LineCoordinates): LineCoordinates => {
     for (let i = 0; i < coordinates.length; i += 1) {

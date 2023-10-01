@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, LayersOutlined } from '@mui/icons-material';
 import { theme } from '../../../theme';
@@ -12,6 +12,10 @@ const RightSidebar: FC = () => {
     const [expanded, setExpanded] = useState(false);
     const [state, setState] = useState<SideBarState | null>(null);
 
+    const onClose = useCallback(() => {
+        setState(null);
+    }, []);
+
     return (
         <Stack
             direction="row"
@@ -22,10 +26,10 @@ const RightSidebar: FC = () => {
             }}
         >
             <Box sx={{ height: '100%', display: state === 'search' ? 'block' : 'none' }}>
-                <SearchPanel onClose={() => setState(null)} />
+                <SearchPanel onClose={onClose} />
             </Box>
             <Box sx={{ height: '100%', display: state === 'layer' ? 'block' : 'none' }}>
-                <LayerControl onClose={() => setState(null)} />
+                <LayerControl onClose={onClose} />
             </Box>
             <Stack
                 sx={{

@@ -4,6 +4,7 @@ declare module '@mui/material/styles' {
     type ExplorePaletteKey =
         | 'main'
         | 'mainTransparent'
+        | 'mainDark'
         | 'selected'
         | 'unselectedSecondary'
         | 'selectedSecondary'
@@ -44,6 +45,7 @@ const palette: PaletteOptions = {
     explore: {
         main: '#1d3346',
         mainTransparent: '#1d3346bf',
+        mainDark: '#040F20E5',
         selected: '#243c59f2',
         selectedSecondary: '#89f3e94d',
         unselectedSecondary: '#8af8ed4d',

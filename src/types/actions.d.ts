@@ -3,6 +3,12 @@ interface loadFAOAreas {
     faoAreas: FAOArea[];
 }
 
+interface CacheFAOAreaIcons {
+    type: 'cacheFAOAreaIcons';
+    faoArea: number; // code
+    base64Encoded: string; // rendered icon
+}
+
 interface LoadStations {
     type: 'loadStations';
     stations: StationSummary[];
@@ -15,7 +21,7 @@ interface UpdateFilteredStations {
 
 interface UpdateSelectedFaoArea {
     type: 'updateSelectedFaoArea';
-    faoArea: FAOArea;
+    faoArea: FAOArea | null;
 }
 
 interface UpdateFocusedStation {
@@ -68,6 +74,7 @@ type DataAction =
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
-    | loadFAOAreas;
+    | loadFAOAreas
+    | CacheFAOAreaIcons;
 
 type MapAction = UpdateBasemap;

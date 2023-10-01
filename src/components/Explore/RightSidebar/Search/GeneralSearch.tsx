@@ -27,9 +27,10 @@ const searchTypes: Array<{ type: GeneralSearchType; label: string }> = [
 
 type Props = {
     toggle: ReactNode;
+    onClose: () => void;
 };
 
-const GeneralSearch: FC<Props> = ({ toggle }) => {
+const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
     const { faoAreas, allStationsList, allSpeciesList } = useContext(DataStateContext);
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const speciesDefaultRanks = useMemo(() => new Map(allSpeciesList.map((s, rank) => [s.id, rank])), [allSpeciesList]);
@@ -112,8 +113,9 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                 type: 'updateFilteredStations',
                 stations
             });
+            onClose();
         });
-    }, [searchType, speciesFilter, stationFilter, faoAreaFilter]);
+    }, [searchType, speciesFilter, stationFilter, faoAreaFilter, onClose]);
 
     return (
         <>

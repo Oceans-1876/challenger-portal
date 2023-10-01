@@ -72,7 +72,11 @@ const SearchPanel: FC<Props> = ({ onClose }) => {
             </Stack>
             <Divider sx={{ background: theme.palette.explore.divider, mt: '16px', mb: '16px' }} />
 
-            {searchType === 'general' ? <GeneralSearch toggle={toggle} /> : <AdvancedSearch toggle={toggle} />}
+            {searchType === 'general' ? (
+                <GeneralSearch toggle={toggle} onClose={onClose} />
+            ) : (
+                <AdvancedSearch toggle={toggle} onClose={onClose} />
+            )}
         </Box>
     );
 };
