@@ -4,7 +4,7 @@ import { CloseOutlined } from '@mui/icons-material';
 import { theme } from '../../../../theme';
 import GeneralSearch from './GeneralSearch';
 import AdvancedSearch from './AdvancedSearch';
-import { DataActionDispatcherContext } from '../../../../store/contexts';
+import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
 
 type SearchType = 'general' | 'advanced';
 
@@ -14,12 +14,13 @@ type Props = {
 
 const SearchPanel: FC<Props> = ({ onClose }) => {
     const [searchType, setSearchType] = useState<SearchType>('general');
+    const { allStationsList } = useContext(DataStateContext);
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
 
     useEffect(() => {
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, [searchType]);
 

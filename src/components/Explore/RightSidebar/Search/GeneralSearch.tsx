@@ -82,7 +82,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         }
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, [searchType]);
 
@@ -92,7 +92,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         setFaoAreaFilter([]);
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, [searchType]);
 

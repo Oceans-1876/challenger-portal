@@ -78,7 +78,7 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
         setEndDate(null);
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, []);
 

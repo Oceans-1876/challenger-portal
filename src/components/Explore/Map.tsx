@@ -18,7 +18,8 @@ import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, selectedStation, filteredStations } = useContext(DataStateContext);
+    const { journeyPath, stationsBounds, selectedStation, filteredStations, selectedFaoArea } =
+        useContext(DataStateContext);
     const selectedStationRef = useRef<StationSummary | null>(null);
 
     const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -207,13 +208,15 @@ const ExploreMap = (): JSX.Element => {
                 });
             }
         }
-    }, [journeyPath]);
+    }, [journeyPath, isMapLoaded]);
 
     React.useEffect(() => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            const visibleStations = filteredStations.flatMap((group) => group.stations);
+            const visibleStations = selectedFaoArea
+                ? filteredStations.find((g) => g.faoArea.code == selectedFaoArea.code)?.stations ?? []
+                : filteredStations.flatMap((g) => g.stations);
 
             const stationsSource = map.getSource('stations') as maplibregl.GeoJSONSource;
             if (stationsSource) {

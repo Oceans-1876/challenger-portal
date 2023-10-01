@@ -12,13 +12,12 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
             const journeyPath = createJourneyPathFromStationPoints(
                 action.stations.map((station) => station.coordinates)
             ); // Expects stations to be sorted by date
-            const stationGroups = groupStationsByFaoArea(action.stations, state.faoAreas);
             return {
                 ...state,
                 journeyPath,
                 stationsBounds: getFeatureBounds(journeyPath),
                 allStationsList: action.stations,
-                filteredStations: stationGroups
+                filteredStations: groupStationsByFaoArea(action.stations, state.faoAreas)
             };
         }
         case 'updateFilteredStations': {
@@ -26,7 +25,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
             return {
                 ...state,
                 filteredStations: stationGroups,
-                selectedFaoArea: stationGroups.length ? stationGroups[0].faoArea : null,
+                selectedFaoArea: null,
                 focusedStation: null,
                 selectedStation: null
             };
