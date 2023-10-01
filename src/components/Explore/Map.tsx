@@ -18,8 +18,7 @@ import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
 
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, stationsList, selectedStation, filteredStations } =
-        useContext(DataStateContext);
+    const { journeyPath, stationsBounds, selectedStation, filteredStations } = useContext(DataStateContext);
     const selectedStationRef = useRef<StationSummary | null>(null);
 
     const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -194,14 +193,33 @@ const ExploreMap = (): JSX.Element => {
     };
 
     React.useEffect(() => {
+        const map = mapRef.current;
+        if (map && isMapLoaded) {
+            const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
+            if (journeySource) {
+                journeySource.setData({
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: journeyPath
+                    }
+                });
+            }
+        }
+    }, [journeyPath]);
+
+    React.useEffect(() => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
+            const visibleStations = filteredStations.flatMap((group) => group.stations);
+
             const stationsSource = map.getSource('stations') as maplibregl.GeoJSONSource;
             if (stationsSource) {
                 stationsSource.setData({
                     type: 'FeatureCollection',
-                    features: stationsList.map((stationProps) => ({
+                    features: visibleStations.map((stationProps) => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -215,7 +233,7 @@ const ExploreMap = (): JSX.Element => {
             if (clusteredStationsSource) {
                 clusteredStationsSource.setData({
                     type: 'FeatureCollection',
-                    features: stationsList.map((stationProps) => ({
+                    features: visibleStations.map((stationProps) => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -232,17 +250,6 @@ const ExploreMap = (): JSX.Element => {
             }
             map.fitBounds(stationsBounds);
 
-            const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
-            if (journeySource) {
-                journeySource.setData({
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: journeyPath
-                    }
-                });
-            }
             // Update selected station on click on the following layers
             ['stations', 'clustered-stations-single'].forEach((layerName) => {
                 map.on('click', layerName, (e) => {
@@ -252,10 +259,8 @@ const ExploreMap = (): JSX.Element => {
                         let newSelectedStation =
                             stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
                         if (newSelectedStation) {
-                            const index: number = stationsList.findIndex(
-                                ({ name }) => newSelectedStation?.name === name
-                            );
-                            newSelectedStation = stationsList[index];
+                            newSelectedStation =
+                                visibleStations.find(({ name }) => newSelectedStation?.name === name) ?? null;
                         }
                         dataActionDispatcher({
                             type: 'updateSelectedStation',
@@ -266,13 +271,13 @@ const ExploreMap = (): JSX.Element => {
                 });
             });
         }
-    }, [stationsList, isMapLoaded]);
+    }, [filteredStations, isMapLoaded]);
 
     React.useEffect(() => {
         // Update the filter on `stations-selected` when selected station changes
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
+            map.setFilter('stations-selected', ['==', 'name', selectedStation?.name ?? '']);
             if (selectedStation) {
                 map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
             } else {
@@ -286,7 +291,10 @@ const ExploreMap = (): JSX.Element => {
         const map = mapRef.current;
         if (map && isMapLoaded) {
             if (filteredStations) {
-                map.setFilter('stations', ['in', 'name', ...filteredStations.map((station) => station.name)]);
+                const filteredStationNames = filteredStations.flatMap((group) =>
+                    group.stations.map((station) => station.name)
+                );
+                map.setFilter('stations', ['in', 'name', ...filteredStationNames]);
                 ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
                     (layerName) => {
                         map.setLayoutProperty(layerName, 'visibility', 'none');

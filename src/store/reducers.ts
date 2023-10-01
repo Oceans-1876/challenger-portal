@@ -3,22 +3,44 @@ import { setUnitPreferences } from '../utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
-        case 'updateStations': {
+        case 'loadFAOAreas':
+            return {
+                ...state,
+                faoAreas: action.faoAreas
+            };
+        case 'loadStations': {
             const journeyPath = createJourneyPathFromStationPoints(
                 action.stations.map((station) => station.coordinates)
             ); // Expects stations to be sorted by date
+            const stationGroups = groupStationsByFaoArea(action.stations, state.faoAreas);
             return {
                 ...state,
                 journeyPath,
                 stationsBounds: getFeatureBounds(journeyPath),
-                stationsList: action.stations
+                allStationsList: action.stations,
+                filteredStations: stationGroups
             };
         }
         case 'updateFilteredStations': {
+            const stationGroups = groupStationsByFaoArea(action.stations, state.faoAreas);
             return {
                 ...state,
-                filteredStations: action.stations,
-                selectedStation: action.stations ? action.stations[0] : null
+                filteredStations: stationGroups,
+                selectedFaoArea: stationGroups.length ? stationGroups[0].faoArea : null,
+                focusedStation: null,
+                selectedStation: null
+            };
+        }
+        case 'updateSelectedFaoArea': {
+            return {
+                ...state,
+                selectedFaoArea: action.faoArea
+            };
+        }
+        case 'updateFocusedStation': {
+            return {
+                ...state,
+                focusedStation: action.station
             };
         }
         case 'updateSelectedStation':
@@ -37,11 +59,6 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateSpeciesDetails':
             state.allSpeciesObject[action.species.id] = action.species;
             return state;
-        case 'updateFAOAreas':
-            return {
-                ...state,
-                faoAreas: action.faoAreas
-            };
         case 'updateTempToUnit':
             setUnitPreferences({
                 Temp: action.unit,
@@ -74,3 +91,22 @@ export const mapReducers = (state: MapState, action: MapAction): MapState => {
     }
     throw Error(`Received invalid action: ${action}`);
 };
+
+function groupStationsByFaoArea(stations: StationSummary[] | null, allFaoAreas: FAOArea[]): StationGroup[] {
+    const groups: {
+        [faoAreaCode: string]: {
+            faoArea: FAOArea;
+            stations: StationSummary[];
+        };
+    } = {};
+    stations?.forEach((station) => {
+        if (!groups[station.fao_area]) {
+            groups[station.fao_area] = {
+                faoArea: allFaoAreas.find((area) => area.code === station.fao_area)!,
+                stations: []
+            };
+        }
+        groups[station.fao_area].stations.push(station);
+    });
+    return Object.values(groups);
+}

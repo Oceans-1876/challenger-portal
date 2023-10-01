@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useR
 import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { theme } from '../../../../theme';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
-import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
+import { useDebounce } from '../../../../utils/hooks';
 import { getData, searchStations } from '../../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
@@ -30,7 +30,7 @@ type Props = {
 };
 
 const GeneralSearch: FC<Props> = ({ toggle }) => {
-    const { stationsList, allSpeciesList } = useContext(DataStateContext);
+    const { faoAreas, allStationsList, allSpeciesList } = useContext(DataStateContext);
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const speciesDefaultRanks = useMemo(() => new Map(allSpeciesList.map((s, rank) => [s.id, rank])), [allSpeciesList]);
 
@@ -62,7 +62,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
 
     const [stationFilter, setStationFilter] = useState<StationSummary[]>([]);
 
-    const faoAreas = useFAOAreas();
     const [faoAreaFilter, setFaoAreaFilter] = useState<FAOArea[]>([]);
 
     const [searchType, setSearchType] = useState<GeneralSearchType>('species');
@@ -204,7 +203,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                             <TextField {...params} label="Stations" placeholder="Stations" sx={selectStyleOverride} />
                         )}
                         getOptionLabel={(option) => `Station ${option.name}`}
-                        options={stationsList}
+                        options={allStationsList}
                         renderTags={(tagValue) =>
                             tagValue.map((option) => (
                                 <Chip

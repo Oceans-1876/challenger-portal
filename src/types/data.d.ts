@@ -2,6 +2,9 @@ interface StationSummary {
     name: string;
     date: string; // Date in ISO 8601 format (i.e. YYYY-MM-DD)
     coordinates: PointCoordinates;
+    fao_area: number;
+    gear?: string;
+    sediment_sample: string;
 }
 
 interface StationDetails extends StationSummary {
@@ -82,21 +85,28 @@ interface SpeciesCommonNames {
 }
 
 interface FAOArea {
-    code: string;
+    code: number;
     name: string;
     ocean: string;
 }
 
+interface StationGroup {
+    faoArea: FAOArea;
+    stations: StationSummary[];
+}
+
 interface DataState {
-    stationsList: StationSummary[];
-    filteredStations: StationSummary[] | null;
+    faoAreas: FAOArea[];
+    allStationsList: StationSummary[];
     stationsObject: { [name: string]: StationDetails };
     stationsBounds: import('maplibre-gl').LngLatBoundsLike;
     journeyPath: LineCoordinates;
-    selectedStation: StationSummary | null;
+    filteredStations: StationGroup[];
+    selectedFaoArea: FAOArea | null; // FAO area code
+    focusedStation: StationSummary | null; // station name
+    selectedStation: StationSummary | null; // station name
     allSpeciesList: SpeciesSummary[];
     allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
-    faoAreas: FAOArea[];
     tempToUnit: string;
     depthToUnit: string;
 }

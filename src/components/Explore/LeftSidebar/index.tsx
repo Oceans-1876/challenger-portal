@@ -19,7 +19,7 @@ import InsetMap from './InsetMap';
 
 const Sidebar = () => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { filteredStations, stationsList, selectedStation } = useContext(DataStateContext);
+    const { filteredStations, allStationsList, selectedStation } = useContext(DataStateContext);
 
     const selectedStationDetails = useStationDetails(selectedStation?.name);
 
@@ -40,18 +40,18 @@ const Sidebar = () => {
         [selectedStationDetails]
     );
 
-    const onNavigate = (selectedStationName: string, navigate_to: string) => {
-        const stations = filteredStations?.length ? filteredStations : stationsList;
-        const index = stations.findIndex((station) => station.name === selectedStation?.name);
-        const newIndex =
-            navigate_to === 'forward'
-                ? (index + 1 + stations.length) % stations.length
-                : (index - 1 + stations.length) % stations.length;
-        dataActionDispatcher({
-            type: 'updateSelectedStation',
-            station: stations[newIndex]
-        });
-    };
+    // const onNavigate = (selectedStationName: string, navigate_to: string) => {
+    //     const stations = filteredStations?.length ? filteredStations : stationsList;
+    //     const index = stations.findIndex((station) => station.name === selectedStation?.name);
+    //     const newIndex =
+    //         navigate_to === 'forward'
+    //             ? (index + 1 + stations.length) % stations.length
+    //             : (index - 1 + stations.length) % stations.length;
+    //     dataActionDispatcher({
+    //         type: 'updateSelectedStation',
+    //         station: stations[newIndex]
+    //     });
+    // };
 
     return (
         <Stack
@@ -79,7 +79,7 @@ const Sidebar = () => {
                         <IconButton
                             size="medium"
                             sx={{ mx: 'auto' }}
-                            onClick={() => onNavigate(selectedStationDetails.name, 'backward')}
+                            // onClick={() => onNavigate(selectedStationDetails.name, 'backward')}
                         >
                             <Icon baseClassName="icons">arrow_back</Icon>
                         </IconButton>
@@ -89,7 +89,7 @@ const Sidebar = () => {
                         <IconButton
                             size="medium"
                             sx={{ mx: 'auto' }}
-                            onClick={() => onNavigate(selectedStationDetails.name, 'forward')}
+                            // onClick={() => onNavigate(selectedStationDetails.name, 'forward')}
                         >
                             <Icon baseClassName="icons">arrow_forward</Icon>
                         </IconButton>

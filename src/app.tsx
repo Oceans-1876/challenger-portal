@@ -14,29 +14,57 @@ import { dataStateInitialValue } from './store/states';
 import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
+import axios from 'axios';
+
+import faoAreasUrl from './files/fao_areas.geojson';
 
 window.API_PATH = `${window.API_SERVER}/api/v1`;
 window.API_FONTS = `${window.API_SERVER}/fonts`;
 
 const App = (): JSX.Element => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
+    const [initialized, setInitialized] = React.useState(false);
 
-    React.useEffect(() => {
-        getData<SpeciesSummary[]>(
-            'species/all/?order_by=matched_canonical_full_name',
-            (species) => {
-                dataActionDispatcher({ type: 'updateAllSpecies', species });
-            },
-            () => undefined
-        );
-        getData<StationSummary[]>(
-            'stations/all/?order_by=order',
-            (stations) => {
-                dataActionDispatcher({ type: 'updateStations', stations });
-            },
-            () => undefined
-        );
+    React.useEffect(function initialize() {
+        axios.get(faoAreasUrl).then((res) => {
+            const features = res.data.features as Array<{
+                properties: { OCEAN: string; F_AREA: string; NAME_EN: string };
+            }>;
+            const data = features
+                .map<FAOArea>(({ properties: { OCEAN, F_AREA, NAME_EN } }) => ({
+                    code: Number(F_AREA),
+                    name: NAME_EN,
+                    ocean: OCEAN
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name));
+
+            dataActionDispatcher({
+                type: 'loadFAOAreas',
+                faoAreas: data
+            });
+
+            Promise.all([
+                getData<StationSummary[]>(
+                    'stations/all/?order_by=order',
+                    (stations) => {
+                        dataActionDispatcher({ type: 'loadStations', stations });
+                    },
+                    console.error
+                ),
+                getData<SpeciesSummary[]>(
+                    'species/all/?order_by=matched_canonical_full_name',
+                    (species) => {
+                        dataActionDispatcher({ type: 'updateAllSpecies', species });
+                    },
+                    console.error
+                )
+            ]).then(() => {
+                setInitialized(true);
+            });
+        }, console.error);
     }, []);
+
+    if (!initialized) return <Loading />;
 
     return (
         <StrictMode>
