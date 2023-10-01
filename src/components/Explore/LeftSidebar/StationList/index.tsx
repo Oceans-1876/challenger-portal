@@ -71,14 +71,16 @@ const StationsList = () => {
                     </Box>
                 </Scroll>
             ) : (
-                <Scroll key={2}>
-                    <Typography sx={{ fontSize: '12px', color: theme.palette.explore.secondaryText }}>
+                <>
+                    <Typography sx={{ mb: '16px', fontSize: '12px', color: theme.palette.explore.secondaryText }}>
                         {filteredStations.length} ocean regions found
                     </Typography>
-                    {filteredStations.map((group) => (
-                        <RegionCard key={group.faoArea.code} stationGroup={group} />
-                    ))}
-                </Scroll>
+                    <Scroll key={2}>
+                        {filteredStations.map((group) => (
+                            <RegionCard key={group.faoArea.code} stationGroup={group} />
+                        ))}
+                    </Scroll>
+                </>
             )}
         </Box>
     );

@@ -26,6 +26,7 @@ declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
         'explore-text': true;
         'explore-contained': true;
+        'explore-card': true;
     }
 }
 
@@ -95,6 +96,20 @@ export const themeOptions = {
                         },
                         'textTransform': 'none',
                         'color': '#90fff3'
+                    }
+                },
+                {
+                    props: { variant: 'explore-card' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.divider,
+                        'color': 'white',
+                        '&:active, &:hover': {
+                            backgroundColor: palette.explore.secondary,
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
                     }
                 }
             ]

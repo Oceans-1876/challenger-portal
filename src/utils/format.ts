@@ -1,3 +1,18 @@
+export const formatLongitude = (lng: number) => {
+    lng = ((((lng + 180) % 360) + 360) % 360) - 180;
+    const hemisphere = lng > 0 ? 'E' : 'W';
+    const degrees = Math.floor(Math.abs(lng));
+    const minutes = String(Math.round((Math.abs(lng) % 1) * 60)).padStart(2, '0');
+    return `${degrees}° ${minutes}' ${hemisphere}`;
+};
+
+export const formatLatitude = (lat: number) => {
+    const hemisphere = lat > 0 ? 'N' : 'S';
+    const degrees = Math.floor(Math.abs(lat));
+    const minutes = String(Math.round((Math.abs(lat) % 1) * 60)).padStart(2, '0');
+    return `${degrees}° ${minutes}' ${hemisphere}`;
+};
+
 export const decimalFormat = (value: number, decimals = 2): string => {
     const formatter = new Intl.NumberFormat('en-US', {
         style: 'decimal',
