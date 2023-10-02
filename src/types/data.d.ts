@@ -17,6 +17,7 @@ declare global {
         name: string;
         date: string; // Date in ISO 8601 format (i.e. YYYY-MM-DD)
         coordinates: PointCoordinates;
+        location: string;
         fao_area: number;
         gear?: string;
         sediment_sample: string;

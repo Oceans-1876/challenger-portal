@@ -1,18 +1,18 @@
-import React, { FC, ReactNode, useContext } from 'react';
+import React, { FC, ReactNode, useContext, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
-import { ArrowBack } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import RegionCard from './RegionCard';
+import RegionIcon from './RegionIcon';
+import StationCard from './StationCard';
 
 const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <Box
             sx={{
-                'width': '100%',
-                'height': '100%',
+                'flex': 'auto',
                 'overflow': 'scroll',
                 '&::-webkit-scrollbar': {
                     display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
@@ -33,6 +33,14 @@ const StationsList = () => {
 
     const selectedGroup = filteredStations.find((g) => g.faoArea.code === selectedFaoArea?.code) ?? null;
 
+    const activeFaoAreaMenuItemRef = useRef<HTMLElement | null>(null);
+
+    useEffect(() => {
+        if (selectedGroup) {
+            activeFaoAreaMenuItemRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        }
+    }, [selectedGroup]);
+
     return (
         <Box
             sx={{
@@ -44,43 +52,73 @@ const StationsList = () => {
             }}
         >
             {selectedGroup ? (
-                <Scroll key={1}>
-                    <ArrowBack
-                        onClick={() => {
-                            dataActionDispatcher({
-                                type: 'updateSelectedFaoArea',
-                                faoArea: null
-                            });
+                <Stack sx={{ height: '100%' }}>
+                    <Box
+                        sx={{
+                            'flex': 'none',
+                            'overflow': 'scroll',
+                            '&::-webkit-scrollbar': {
+                                display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                            },
+                            '&-ms-overflow-style:': {
+                                display: 'none' // Hide the scrollbar for IE
+                            }
                         }}
-                    />
-                    <Box>areas select</Box>
-                    <Box>
-                        {selectedGroup.stations.map((s) => (
-                            <Box
-                                key={s.name}
-                                onClick={() => {
-                                    dataActionDispatcher({
-                                        type: 'updateSelectedStation',
-                                        station: s
-                                    });
-                                }}
-                            >
-                                {s.name}
-                            </Box>
-                        ))}
+                    >
+                        <Stack direction="row" sx={{ height: 82 }}>
+                            {filteredStations.map((group) => {
+                                const isActive = group === selectedGroup;
+                                return (
+                                    <Box
+                                        ref={isActive ? activeFaoAreaMenuItemRef : null}
+                                        key={group.faoArea.code}
+                                        sx={{
+                                            opacity: isActive ? 1 : 0.3,
+                                            flex: 'none',
+                                            height: 82,
+                                            width: 82,
+                                            mr: '8px',
+                                            borderRadius: '12px',
+                                            border: `2px solid ${theme.palette.explore.secondary}`,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={() => {
+                                            dataActionDispatcher({
+                                                type: 'updateSelectedFaoArea',
+                                                faoArea: isActive ? null : group.faoArea
+                                            });
+                                        }}
+                                    >
+                                        <RegionIcon size={62} faoArea={group.faoArea} />
+                                    </Box>
+                                );
+                            })}
+                        </Stack>
                     </Box>
-                </Scroll>
+                    <Typography sx={{ my: '16px', fontSize: '12px', color: theme.palette.explore.secondaryText }}>
+                        {selectedGroup.stations.length} station matches
+                    </Typography>
+
+                    <Scroll key={selectedGroup.faoArea.code}>
+                        {selectedGroup.stations.map((station) => (
+                            <StationCard key={station.name} station={station} />
+                        ))}
+                    </Scroll>
+                </Stack>
             ) : (
-                <>
+                <Stack sx={{ height: '100%' }}>
                     <Typography sx={{ mb: '16px', fontSize: '12px', color: theme.palette.explore.secondaryText }}>
                         {filteredStations.length} ocean regions found
                     </Typography>
-                    <Scroll key={2}>
+                    <Scroll key="ocean-regions">
                         {filteredStations.map((group) => (
                             <RegionCard key={group.faoArea.code} stationGroup={group} />
                         ))}
                     </Scroll>
-                </>
+                </Stack>
             )}
         </Box>
     );

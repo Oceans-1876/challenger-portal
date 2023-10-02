@@ -1,31 +1,45 @@
+import { theme } from '../../theme';
+
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
         default: {
             type: 'circle',
             paint: {
-                'circle-radius': 7,
-                'circle-color': '#d5ab1a',
-                'circle-opacity': 0.9
+                'circle-radius': 22,
+                'circle-color': '#FFFFE8',
+                'circle-stroke-color': theme.palette.explore.highlight,
+                'circle-stroke-width': 4
+            }
+        },
+        name: {
+            type: 'symbol',
+            layout: {
+                'text-field': ['get', 'name'],
+                'text-font': ['Roboto Regular'],
+                'text-size': 12
+            },
+            paint: {
+                'text-color': 'black'
             }
         },
         selected: {
             // This style depends on `pulsingDot` in `components/Map/utils.ts`
             type: 'symbol',
             layout: {
-                'icon-image': 'pulsing-dot'
+                'icon-image': 'pulsing-dot',
+                'icon-allow-overlap': true
             }
         },
         clustered: {
             type: 'circle',
             filter: ['has', 'point_count'],
             paint: {
-                // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-                // with three steps to implement three types of circles:
-                //   * #14807c, 15px circles when point count is less than 20
-                //   * #32bb39, 20px circles when point count is between 20 and 40
-                //   * #98d320, 25px circles when point count is greater than or equal to 40
-                'circle-color': ['step', ['get', 'point_count'], '#14807c', 20, '#32bb39', 40, '#98d320'],
-                'circle-radius': ['step', ['get', 'point_count'], 15, 20, 20, 40, 25]
+                'circle-radius': 40,
+                'circle-color': theme.palette.explore.secondary,
+                'circle-opacity': 0.4,
+                'circle-stroke-color': theme.palette.explore.secondary,
+                'circle-stroke-opacity': 1,
+                'circle-stroke-width': 1
             }
         },
         clusterCount: {
@@ -34,7 +48,11 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             layout: {
                 'text-field': '{point_count_abbreviated}',
                 'text-font': ['Roboto Regular'],
-                'text-size': 12
+                'text-size': 14
+            },
+            paint: {
+                'text-color': theme.palette.explore.secondary,
+                'text-halo-width': 5
             }
         }
     },
@@ -46,19 +64,9 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
                 'line-cap': 'round'
             },
             paint: {
-                'line-color': '#e3e7af',
-                'line-width': 2
-            }
-        },
-        direction: {
-            // This style depends on `directionArrow` in `components/Map/utils.ts`
-            type: 'symbol',
-            layout: {
-                'symbol-placement': 'line',
-                'symbol-spacing': 50,
-                'icon-rotate': 90,
-                'icon-image': 'direction-arrow',
-                'icon-size': 1.2
+                'line-color': theme.palette.explore.highlight,
+                'line-width': 2,
+                'line-dasharray': [2, 2]
             }
         }
     },

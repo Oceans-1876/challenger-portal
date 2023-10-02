@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import type { Point } from 'geojson';
 
@@ -10,14 +10,15 @@ import {
     MapActionDispatcherContext
 } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, getFeatureBounds, pulsingDot, runWhenReady } from '../Map/utils';
+import { getFeatureBounds, pulsingDot, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
 import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
+import { MapLayerEventType } from 'maplibre-gl';
 
 const MAX_ZOOM = 6;
-const BASE_PADDING = 32;
+const BASE_PADDING = 100;
 const APPBAR_H = 64;
 const LEFT_PANEL_W = 324;
 const INSET_MAP_EXTRA_W = 226;
@@ -28,7 +29,6 @@ const MAP_CONTROL_EXTRA = 32;
 const ExploreMap = (): JSX.Element => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const { journeyPath, selectedStation, filteredStations, selectedFaoArea } = useContext(DataStateContext);
-    const selectedStationRef = useRef<StationSummary | null>(null);
 
     const [isMapLoaded, setIsMapLoaded] = useState(false);
 
@@ -49,10 +49,7 @@ const ExploreMap = (): JSX.Element => {
 
     const onMapLoad = (map: maplibregl.Map) => {
         // Add a pulsing dot image to the map to be used for selected station
-        pulsingDot(map, 100);
-
-        // Add direction arrow to the map to be used for journey path
-        directionArrow(map);
+        pulsingDot(map, 200);
 
         // Add basemaps
         BASEMAPS.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
@@ -98,12 +95,6 @@ const ExploreMap = (): JSX.Element => {
             source: 'journey'
         } as maplibregl.LineLayerSpecification);
 
-        map.addLayer({
-            ...layerStyles.journeyPath.direction,
-            id: 'journey-direction',
-            source: 'journey'
-        } as maplibregl.SymbolLayerSpecification);
-
         // Both `stations` and `clustered-stations` sources hold the same data.
         // For performance reasons, it is better to use separate sources and hide or show
         // their layers depending on the status of filtered stations.
@@ -113,8 +104,10 @@ const ExploreMap = (): JSX.Element => {
                 type: 'FeatureCollection',
                 features: []
             },
-            cluster: false, // FIXME - Temporarily disable clustering because it is broken with some server configurations.
-            clusterMinPoints: 5
+            // cluster: false, // FIXME - Temporarily disable clustering because it is broken with some server configurations.
+            cluster: true,
+            clusterMinPoints: 5,
+            clusterRadius: 120
         });
 
         map.addSource('stations', {
@@ -125,6 +118,14 @@ const ExploreMap = (): JSX.Element => {
             }
         });
 
+        // The layer for selected station
+        map.addLayer({
+            ...layerStyles.stations.selected,
+            id: 'stations-selected',
+            source: 'stations',
+            filter: ['==', 'name', '']
+        } as maplibregl.CircleLayerSpecification);
+
         // The layer for single stations in clustered mode
         map.addLayer({
             ...layerStyles.stations.default,
@@ -132,6 +133,13 @@ const ExploreMap = (): JSX.Element => {
             source: 'clustered-stations',
             filter: ['!', ['has', 'point_count']]
         } as maplibregl.CircleLayerSpecification);
+
+        // The layer for clusters count in clustered mode
+        map.addLayer({
+            ...layerStyles.stations.name,
+            id: 'clustered-stations-single-symbol',
+            source: 'clustered-stations'
+        } as maplibregl.SymbolLayerSpecification);
 
         // The layer for clustered stations in clustered mode
         map.addLayer({
@@ -146,24 +154,6 @@ const ExploreMap = (): JSX.Element => {
             id: 'clustered-stations-count',
             source: 'clustered-stations'
         } as maplibregl.SymbolLayerSpecification);
-
-        // The default stations layer in unclustered mode
-        map.addLayer({
-            ...layerStyles.stations.default,
-            id: 'stations',
-            source: 'stations',
-            layout: {
-                visibility: 'none'
-            }
-        } as maplibregl.CircleLayerSpecification);
-
-        // The layer for selected station
-        map.addLayer({
-            ...layerStyles.stations.selected,
-            id: 'stations-selected',
-            source: 'stations',
-            filter: ['==', 'name', '']
-        } as maplibregl.CircleLayerSpecification);
 
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
@@ -185,7 +175,7 @@ const ExploreMap = (): JSX.Element => {
         });
 
         // Use pointer cursor on hover for the following layers
-        ['stations', 'clustered-stations-single', 'clustered-stations-multi'].forEach((layerName) => {
+        ['clustered-stations-single', 'clustered-stations-multi'].forEach((layerName) => {
             // Change the cursor to a pointer when the mouse is over the layer layer.
             map.on('mouseenter', layerName, () => {
                 map.getCanvas().style.cursor = 'pointer';
@@ -262,27 +252,33 @@ const ExploreMap = (): JSX.Element => {
             }
 
             // Update selected station on click on the following layers
-            ['stations', 'clustered-stations-single'].forEach((layerName) => {
-                map.on('click', layerName, (e) => {
-                    if (e.features && e.features[0]) {
-                        const feature = e.features[0];
-                        const stationProperties = feature.properties as StationSummary;
-                        let newSelectedStation =
-                            stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
-                        if (newSelectedStation) {
-                            newSelectedStation =
-                                visibleStations.find(({ name }) => newSelectedStation?.name === name) ?? null;
-                        }
-                        dataActionDispatcher({
-                            type: 'updateSelectedStation',
-                            station: newSelectedStation
-                        });
-                        selectedStationRef.current = newSelectedStation;
+            const evenListener = (e: MapLayerEventType['click']) => {
+                if (e.features && e.features[0]) {
+                    const feature = e.features[0];
+                    const stationProperties = feature.properties as StationSummary;
+                    let newSelectedStation =
+                        stationProperties.name === selectedStation?.name ? null : stationProperties;
+                    if (newSelectedStation) {
+                        newSelectedStation =
+                            visibleStations.find(({ name }) => newSelectedStation?.name === name) ?? null;
                     }
-                });
+
+                    dataActionDispatcher({
+                        type: 'updateSelectedStation',
+                        station: newSelectedStation
+                    });
+                }
+            };
+            ['clustered-stations-single'].forEach((layerName) => {
+                map.on('click', layerName, evenListener);
             });
+            return () => {
+                ['clustered-stations-single'].forEach((layerName) => {
+                    map.off('click', layerName, evenListener);
+                });
+            };
         }
-    }, [filteredStations, selectedFaoArea, isMapLoaded]);
+    }, [filteredStations, selectedFaoArea, selectedStation, isMapLoaded]);
 
     React.useEffect(() => {
         // Update the filter on `stations-selected` when selected station changes
@@ -340,33 +336,6 @@ const ExploreMap = (): JSX.Element => {
             }
         }
     }, [selectedFaoArea, selectedStation, filteredStations, isMapLoaded]);
-
-    React.useEffect(() => {
-        // Update visible stations when the given dependencies change
-        const map = mapRef.current;
-        if (map && isMapLoaded) {
-            const visibleStations = selectedFaoArea
-                ? filteredStations.find((g) => g.faoArea.code == selectedFaoArea.code)?.stations ?? []
-                : filteredStations.flatMap((g) => g.stations);
-
-            if (filteredStations) {
-                map.setFilter('stations', ['in', 'name', ...visibleStations.map((s) => s.name)]);
-                ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
-                    (layerName) => {
-                        map.setLayoutProperty(layerName, 'visibility', 'none');
-                    }
-                );
-                map.setLayoutProperty('stations', 'visibility', 'visible');
-            } else {
-                ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
-                    (layerName) => {
-                        map.setLayoutProperty(layerName, 'visibility', 'visible');
-                    }
-                );
-                map.setLayoutProperty('stations', 'visibility', 'none');
-            }
-        }
-    }, [filteredStations, selectedFaoArea, isMapLoaded]);
 
     return (
         <Map

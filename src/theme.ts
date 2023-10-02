@@ -27,6 +27,7 @@ declare module '@mui/material/Button' {
         'explore-text': true;
         'explore-contained': true;
         'explore-card': true;
+        'explore-card-focus': true;
     }
 }
 
@@ -104,6 +105,20 @@ export const themeOptions = {
                         'textTransform': 'none',
                         'backgroundColor': palette.explore.divider,
                         'color': 'white',
+                        '&:active, &:hover': {
+                            backgroundColor: palette.explore.secondary,
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
+                    }
+                },
+                {
+                    props: { variant: 'explore-card-focus' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.secondary,
+                        'color': palette.explore.mainTransparent,
                         '&:active, &:hover': {
                             backgroundColor: palette.explore.secondary,
                             color: palette.explore.mainTransparent

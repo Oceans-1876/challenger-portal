@@ -3,7 +3,7 @@ import React, { FC, useContext } from 'react';
 import { DataActionDispatcherContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
 import RegionIcon from './RegionIcon';
-import { LocationOnOutlined, RadarOutlined } from '@mui/icons-material';
+import { LocationOnOutlined } from '@mui/icons-material';
 import * as turf from '@turf/turf';
 import { formatLatitude, formatLongitude } from '../../../../utils/format';
 
@@ -11,12 +11,12 @@ type Props = {
     stationGroup: StationGroup;
 };
 
-const RegionSummary: FC<Props> = ({ stationGroup }) => {
+const RegionCard: FC<Props> = ({ stationGroup }) => {
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const geometry = stationGroup.faoArea.geometry;
     const bbox = turf.bbox(
         geometry.type == 'MultiPolygon' ? turf.multiPolygon(geometry.coordinates) : turf.polygon(geometry.coordinates)
     );
-    const dataActionDispatcher = useContext(DataActionDispatcherContext);
     return (
         <Card
             sx={{
@@ -34,7 +34,7 @@ const RegionSummary: FC<Props> = ({ stationGroup }) => {
                 }}
             >
                 <Box sx={{ position: 'relative' }}>
-                    <RegionIcon faoArea={stationGroup.faoArea} />
+                    <RegionIcon faoArea={stationGroup.faoArea} opacity={0.4} />
                     <Box
                         sx={{
                             position: 'absolute',
@@ -134,7 +134,6 @@ const RegionSummary: FC<Props> = ({ stationGroup }) => {
                 <Button
                     size="small"
                     variant="explore-card"
-                    sx={{ background: theme.palette.explore.divider, color: 'white' }}
                     onClick={() => {
                         dataActionDispatcher({
                             type: 'updateSelectedFaoArea',
@@ -149,4 +148,4 @@ const RegionSummary: FC<Props> = ({ stationGroup }) => {
     );
 };
 
-export default RegionSummary;
+export default RegionCard;

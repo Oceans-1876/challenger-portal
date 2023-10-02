@@ -8,94 +8,90 @@ import { DataActionDispatcherContext, DataStateContext } from '../../../../store
 
 type Props = {
     faoArea: FAOArea;
+    size?: number;
+    opacity?: number;
 };
 
-const RegionIcon: FC<Props> = ({ faoArea }) => {
+const RegionIcon: FC<Props> = ({ faoArea, size = 64, opacity = 1 }) => {
     const { faoAreaIcons } = useContext(DataStateContext);
-    return faoAreaIcons[faoArea.code] ? (
-        <RegionIconCached base64Encoded={faoAreaIcons[faoArea.code]} />
-    ) : (
-        <RegionIconMap faoArea={faoArea} />
-    );
-};
-
-const RegionIconCached: FC<{ base64Encoded: string }> = ({ base64Encoded }) => {
-    return (
-        <Box
-            sx={{
-                background: `url(${base64Encoded})`,
-                backgroundSize: '100%, 100%',
-                width: 64,
-                height: 64
-            }}
-        />
-    );
-};
-
-const RegionIconMap: FC<{ faoArea: FAOArea }> = ({ faoArea }) => {
-    const mapContainerRef = useRef<HTMLDivElement>(null);
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const mapRef = useRef<maplibregl.Map | null>(null);
 
-    const feature =
-        faoArea.geometry.type == 'MultiPolygon'
-            ? turf.multiPolygon(faoArea.geometry.coordinates)
-            : turf.polygon(faoArea.geometry.coordinates);
-    const bbox = turf.bbox(feature);
-
-    const dataActionDispatcher = useContext(DataActionDispatcherContext);
-
     useEffect(() => {
-        if (IS_WEBGL_SUPPORTED && mapContainerRef.current) {
-            const map = new maplibre.Map({
-                container: mapContainerRef.current,
-                style: {
-                    version: 8,
-                    sources: {
-                        faoArea: {
-                            type: 'geojson',
-                            data: {
-                                type: 'FeatureCollection',
-                                features: [feature]
-                            }
+        if (!IS_WEBGL_SUPPORTED) return;
+        if (faoAreaIcons[faoArea.code]) return;
+
+        const feature =
+            faoArea.geometry.type == 'MultiPolygon'
+                ? turf.multiPolygon(faoArea.geometry.coordinates)
+                : turf.polygon(faoArea.geometry.coordinates);
+        const bbox = turf.bbox(feature);
+
+        const containerEl = document.createElement('div');
+        containerEl.style.width = '64px';
+        containerEl.style.height = '64px';
+        containerEl.style.position = 'fixed';
+        containerEl.style.left = `-1000px`;
+        document.body.append(containerEl);
+
+        const map = new maplibre.Map({
+            container: containerEl,
+            style: {
+                version: 8,
+                sources: {
+                    faoArea: {
+                        type: 'geojson',
+                        data: {
+                            type: 'FeatureCollection',
+                            features: [feature]
                         }
-                    },
-                    layers: [
-                        {
-                            id: 'icon',
-                            source: 'faoArea',
-                            type: 'fill',
-                            paint: {
-                                'fill-color': theme.palette.explore.secondary,
-                                'fill-opacity': 0.4
-                            }
-                        }
-                    ]
+                    }
                 },
-                bounds: new LngLatBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
-                // bounds: [180, -90, -180, 90],
-                interactive: false
+                layers: [
+                    {
+                        id: 'icon',
+                        source: 'faoArea',
+                        type: 'fill',
+                        paint: {
+                            'fill-color': theme.palette.explore.secondary
+                        }
+                    }
+                ]
+            },
+            bounds: new LngLatBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
+            // bounds: [180, -90, -180, 90],
+            interactive: false
+        });
+
+        map.on('load', () => {
+            dataActionDispatcher({
+                type: 'cacheFAOAreaIcons',
+                faoArea: faoArea.code,
+                base64Encoded: map.getCanvas().toDataURL()
             });
-            map.on('load', () => {
-                dataActionDispatcher({
-                    type: 'cacheFAOAreaIcons',
-                    faoArea: faoArea.code,
-                    base64Encoded: map.getCanvas().toDataURL()
-                });
-            });
-            mapRef.current = map;
-        }
+            map.remove();
+            mapRef.current = null;
+            containerEl.remove();
+        });
+
+        mapRef.current = map;
+
         return () => {
             mapRef.current?.remove();
+            mapRef.current = null;
+            containerEl.remove();
         };
     }, []);
 
     return (
         <Box
             sx={{
-                width: 64,
-                height: 64
+                width: size,
+                height: size,
+                background: faoAreaIcons[faoArea.code] ? `url(${faoAreaIcons[faoArea.code]})` : 'none',
+                backgroundSize: '100%, 100%',
+                opacity
             }}
-            ref={mapContainerRef}
         />
     );
 };

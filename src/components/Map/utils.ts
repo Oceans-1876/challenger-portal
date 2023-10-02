@@ -1,8 +1,6 @@
 import maplibre from 'maplibre-gl';
 import * as turf from '@turf/turf';
 
-import directionArrowIcon from '../../images/direction_arrow_icon.png';
-
 export function normalizeFaoAreaGeometry(geometry: turf.Polygon | turf.MultiPolygon): turf.Polygon | turf.MultiPolygon {
     if (geometry.type == 'Polygon') return geometry;
     return {
@@ -79,15 +77,8 @@ export const pulsingDot = (map: maplibregl.Map, size: number): void => {
                 context.clearRect(0, 0, this.width, this.height);
                 context.beginPath();
                 context.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
-                context.fillStyle = `rgba(255, 200, 200, ${1 - t})`;
-                context.fill();
-
-                // Draw the inner circle.
-                context.beginPath();
-                context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
-                context.fillStyle = 'rgba(255, 100, 100, 0.7)';
-                context.strokeStyle = 'white';
-                context.lineWidth = 2 + 4 * (1 - t);
+                context.fillStyle = `rgba(255, 255, 0, ${1 - t})`;
+                context.strokeStyle = 'rgb(255, 255, 0)';
                 context.fill();
                 context.stroke();
 
@@ -105,17 +96,6 @@ export const pulsingDot = (map: maplibregl.Map, size: number): void => {
         }
     };
     map.addImage('pulsing-dot', dot, { pixelRatio: 2 });
-};
-
-export const directionArrow = (map: maplibregl.Map): void => {
-    map.loadImage(directionArrowIcon, (error?: Error | null, image?: HTMLImageElement | ImageBitmap | null) => {
-        if (error) {
-            throw error;
-        }
-        if (image) {
-            map.addImage('direction-arrow', image, { pixelRatio: 2 });
-        }
-    });
 };
 
 /**

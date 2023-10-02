@@ -43,7 +43,8 @@ const StationDetail = () => {
         (navigate_to: string) => {
             if (!selectedStation) return;
             if (!selectedFaoArea || selectedFaoArea?.code != selectedStation.fao_area) {
-                throw '[Invalid State]: A station can only be selected after a FAO area is selected!';
+                // throw '[Invalid State]: A station can only be selected after a FAO area is selected!';
+                return;
             }
             const group = filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code);
             if (!group) {
@@ -63,81 +64,96 @@ const StationDetail = () => {
         [selectedStation, selectedFaoArea, filteredStations]
     );
 
-    return selectedStationDetails ? (
+    return (
         <Box
             sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                background: '#fff',
-                width: 478,
-                p: 1,
-                zIndex: 1,
-                boxShadow: '1px 0 5px gray',
+                width: selectedStationDetails ? 478 : 0,
+                transition: '0.2s width ease-in-out',
                 pointerEvents: 'all'
             }}
         >
-            <Stack direction="row">
-                <IconButton size="medium" sx={{ mx: 'auto' }} onClick={() => onNavigate('backward')}>
-                    <Icon baseClassName="icons">arrow_back</Icon>
-                </IconButton>
-                <Typography variant="h5" align="center" sx={{ mx: 'auto' }}>
-                    Station {selectedStationDetails?.name}
-                </Typography>
-                <IconButton size="medium" sx={{ mx: 'auto' }} onClick={() => onNavigate('forward')}>
-                    <Icon baseClassName="icons">arrow_forward</Icon>
-                </IconButton>
-            </Stack>
             {selectedStationDetails ? (
-                <>
-                    <TabsGroup
-                        sx={{ flexGrow: 1 }}
-                        initialPanel="Station"
-                        panels={[
-                            {
-                                Panel: StationPanel,
-                                label: 'Station'
-                            },
-                            {
-                                Panel: EnvironmentPanel,
-                                label: 'Environment'
-                            },
-                            {
-                                Panel: SpeciesPanel,
-                                label: 'Species'
-                            },
-                            {
-                                Panel: TextPanel,
-                                label: 'Text'
-                            }
-                        ]}
-                    />
-                    <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
-                        <Stack direction="row" spacing={1} justifyContent="space-between">
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => dataActionDispatcher({ type: 'updateSelectedStation', station: null })}
-                            >
-                                Go Back
-                            </Button>
-                            <DownloadButton
-                                data={selectedStationDetails}
-                                filename={`Station-${selectedStationDetails.name}-details`}
-                                message="Download Data"
-                            />
-                            <DownloadButton
-                                data={selectedStationDetails.species}
-                                filename={`Station-${selectedStationDetails.name}-Species`}
-                                message="Download All Species"
-                            />
-                        </Stack>
+                <Box
+                    sx={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        background: '#fff',
+                        p: 1,
+                        zIndex: 1,
+                        boxShadow: '1px 0 5px gray'
+                    }}
+                >
+                    <Stack direction="row">
+                        {selectedFaoArea ? (
+                            <IconButton size="medium" sx={{ mx: 'auto' }} onClick={() => onNavigate('backward')}>
+                                <Icon baseClassName="icons">arrow_back</Icon>
+                            </IconButton>
+                        ) : null}
+                        <Typography variant="h5" align="center" sx={{ mx: 'auto' }}>
+                            Station {selectedStationDetails?.name}
+                        </Typography>
+                        {selectedFaoArea ? (
+                            <IconButton size="medium" sx={{ mx: 'auto' }} onClick={() => onNavigate('forward')}>
+                                <Icon baseClassName="icons">arrow_forward</Icon>
+                            </IconButton>
+                        ) : null}
                     </Stack>
-                </>
-            ) : (
-                <Loading />
-            )}
+                    {selectedStationDetails ? (
+                        <>
+                            <TabsGroup
+                                sx={{ flexGrow: 1 }}
+                                initialPanel="Station"
+                                panels={[
+                                    {
+                                        Panel: StationPanel,
+                                        label: 'Station'
+                                    },
+                                    {
+                                        Panel: EnvironmentPanel,
+                                        label: 'Environment'
+                                    },
+                                    {
+                                        Panel: SpeciesPanel,
+                                        label: 'Species'
+                                    },
+                                    {
+                                        Panel: TextPanel,
+                                        label: 'Text'
+                                    }
+                                ]}
+                            />
+                            <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
+                                <Stack direction="row" spacing={1} justifyContent="space-between">
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        onClick={() =>
+                                            dataActionDispatcher({ type: 'updateSelectedStation', station: null })
+                                        }
+                                    >
+                                        Go Back
+                                    </Button>
+                                    <DownloadButton
+                                        data={selectedStationDetails}
+                                        filename={`Station-${selectedStationDetails.name}-details`}
+                                        message="Download Data"
+                                    />
+                                    <DownloadButton
+                                        data={selectedStationDetails.species}
+                                        filename={`Station-${selectedStationDetails.name}-Species`}
+                                        message="Download All Species"
+                                    />
+                                </Stack>
+                            </Stack>
+                        </>
+                    ) : (
+                        <Loading />
+                    )}
+                </Box>
+            ) : null}
         </Box>
-    ) : null;
+    );
 };
 
 export default StationDetail;

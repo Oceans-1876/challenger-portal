@@ -54,7 +54,7 @@ const InsetMap: FC = () => {
                     source: 'shadow',
                     type: 'fill',
                     paint: {
-                        'fill-color': theme.palette.explore.main,
+                        'fill-color': 'black',
                         'fill-opacity': 0.4
                     }
                 } as maplibregl.FillLayerSpecification);
