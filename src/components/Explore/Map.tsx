@@ -49,7 +49,7 @@ const ExploreMap = (): JSX.Element => {
 
     const onMapLoad = (map: maplibregl.Map) => {
         // Add a pulsing dot image to the map to be used for selected station
-        pulsingDot(map, 200);
+        pulsingDot(map, 40);
 
         // Add basemaps
         BASEMAPS.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
@@ -104,9 +104,8 @@ const ExploreMap = (): JSX.Element => {
                 type: 'FeatureCollection',
                 features: []
             },
-            // cluster: false, // FIXME - Temporarily disable clustering because it is broken with some server configurations.
             cluster: true,
-            clusterMinPoints: 5,
+            clusterMinPoints: 3,
             clusterRadius: 120
         });
 
@@ -134,10 +133,16 @@ const ExploreMap = (): JSX.Element => {
             filter: ['!', ['has', 'point_count']]
         } as maplibregl.CircleLayerSpecification);
 
-        // The layer for clusters count in clustered mode
+        // The layer for station names in clustered mode
         map.addLayer({
             ...layerStyles.stations.name,
-            id: 'clustered-stations-single-symbol',
+            id: 'clustered-stations-single-name',
+            source: 'clustered-stations'
+        } as maplibregl.SymbolLayerSpecification);
+
+        map.addLayer({
+            ...layerStyles.stations.nameSuffix,
+            id: 'clustered-stations-single-name-suffix',
             source: 'clustered-stations'
         } as maplibregl.SymbolLayerSpecification);
 
@@ -262,7 +267,6 @@ const ExploreMap = (): JSX.Element => {
                         newSelectedStation =
                             visibleStations.find(({ name }) => newSelectedStation?.name === name) ?? null;
                     }
-
                     dataActionDispatcher({
                         type: 'updateSelectedStation',
                         station: newSelectedStation
@@ -286,9 +290,10 @@ const ExploreMap = (): JSX.Element => {
         if (map && isMapLoaded) {
             map.setFilter('stations-selected', ['==', 'name', selectedStation?.name ?? '']);
             if (selectedStation) {
-                map.flyTo({
+                map.easeTo({
                     center: [selectedStation.coordinates[0], selectedStation.coordinates[1]],
                     zoom: 8,
+                    duration: 1000,
                     padding: {
                         left: BASE_PADDING + LEFT_PANEL_W + DETAIL_W, // left panel width + detail panel width
                         right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width

@@ -3,6 +3,7 @@ import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
 import { LocationOnOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
+import { requestScrollIntoView } from '../../../../utils/scrollIntoView';
 
 type Props = {
     station: StationSummary;
@@ -14,20 +15,32 @@ const StationCard: FC<Props> = ({ station }) => {
     const [isHovered, setIsHovered] = useState(false);
     const isFocused = focusedStation?.name == station.name;
     const isSelected = selectedStation?.name == station.name;
-    const activeItemRef = useRef<HTMLDivElement | null>(null);
+    const elementRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        setTimeout(() => {
-            if (isFocused || isSelected) {
-                if (activeItemRef.current && activeItemRef.current.parentElement) {
-                    activeItemRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+        let timer = -1;
+        let abort = () => {};
+        if (isFocused || isSelected) {
+            if (elementRef.current && elementRef.current.parentElement) {
+                const el = elementRef.current;
+                // wait until CSS transition has completed
+                timer = window.setTimeout(() => {
+                    abort = requestScrollIntoView(el, {
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'center'
+                    });
+                }, 100);
             }
-        }, 200);
+        }
+        return () => {
+            abort(); // If the timer has expired, the scroll action has been requested
+            window.clearTimeout(timer); // Otherwise, we just need to cancel the timer
+        };
     }, [isSelected, isFocused]);
 
     return (
-        <Box ref={isFocused || isSelected ? activeItemRef : null}>
+        <Box ref={elementRef}>
             <Card
                 sx={{
                     mb: '16px',

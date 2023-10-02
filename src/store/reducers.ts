@@ -49,12 +49,26 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
         case 'updateFocusedStation': {
             return {
                 ...state,
+                /**
+                 * Update selected FAO area when a station is selected,
+                 * but don't unset FAO area when the station is deselected
+                 */
+                selectedFaoArea: action.station
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area)!
+                    : state.selectedFaoArea,
                 focusedStation: action.station
             };
         }
         case 'updateSelectedStation':
             return {
                 ...state,
+                /**
+                 * Update selected FAO area when a station is selected,
+                 * but don't unset FAO area when the station is deselected
+                 */
+                selectedFaoArea: action.station
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area)!
+                    : state.selectedFaoArea,
                 selectedStation: action.station
             };
         case 'updateStationDetails':

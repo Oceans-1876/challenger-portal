@@ -68,7 +68,6 @@ const StationDetail = () => {
         <Box
             sx={{
                 width: selectedStationDetails ? 478 : 0,
-                transition: '0.2s width ease-in-out',
                 pointerEvents: 'all'
             }}
         >

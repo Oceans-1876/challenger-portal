@@ -43,6 +43,11 @@ export const getFeatureBounds = (coordinates: LineCoordinates) => {
 };
 
 export const pulsingDot = (map: maplibregl.Map, size: number): void => {
+    size *= devicePixelRatio;
+    // the pulse ring grows to twice the original size
+    const radius = size / 2;
+    const imageSize = size * 2;
+
     /** Create a pulsing dot that can be used by symbol styles.
      * Set `icon-image` to ``pulsing-dot` under the `layout` attribute of the style.
      * @param {maplibregl.Map} map - The map to add the pulsing dot to.
@@ -50,9 +55,9 @@ export const pulsingDot = (map: maplibregl.Map, size: number): void => {
      */
     const dot: StyleImage = {
         context: null,
-        width: size,
-        height: size,
-        data: new Uint8Array(size * size * 4),
+        width: imageSize,
+        height: imageSize,
+        data: new Uint8Array(imageSize * imageSize * 4),
 
         // When the layer is added to the map,
         // get the rendering context for the map canvas.
@@ -67,9 +72,8 @@ export const pulsingDot = (map: maplibregl.Map, size: number): void => {
         render() {
             const duration = 1000;
             const t = (performance.now() % duration) / duration;
+            const outerRadius = radius * (1 + t);
 
-            const radius = (size / 2) * 0.3;
-            const outerRadius = (size / 2) * 0.7 * t + radius;
             const context = this.context;
 
             if (context) {

@@ -1,4 +1,4 @@
-import React, { StrictMode, Suspense } from 'react';
+import React, { FC, StrictMode, Suspense } from 'react';
 // eslint-disable-next-line import/no-unresolved
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -23,7 +23,7 @@ import { normalizeFaoAreaGeometry } from './components/Map/utils';
 window.API_PATH = `${window.API_SERVER}/api/v1`;
 window.API_FONTS = `${window.API_SERVER}/fonts`;
 
-const App = (): JSX.Element => {
+const App: FC = () => {
     const [dataState, dataActionDispatcher] = React.useReducer(dataReducers, dataStateInitialValue);
     const [initialized, setInitialized] = React.useState(false);
 
@@ -74,7 +74,7 @@ const App = (): JSX.Element => {
         }, console.error);
     }, []);
 
-    if (!initialized) return <Loading />;
+    if (!initialized) return null;
 
     return (
         <StrictMode>

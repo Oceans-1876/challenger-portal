@@ -7,11 +7,13 @@ import { Stack, Typography } from '@mui/material';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';
+import { requestScrollIntoView } from '../../../../utils/scrollIntoView';
 
 const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <Box
             sx={{
+                'scrollBehavior': 'smooth',
                 'flex': 'auto',
                 'overflow': 'scroll',
                 '&::-webkit-scrollbar': {
@@ -36,8 +38,16 @@ const StationsList = () => {
     const activeFaoAreaMenuItemRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
-        if (selectedGroup) {
-            activeFaoAreaMenuItemRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        if (activeFaoAreaMenuItemRef.current) {
+            requestScrollIntoView(
+                activeFaoAreaMenuItemRef.current,
+                {
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'center'
+                },
+                1
+            );
         }
     }, [selectedGroup]);
 
@@ -55,7 +65,9 @@ const StationsList = () => {
                 <Stack sx={{ height: '100%' }}>
                     <Box
                         sx={{
+                            'width': '100%',
                             'flex': 'none',
+                            'scrollBehavior': 'smooth',
                             'overflow': 'scroll',
                             '&::-webkit-scrollbar': {
                                 display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)

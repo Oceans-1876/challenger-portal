@@ -5,7 +5,7 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
         default: {
             type: 'circle',
             paint: {
-                'circle-radius': 22,
+                'circle-radius': 20,
                 'circle-color': '#FFFFE8',
                 'circle-stroke-color': theme.palette.explore.highlight,
                 'circle-stroke-width': 4
@@ -15,11 +15,26 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             type: 'symbol',
             layout: {
                 'text-field': ['get', 'name'],
-                'text-font': ['Roboto Regular'],
-                'text-size': 12
+                'text-font': ['Roboto Medium'],
+                'text-size': 12,
+                'text-offset': [0, -0.1],
+                'text-allow-overlap': true
             },
             paint: {
                 'text-color': 'black'
+            }
+        },
+        nameSuffix: {
+            type: 'symbol',
+            layout: {
+                'text-field': 'station',
+                'text-font': ['Roboto Medium'],
+                'text-size': 8,
+                'text-offset': [0, 1],
+                'text-allow-overlap': true
+            },
+            paint: {
+                'text-color': theme.palette.explore.mainTransparent
             }
         },
         selected: {
@@ -35,7 +50,7 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             filter: ['has', 'point_count'],
             paint: {
                 'circle-radius': 40,
-                'circle-color': theme.palette.explore.secondary,
+                'circle-color': 'rgba(184, 255, 247, 0.4)',
                 'circle-opacity': 0.4,
                 'circle-stroke-color': theme.palette.explore.secondary,
                 'circle-stroke-opacity': 1,
@@ -46,13 +61,12 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             type: 'symbol',
             filter: ['has', 'point_count'],
             layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['Roboto Regular'],
+                'text-field': ['concat', ['get', 'point_count_abbreviated'], '\nStations'],
+                'text-font': ['Roboto Medium'],
                 'text-size': 14
             },
             paint: {
-                'text-color': theme.palette.explore.secondary,
-                'text-halo-width': 5
+                'text-color': theme.palette.explore.secondary
             }
         }
     },
