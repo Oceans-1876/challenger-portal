@@ -1,8 +1,8 @@
 import { Box, Button, Card, Chip, Divider, Stack, Typography } from '@mui/material';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
+import { LocationOnOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
-import { LocationOnOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
 import { requestScrollIntoView } from '../../../../utils/scrollIntoView';
 
 type Props = {
@@ -13,12 +13,13 @@ const StationCard: FC<Props> = ({ station }) => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const { focusedStation, selectedStation } = useContext(DataStateContext);
     const [isHovered, setIsHovered] = useState(false);
-    const isFocused = focusedStation?.name == station.name;
-    const isSelected = selectedStation?.name == station.name;
+    const isFocused = focusedStation?.name === station.name;
+    const isSelected = selectedStation?.name === station.name;
     const elementRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         let timer = -1;
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         let abort = () => {};
         if (isFocused || isSelected) {
             if (elementRef.current && elementRef.current.parentElement) {
@@ -189,7 +190,7 @@ const StationCard: FC<Props> = ({ station }) => {
                         onClick={() => {
                             dataActionDispatcher({
                                 type: 'updateSelectedStation',
-                                station: station
+                                station
                             });
                         }}
                     >

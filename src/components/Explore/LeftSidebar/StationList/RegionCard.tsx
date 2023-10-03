@@ -1,10 +1,10 @@
 import { Box, Button, Card, Divider, Stack, Typography } from '@mui/material';
 import React, { FC, useContext } from 'react';
+import { LocationOnOutlined } from '@mui/icons-material';
+import * as turf from '@turf/turf';
 import { DataActionDispatcherContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
 import RegionIcon from './RegionIcon';
-import { LocationOnOutlined } from '@mui/icons-material';
-import * as turf from '@turf/turf';
 import { formatLatitude, formatLongitude } from '../../../../utils/format';
 
 type Props = {
@@ -15,7 +15,7 @@ const RegionCard: FC<Props> = ({ stationGroup }) => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const geometry = stationGroup.faoArea.geometry;
     const bbox = turf.bbox(
-        geometry.type == 'MultiPolygon' ? turf.multiPolygon(geometry.coordinates) : turf.polygon(geometry.coordinates)
+        geometry.type === 'MultiPolygon' ? turf.multiPolygon(geometry.coordinates) : turf.polygon(geometry.coordinates)
     );
     return (
         <Card

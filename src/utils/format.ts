@@ -1,8 +1,8 @@
 export const formatLongitude = (lng: number) => {
-    lng = ((((lng + 180) % 360) + 360) % 360) - 180;
-    const hemisphere = lng > 0 ? 'E' : 'W';
-    const degrees = Math.floor(Math.abs(lng));
-    const minutes = String(Math.round((Math.abs(lng) % 1) * 60)).padStart(2, '0');
+    const wrappedLng = ((((lng + 180) % 360) + 360) % 360) - 180;
+    const hemisphere = wrappedLng > 0 ? 'E' : 'W';
+    const degrees = Math.floor(Math.abs(wrappedLng));
+    const minutes = String(Math.round((Math.abs(wrappedLng) % 1) * 60)).padStart(2, '0');
     return `${degrees}° ${minutes}' ${hemisphere}`;
 };
 

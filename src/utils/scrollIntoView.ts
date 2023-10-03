@@ -32,6 +32,7 @@ function unlock() {
  * See this discussion on StackOverflow: https://stackoverflow.com/a/63563437
  */
 export function requestScrollIntoView(el: HTMLElement, options: ScrollIntoViewOptions, priority = 0) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     let abort = () => {};
     if (!isBrowserScrolling) {
         isBrowserScrolling = true;
@@ -41,7 +42,7 @@ export function requestScrollIntoView(el: HTMLElement, options: ScrollIntoViewOp
         const newReq = { el, options, priority };
         pendingRequests.push(newReq);
         abort = () => {
-            pendingRequests = pendingRequests.filter((req) => req != newReq);
+            pendingRequests = pendingRequests.filter((req) => req !== newReq);
         };
     }
     return abort;

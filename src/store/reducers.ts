@@ -54,7 +54,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                  * but don't unset FAO area when the station is deselected
                  */
                 selectedFaoArea: action.station
-                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area)!
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
                     : state.selectedFaoArea,
                 focusedStation: action.station
             };
@@ -67,7 +67,7 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                  * but don't unset FAO area when the station is deselected
                  */
                 selectedFaoArea: action.station
-                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area)!
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
                     : state.selectedFaoArea,
                 selectedStation: action.station
             };
@@ -125,7 +125,7 @@ function groupStationsByFaoArea(stations: StationSummary[] | null, allFaoAreas: 
     stations?.forEach((station) => {
         if (!groups[station.fao_area]) {
             groups[station.fao_area] = {
-                faoArea: allFaoAreas.find((area) => area.code === station.fao_area)!,
+                faoArea: allFaoAreas.find((area) => area.code === station.fao_area) ?? allFaoAreas[0],
                 stations: []
             };
         }

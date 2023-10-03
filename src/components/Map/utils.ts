@@ -2,16 +2,16 @@ import maplibre, { StyleImageInterface } from 'maplibre-gl';
 import * as turf from '@turf/turf';
 
 export function normalizeFaoAreaGeometry(geometry: turf.Polygon | turf.MultiPolygon): turf.Polygon | turf.MultiPolygon {
-    if (geometry.type == 'Polygon') return geometry;
+    if (geometry.type === 'Polygon') return geometry;
     return {
         type: 'MultiPolygon',
-        coordinates: geometry.coordinates.map((polyCoords) =>
-            polyCoords.map((lineCoords) => {
+        coordinates: geometry.coordinates.map((polyCoords) => {
+            return polyCoords.map((lineCoords) => {
                 // When the region straddles the 180th meridian, we need to swap subregions on different sides of the meridian
                 const minLng = Math.min(...lineCoords.map(([lng]) => lng));
-                return minLng == -180 ? lineCoords.map(([lng, lat]) => [lng + 360, lat]) : lineCoords;
-            })
-        )
+                return minLng === -180 ? lineCoords.map(([lng, lat]) => [lng + 360, lat]) : lineCoords;
+            });
+        })
     };
 }
 

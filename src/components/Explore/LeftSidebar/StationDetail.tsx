@@ -42,13 +42,13 @@ const StationDetail = () => {
     const onNavigate = useCallback(
         (navigate_to: string) => {
             if (!selectedStation) return;
-            if (!selectedFaoArea || selectedFaoArea?.code != selectedStation.fao_area) {
+            if (!selectedFaoArea || selectedFaoArea?.code !== selectedStation.fao_area) {
                 // throw '[Invalid State]: A station can only be selected after a FAO area is selected!';
                 return;
             }
             const group = filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code);
             if (!group) {
-                throw '[Invalid State]: FAO area can only be selected from filtered results!';
+                throw new Error('[Invalid State]: FAO area can only be selected from filtered results!');
             }
             const stations = group.stations;
             const index = stations.findIndex((station) => station.name === selectedStation?.name);

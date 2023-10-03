@@ -18,11 +18,13 @@ const RegionIcon: FC<Props> = ({ faoArea, size = 64, opacity = 1 }) => {
     const mapRef = useRef<maplibregl.Map | null>(null);
 
     useEffect(() => {
-        if (!IS_WEBGL_SUPPORTED) return;
-        if (faoAreaIcons[faoArea.code]) return;
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        if (!IS_WEBGL_SUPPORTED) return () => {};
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        if (faoAreaIcons[faoArea.code]) return () => {};
 
         const feature =
-            faoArea.geometry.type == 'MultiPolygon'
+            faoArea.geometry.type === 'MultiPolygon'
                 ? turf.multiPolygon(faoArea.geometry.coordinates)
                 : turf.polygon(faoArea.geometry.coordinates);
         const bbox = turf.bbox(feature);
@@ -31,7 +33,7 @@ const RegionIcon: FC<Props> = ({ faoArea, size = 64, opacity = 1 }) => {
         containerEl.style.width = '64px';
         containerEl.style.height = '64px';
         containerEl.style.position = 'fixed';
-        containerEl.style.left = `-1000px`;
+        containerEl.style.left = '-1000px';
         document.body.append(containerEl);
 
         const map = new maplibre.Map({

@@ -1,9 +1,9 @@
 import React, { FC, ReactNode, useContext, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 
+import { Stack, Typography } from '@mui/material';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
 import { theme } from '../../../../theme';
-import { Stack, Typography } from '@mui/material';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';

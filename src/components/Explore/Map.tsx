@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import type { Point } from 'geojson';
 
+import { MapLayerEventType } from 'maplibre-gl';
 import {
     DataStateContext,
     DataActionDispatcherContext,
@@ -15,7 +16,6 @@ import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
 import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
-import { MapLayerEventType } from 'maplibre-gl';
 
 const MAX_ZOOM = 6;
 const BASE_PADDING = 100;
@@ -212,7 +212,7 @@ const ExploreMap = (): JSX.Element => {
         const map = mapRef.current;
         if (map && isMapLoaded) {
             const visibleStations = selectedFaoArea
-                ? filteredStations.find((g) => g.faoArea.code == selectedFaoArea.code)?.stations ?? []
+                ? filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code)?.stations ?? []
                 : filteredStations.flatMap((g) => g.stations);
 
             const stationsSource = map.getSource('stations') as maplibregl.GeoJSONSource;
@@ -276,6 +276,8 @@ const ExploreMap = (): JSX.Element => {
                 });
             };
         }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
     }, [filteredStations, selectedFaoArea, selectedStation, isMapLoaded]);
 
     React.useEffect(() => {
@@ -297,7 +299,8 @@ const ExploreMap = (): JSX.Element => {
                 });
             } else if (selectedFaoArea) {
                 const stationGroup = filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code);
-                if (!stationGroup) throw '[Invalid State]: FAO Area must be selected from filtered stations!';
+                if (!stationGroup)
+                    throw new Error('[Invalid State]: FAO Area must be selected from filtered stations!');
 
                 const coordinates = stationGroup.stations.map((s) => s.coordinates);
                 const maxLng = Math.max(...coordinates.map((c) => c[0]));

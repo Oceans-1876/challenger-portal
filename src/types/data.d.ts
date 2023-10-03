@@ -1,4 +1,4 @@
-import { Feature, MultiPolygon, Polygon } from '@turf/turf';
+import { MultiPolygon, Polygon } from '@turf/turf';
 
 declare global {
     interface FAOArea {

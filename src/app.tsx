@@ -7,6 +7,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import axios from 'axios';
+import { Feature, MultiPolygon, Polygon } from '@turf/turf';
 import { getData } from './store/api';
 import { DataActionDispatcherContext, DataStateContext } from './store/contexts';
 import { dataReducers } from './store/reducers';
@@ -14,10 +16,8 @@ import { dataStateInitialValue } from './store/states';
 import { theme } from './theme';
 import routes from './routes';
 import Loading from './components/Loading';
-import axios from 'axios';
 
 import faoAreasUrl from './files/fao_areas.geojson';
-import { Feature, MultiPolygon, Polygon } from '@turf/turf';
 import { normalizeFaoAreaGeometry } from './components/Map/utils';
 
 window.API_PATH = `${window.API_SERVER}/api/v1`;
