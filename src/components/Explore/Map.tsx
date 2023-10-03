@@ -10,7 +10,7 @@ import {
     MapActionDispatcherContext
 } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { getFeatureBounds, pulsingDot, runWhenReady } from '../Map/utils';
+import { getFeatureBounds, loadStaionIcons, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
@@ -48,8 +48,7 @@ const ExploreMap = (): JSX.Element => {
     }, [activeBasemap]);
 
     const onMapLoad = (map: maplibregl.Map) => {
-        // Add a pulsing dot image to the map to be used for selected station
-        pulsingDot(map, 40);
+        loadStaionIcons(map);
 
         // Add basemaps
         BASEMAPS.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
@@ -130,20 +129,15 @@ const ExploreMap = (): JSX.Element => {
             ...layerStyles.stations.default,
             id: 'clustered-stations-single',
             source: 'clustered-stations',
-            filter: ['!', ['has', 'point_count']]
+            filter: ['!has', 'point_count']
         } as maplibregl.CircleLayerSpecification);
 
         // The layer for station names in clustered mode
         map.addLayer({
             ...layerStyles.stations.name,
             id: 'clustered-stations-single-name',
-            source: 'clustered-stations'
-        } as maplibregl.SymbolLayerSpecification);
-
-        map.addLayer({
-            ...layerStyles.stations.nameSuffix,
-            id: 'clustered-stations-single-name-suffix',
-            source: 'clustered-stations'
+            source: 'clustered-stations',
+            filter: ['!has', 'point_count']
         } as maplibregl.SymbolLayerSpecification);
 
         // The layer for clustered stations in clustered mode

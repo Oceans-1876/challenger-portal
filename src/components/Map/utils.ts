@@ -1,4 +1,4 @@
-import maplibre from 'maplibre-gl';
+import maplibre, { StyleImageInterface } from 'maplibre-gl';
 import * as turf from '@turf/turf';
 
 export function normalizeFaoAreaGeometry(geometry: turf.Polygon | turf.MultiPolygon): turf.Polygon | turf.MultiPolygon {
@@ -42,64 +42,91 @@ export const getFeatureBounds = (coordinates: LineCoordinates) => {
     return bounds;
 };
 
-export const pulsingDot = (map: maplibregl.Map, size: number): void => {
-    size *= devicePixelRatio;
-    // the pulse ring grows to twice the original size
-    const radius = size / 2;
-    const imageSize = size * 2;
+export const loadStaionIcons = (map: maplibregl.Map): void => {
+    const outerRadius = 22 * devicePixelRatio;
+    const innerRadius = 18 * devicePixelRatio;
+    const fontSize = 8 * devicePixelRatio;
+    const tipSize = 5 * devicePixelRatio;
+    const haloWidth = outerRadius;
+    const width = 2 * outerRadius + 2 * haloWidth;
+    const height = 2 * outerRadius + haloWidth + Math.max(haloWidth, tipSize);
+    const centerX = haloWidth + outerRadius;
+    const centerY = haloWidth + outerRadius;
 
-    /** Create a pulsing dot that can be used by symbol styles.
-     * Set `icon-image` to ``pulsing-dot` under the `layout` attribute of the style.
-     * @param {maplibregl.Map} map - The map to add the pulsing dot to.
-     * @param {number} size - The size of the dot in pixels.
-     */
-    const dot: StyleImage = {
-        context: null,
-        width: imageSize,
-        height: imageSize,
-        data: new Uint8Array(imageSize * imageSize * 4),
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
 
-        // When the layer is added to the map,
-        // get the rendering context for the map canvas.
-        onAdd() {
-            const canvas = document.createElement('canvas');
-            canvas.width = this.width;
-            canvas.height = this.height;
-            this.context = canvas.getContext('2d');
-        },
+    const context = canvas.getContext('2d');
+    if (!context) return;
 
-        // Call once before every frame where the icon will be used.
+    const drawIcon = () => {
+        context.beginPath();
+        context.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
+        context.fillStyle = '#FFFF00';
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(centerX, centerY + outerRadius + tipSize);
+        context.lineTo(centerX - 2 * tipSize, centerY + outerRadius - tipSize);
+        context.lineTo(centerX + 2 * tipSize, centerY + outerRadius - tipSize);
+        context.closePath();
+        context.fillStyle = '#FFFF00';
+        context.fill();
+
+        context.beginPath();
+        context.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+        context.fillStyle = '#FFFFE8';
+        context.fill();
+
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.font = `500 ${fontSize}px sans-serif`;
+        context.fillStyle = 'rgba(29, 51, 70, 0.75)';
+        context.fillText('Station', centerX, centerY + 0.5 * innerRadius);
+    };
+
+    drawIcon();
+    const data = context.getImageData(0, 0, width, height).data;
+
+    const stationIcon: StyleImageInterface = {
+        width,
+        height,
+        data
+    };
+
+    const pulsingIcon: StyleImageInterface = {
+        width,
+        height,
+        data,
         render() {
             const duration = 1000;
             const t = (performance.now() % duration) / duration;
-            const outerRadius = radius * (1 + t);
+            const pulseRadius = outerRadius * (0.5 + 1.5 * t);
 
-            const context = this.context;
+            context.clearRect(0, 0, width, height);
 
-            if (context) {
-                // Draw the outer circle.
-                context.clearRect(0, 0, this.width, this.height);
-                context.beginPath();
-                context.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
-                context.fillStyle = `rgba(255, 255, 0, ${1 - t})`;
-                context.strokeStyle = 'rgb(255, 255, 0)';
-                context.fill();
-                context.stroke();
+            // Draw the halo
+            context.beginPath();
+            context.arc(centerX, centerY, pulseRadius, 0, Math.PI * 2);
+            context.fillStyle = `rgba(255, 255, 0, ${1 - t})`;
+            context.strokeStyle = '#FFFF00';
+            context.fill();
+            context.stroke();
 
-                // Update this image's data with data from the canvas.
-                this.data = context.getImageData(0, 0, this.width, this.height).data;
+            // Update this image's data with data from the canvas.
+            this.data = context.getImageData(0, 0, this.width, this.height).data;
 
-                // Continuously repaint the map, resulting
-                // in the smooth animation of the dot.
-                map.triggerRepaint();
+            // Continuously repaint the map, resulting in the smooth animation of the dot.
+            map.triggerRepaint();
 
-                // Return `true` to let the map know that the image was updated.
-                return true;
-            }
-            return false;
+            // Return `true` to let the map know that the image was updated.
+            return true;
         }
     };
-    map.addImage('pulsing-dot', dot, { pixelRatio: 2 });
+
+    map.addImage('station-icon', stationIcon, { pixelRatio: devicePixelRatio });
+    map.addImage('pulsing-icon', pulsingIcon, { pixelRatio: devicePixelRatio });
 };
 
 /**

@@ -2,47 +2,37 @@ import { theme } from '../../theme';
 
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
+        // `default` and `selected` depend on `loadStaionIcons` in `components/Map/utils.ts`
         default: {
-            type: 'circle',
-            paint: {
-                'circle-radius': 20,
-                'circle-color': '#FFFFE8',
-                'circle-stroke-color': theme.palette.explore.highlight,
-                'circle-stroke-width': 4
+            type: 'symbol',
+            layout: {
+                'icon-image': 'station-icon',
+                'icon-anchor': 'bottom',
+                'icon-offset': [0, 17],
+                'icon-allow-overlap': true
+            }
+        },
+        selected: {
+            type: 'symbol',
+            layout: {
+                'icon-image': 'pulsing-icon',
+                'icon-anchor': 'bottom',
+                'icon-offset': [0, 17],
+                'icon-allow-overlap': true
             }
         },
         name: {
             type: 'symbol',
             layout: {
                 'text-field': ['get', 'name'],
-                'text-font': ['Roboto Medium'],
+                'text-font': ['Roboto Bold'],
                 'text-size': 12,
-                'text-offset': [0, -0.1],
-                'text-allow-overlap': true
+                'text-anchor': 'bottom',
+                'text-offset': [0, -2]
+                // 'text-allow-overlap': true
             },
             paint: {
-                'text-color': 'black'
-            }
-        },
-        nameSuffix: {
-            type: 'symbol',
-            layout: {
-                'text-field': 'station',
-                'text-font': ['Roboto Medium'],
-                'text-size': 8,
-                'text-offset': [0, 1],
-                'text-allow-overlap': true
-            },
-            paint: {
-                'text-color': theme.palette.explore.mainTransparent
-            }
-        },
-        selected: {
-            // This style depends on `pulsingDot` in `components/Map/utils.ts`
-            type: 'symbol',
-            layout: {
-                'icon-image': 'pulsing-dot',
-                'icon-allow-overlap': true
+                'text-color': theme.palette.explore.main
             }
         },
         clustered: {
@@ -62,7 +52,7 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             filter: ['has', 'point_count'],
             layout: {
                 'text-field': ['concat', ['get', 'point_count_abbreviated'], '\nStations'],
-                'text-font': ['Roboto Medium'],
+                'text-font': ['Roboto Bold'],
                 'text-size': 14
             },
             paint: {
@@ -80,7 +70,7 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
             paint: {
                 'line-color': theme.palette.explore.highlight,
                 'line-width': 2,
-                'line-dasharray': [2, 2]
+                'line-dasharray': [4, 4]
             }
         }
     },
