@@ -2,11 +2,11 @@ import axios, { AxiosError } from 'axios';
 import { Dayjs } from 'dayjs';
 
 export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
-    axios
+    return axios
         .get(`${window.API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
         .catch((error) => {
-            console.error();
+            console.error(error);
             err(error);
         });
 };
