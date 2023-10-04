@@ -11,7 +11,7 @@ import {
     MapActionDispatcherContext
 } from '../../store/contexts';
 import { layerStyles, mapStyle } from '../Map/styles';
-import { getFeatureBounds, loadStaionIcons, runWhenReady } from '../Map/utils';
+import { getFeatureBounds, loadStationIcons, runWhenReady } from '../Map/utils';
 import Map from '../Map';
 
 import faoAreasUrl from '../../files/fao_areas.geojson';
@@ -48,7 +48,7 @@ const ExploreMap = (): JSX.Element => {
     }, [activeBasemap]);
 
     const onMapLoad = (map: maplibregl.Map) => {
-        loadStaionIcons(map);
+        loadStationIcons(map);
 
         // Add basemaps
         BASEMAPS.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
@@ -251,7 +251,7 @@ const ExploreMap = (): JSX.Element => {
             }
 
             // Update selected station on click on the following layers
-            const evenListener = (e: MapLayerEventType['click']) => {
+            const eventListener = (e: MapLayerEventType['click']) => {
                 if (e.features && e.features[0]) {
                     const feature = e.features[0];
                     const stationProperties = feature.properties as StationSummary;
@@ -268,11 +268,11 @@ const ExploreMap = (): JSX.Element => {
                 }
             };
             ['clustered-stations-single'].forEach((layerName) => {
-                map.on('click', layerName, evenListener);
+                map.on('click', layerName, eventListener);
             });
             return () => {
                 ['clustered-stations-single'].forEach((layerName) => {
-                    map.off('click', layerName, evenListener);
+                    map.off('click', layerName, eventListener);
                 });
             };
         }

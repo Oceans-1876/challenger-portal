@@ -42,7 +42,7 @@ export const getFeatureBounds = (coordinates: LineCoordinates) => {
     return bounds;
 };
 
-export const loadStaionIcons = (map: maplibregl.Map): void => {
+export const loadStationIcons = (map: maplibregl.Map): void => {
     const outerRadius = 22 * devicePixelRatio;
     const innerRadius = 18 * devicePixelRatio;
     const fontSize = 8 * devicePixelRatio;

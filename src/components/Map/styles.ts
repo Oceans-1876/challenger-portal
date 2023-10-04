@@ -2,7 +2,7 @@ import { theme } from '../../theme';
 
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
-        // `default` and `selected` depend on `loadStaionIcons` in `components/Map/utils.ts`
+        // `default` and `selected` depend on `loadStationIcons` in `components/Map/utils.ts`
         default: {
             type: 'symbol',
             layout: {
