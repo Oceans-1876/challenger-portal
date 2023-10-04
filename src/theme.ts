@@ -4,6 +4,7 @@ declare module '@mui/material/styles' {
     type ExplorePaletteKey =
         | 'main'
         | 'mainTransparent'
+        | 'mainDark'
         | 'selected'
         | 'unselectedSecondary'
         | 'selectedSecondary'
@@ -25,6 +26,8 @@ declare module '@mui/material/Button' {
     interface ButtonPropsVariantOverrides {
         'explore-text': true;
         'explore-contained': true;
+        'explore-card': true;
+        'explore-card-focus': true;
     }
 }
 
@@ -44,6 +47,7 @@ const palette: PaletteOptions = {
     explore: {
         main: '#1d3346',
         mainTransparent: '#1d3346bf',
+        mainDark: '#040F20E5',
         selected: '#243c59f2',
         selectedSecondary: '#89f3e94d',
         unselectedSecondary: '#8af8ed4d',
@@ -93,6 +97,34 @@ export const themeOptions = {
                         },
                         'textTransform': 'none',
                         'color': '#90fff3'
+                    }
+                },
+                {
+                    props: { variant: 'explore-card' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.divider,
+                        'color': 'white',
+                        '&:active, &:hover': {
+                            backgroundColor: palette.explore.secondary,
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
+                    }
+                },
+                {
+                    props: { variant: 'explore-card-focus' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.secondary,
+                        'color': palette.explore.mainTransparent,
+                        '&:active, &:hover': {
+                            backgroundColor: palette.explore.secondary,
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
                     }
                 }
             ]

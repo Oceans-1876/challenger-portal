@@ -16,7 +16,7 @@ interface SearchExpressionGroup {
 interface StationSearchExpressions {
     join?: BooleanOperator;
     stationNames: string[];
-    faoAreas: string[];
+    faoAreas: number[];
     species: string[];
     dates: (import('dayjs').Dayjs | null)[];
 }

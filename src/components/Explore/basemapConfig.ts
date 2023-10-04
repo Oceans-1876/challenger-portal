@@ -1,4 +1,4 @@
-export const INITIAL_BASEMAP = 'World_Ocean_Base';
+export const INITIAL_BASEMAP = 'World_Imagery';
 
 interface BasemapControlOption {
     id: string;

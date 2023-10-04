@@ -1,8 +1,33 @@
-interface UpdateStations {
-    type: 'updateStations';
+interface loadFAOAreas {
+    type: 'loadFAOAreas';
+    faoAreas: FAOArea[];
+}
+
+interface CacheFAOAreaIcons {
+    type: 'cacheFAOAreaIcons';
+    faoArea: number; // code
+    base64Encoded: string; // rendered icon
+}
+
+interface LoadStations {
+    type: 'loadStations';
     stations: StationSummary[];
 }
 
+interface UpdateFilteredStations {
+    type: 'updateFilteredStations';
+    stations: StationSummary[] | null;
+}
+
+interface UpdateSelectedFaoArea {
+    type: 'updateSelectedFaoArea';
+    faoArea: FAOArea | null;
+}
+
+interface UpdateFocusedStation {
+    type: 'updateFocusedStation';
+    station: StationSummary | null;
+}
 interface UpdateSelectedStation {
     type: 'updateSelectedStation';
     station: StationSummary | null;
@@ -23,16 +48,6 @@ interface UpdateSpeciesDetails {
     species: SpeciesDetails;
 }
 
-interface UpdateFAOAreas {
-    type: 'updateFAOAreas';
-    faoAreas: FAOArea[];
-}
-
-interface UpdateFilteredStations {
-    type: 'updateFilteredStations';
-    stations: StationSummary[] | null;
-}
-
 interface UpdateTempToUnit {
     type: 'updateTempToUnit';
     unit: string;
@@ -51,12 +66,15 @@ interface UpdateBasemap {
 type DataAction =
     | UpdateTempToUnit
     | UpdateDepthToUnit
-    | UpdateStations
+    | LoadStations
     | UpdateFilteredStations
+    | UpdateSelectedFaoArea
+    | UpdateFocusedStation
     | UpdateSelectedStation
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
-    | UpdateFAOAreas;
+    | loadFAOAreas
+    | CacheFAOAreaIcons;
 
 type MapAction = UpdateBasemap;

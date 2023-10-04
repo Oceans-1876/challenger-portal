@@ -15,7 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { theme } from '../../../../theme';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
-import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
+import { useDebounce } from '../../../../utils/hooks';
 import { getData, searchStations } from '../../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
@@ -26,11 +26,12 @@ const MIN_DATE = dayjs('1872-01-01');
 
 type Props = {
     toggle: ReactNode;
+    onClose: () => void;
 };
 
-const AdvancedSearch: FC<Props> = ({ toggle }) => {
+const AdvancedSearch: FC<Props> = ({ toggle, onClose }) => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { stationsList, allSpeciesList } = useContext(DataStateContext);
+    const { faoAreas, allStationsList, allSpeciesList } = useContext(DataStateContext);
 
     const [joinOperator, setJoinOperator] = useState<BooleanOperator>('AND');
 
@@ -65,7 +66,6 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
 
     const [stationFilter, setStationFilter] = useState<StationSummary[]>([]);
 
-    const faoAreas = useFAOAreas();
     const [faoAreaFilter, setFaoAreaFilter] = useState<FAOArea[]>([]);
 
     const [startDate, setStartDate] = useState<Dayjs | null>(null);
@@ -79,7 +79,7 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
         setEndDate(null);
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, []);
 
@@ -100,8 +100,9 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
                 type: 'updateFilteredStations',
                 stations
             });
+            onClose();
         });
-    }, [joinOperator, speciesFilter, stationFilter, faoAreaFilter, startDate, endDate]);
+    }, [joinOperator, speciesFilter, stationFilter, faoAreaFilter, startDate, endDate, onClose]);
 
     return (
         <>
@@ -192,7 +193,7 @@ const AdvancedSearch: FC<Props> = ({ toggle }) => {
                     <TextField {...params} label="Stations" placeholder="Stations" sx={selectStyleOverride} />
                 )}
                 getOptionLabel={(option) => `Station ${option.name}`}
-                options={stationsList}
+                options={allStationsList}
                 renderTags={(tagValue) =>
                     tagValue.map((option) => (
                         <Chip

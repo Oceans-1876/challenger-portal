@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useR
 import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { theme } from '../../../../theme';
 import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
-import { useDebounce, useFAOAreas } from '../../../../utils/hooks';
+import { useDebounce } from '../../../../utils/hooks';
 import { getData, searchStations } from '../../../../store/api';
 import { chipStyleOverride, selectStyleOverride } from '../theme';
 import SpeciesListbox from './SpeciesListbox';
@@ -27,10 +27,11 @@ const searchTypes: Array<{ type: GeneralSearchType; label: string }> = [
 
 type Props = {
     toggle: ReactNode;
+    onClose: () => void;
 };
 
-const GeneralSearch: FC<Props> = ({ toggle }) => {
-    const { stationsList, allSpeciesList } = useContext(DataStateContext);
+const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
+    const { faoAreas, allStationsList, allSpeciesList } = useContext(DataStateContext);
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const speciesDefaultRanks = useMemo(() => new Map(allSpeciesList.map((s, rank) => [s.id, rank])), [allSpeciesList]);
 
@@ -62,7 +63,6 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
 
     const [stationFilter, setStationFilter] = useState<StationSummary[]>([]);
 
-    const faoAreas = useFAOAreas();
     const [faoAreaFilter, setFaoAreaFilter] = useState<FAOArea[]>([]);
 
     const [searchType, setSearchType] = useState<GeneralSearchType>('species');
@@ -83,7 +83,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         }
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, [searchType]);
 
@@ -93,7 +93,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
         setFaoAreaFilter([]);
         dataActionDispatcher({
             type: 'updateFilteredStations',
-            stations: null
+            stations: allStationsList
         });
     }, [searchType]);
 
@@ -113,8 +113,9 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                 type: 'updateFilteredStations',
                 stations
             });
+            onClose();
         });
-    }, [searchType, speciesFilter, stationFilter, faoAreaFilter]);
+    }, [searchType, speciesFilter, stationFilter, faoAreaFilter, onClose]);
 
     return (
         <>
@@ -204,7 +205,7 @@ const GeneralSearch: FC<Props> = ({ toggle }) => {
                             <TextField {...params} label="Stations" placeholder="Stations" sx={selectStyleOverride} />
                         )}
                         getOptionLabel={(option) => `Station ${option.name}`}
-                        options={stationsList}
+                        options={allStationsList}
                         renderTags={(tagValue) =>
                             tagValue.map((option) => (
                                 <Chip

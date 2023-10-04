@@ -1,40 +1,62 @@
+import { theme } from '../../theme';
+
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {
+        // `default` and `selected` depend on `loadStationIcons` in `components/Map/utils.ts`
         default: {
-            type: 'circle',
-            paint: {
-                'circle-radius': 7,
-                'circle-color': '#d5ab1a',
-                'circle-opacity': 0.9
+            type: 'symbol',
+            layout: {
+                'icon-image': 'station-icon',
+                'icon-anchor': 'bottom',
+                'icon-offset': [0, 17],
+                'icon-allow-overlap': true
             }
         },
         selected: {
-            // This style depends on `pulsingDot` in `components/Map/utils.ts`
             type: 'symbol',
             layout: {
-                'icon-image': 'pulsing-dot'
+                'icon-image': 'pulsing-icon',
+                'icon-anchor': 'bottom',
+                'icon-offset': [0, 17],
+                'icon-allow-overlap': true
+            }
+        },
+        name: {
+            type: 'symbol',
+            layout: {
+                'text-field': ['get', 'name'],
+                'text-font': ['Roboto Bold'],
+                'text-size': 12,
+                'text-anchor': 'bottom',
+                'text-offset': [0, -2]
+                // 'text-allow-overlap': true
+            },
+            paint: {
+                'text-color': theme.palette.explore.main
             }
         },
         clustered: {
             type: 'circle',
             filter: ['has', 'point_count'],
             paint: {
-                // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-                // with three steps to implement three types of circles:
-                //   * #14807c, 15px circles when point count is less than 20
-                //   * #32bb39, 20px circles when point count is between 20 and 40
-                //   * #98d320, 25px circles when point count is greater than or equal to 40
-                'circle-color': ['step', ['get', 'point_count'], '#14807c', 20, '#32bb39', 40, '#98d320'],
-                'circle-radius': ['step', ['get', 'point_count'], 15, 20, 20, 40, 25]
+                'circle-radius': 40,
+                'circle-color': 'rgba(184, 255, 247, 0.4)',
+                'circle-opacity': 0.4,
+                'circle-stroke-color': theme.palette.explore.secondary,
+                'circle-stroke-opacity': 1,
+                'circle-stroke-width': 1
             }
         },
         clusterCount: {
             type: 'symbol',
             filter: ['has', 'point_count'],
             layout: {
-                'text-field': '{point_count_abbreviated}',
-                'text-font': ['Roboto Regular'],
-                'text-size': 12
+                'text-field': ['concat', ['get', 'point_count_abbreviated'], '\nStations'],
+                'text-font': ['Roboto Bold'],
+                'text-size': 14
+            },
+            paint: {
+                'text-color': theme.palette.explore.secondary
             }
         }
     },
@@ -46,19 +68,9 @@ export const layerStyles: { [group: string]: { [state: string]: Partial<maplibre
                 'line-cap': 'round'
             },
             paint: {
-                'line-color': '#e3e7af',
-                'line-width': 2
-            }
-        },
-        direction: {
-            // This style depends on `directionArrow` in `components/Map/utils.ts`
-            type: 'symbol',
-            layout: {
-                'symbol-placement': 'line',
-                'symbol-spacing': 50,
-                'icon-rotate': 90,
-                'icon-image': 'direction-arrow',
-                'icon-size': 1.2
+                'line-color': theme.palette.explore.highlight,
+                'line-width': 2,
+                'line-dasharray': [4, 4]
             }
         }
     },
