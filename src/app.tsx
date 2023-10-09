@@ -59,14 +59,14 @@ const App: FC = () => {
                     (stations) => {
                         dataActionDispatcher({ type: 'loadStations', stations });
                     },
-                    console.error
+                    () => undefined
                 ),
                 getData<SpeciesSummary[]>(
                     'species/all/?order_by=matched_canonical_full_name',
                     (species) => {
                         dataActionDispatcher({ type: 'updateAllSpecies', species });
                     },
-                    console.error
+                    () => undefined
                 )
             ]).then(() => {
                 setInitialized(true);
