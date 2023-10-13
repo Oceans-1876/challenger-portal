@@ -1,39 +1,53 @@
-import React, { useMemo, useState } from 'react';
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import Icon from '@mui/material/Icon';
-import List from '@mui/material/List';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import Stack from '@mui/material/Stack';
 
-import { useDebounce, useSpeciesDetails } from '../../utils/hooks';
-import SpeciesDetails from '../Species/Details';
-import DownloadButton from '../DownloadButton';
-import { Autocomplete, Box, TextField, Typography } from '@mui/material';
+import { useDebounce } from '../../utils/hooks';
+import { Box, TextField, Typography } from '@mui/material';
 import { getData } from '../../store/api';
+import { ListChildComponentProps, VariableSizeList } from 'react-window';
 
-type SpeciesGroup = { key: string; species: SpeciesSummary[] };
+type SpeciesListItems =
+    | { type: 'group-title'; title: string }
+    | {
+          type: 'species-entry';
+          id: string;
+          challengerName: string;
+          currentName: string;
+      };
 
-function groupSpecies(species: SpeciesSummary[]): SpeciesGroup[] {
+function groupSpecies(species: SpeciesSummary[]): SpeciesListItems[] {
     const groups: Record<string, SpeciesSummary[]> = {};
     for (const s of species) {
         const key = s.matched_canonical_full_name[0].toUpperCase();
         (groups[key] ?? (groups[key] = [])).push(s);
     }
-    return Object.entries(groups)
-        .map(([key, species]) => ({ key, species }))
-        .sort((a, b) => (a.key < b.key ? -1 : 1));
+    const res: SpeciesListItems[] = [];
+    for (let i = 0; i < 26; ++i) {
+        const key = String.fromCharCode(65 + i);
+        if (groups[key]) {
+            res.push({ type: 'group-title', title: key });
+            for (const species of groups[key]) {
+                res.push({
+                    type: 'species-entry',
+                    id: species.id,
+                    challengerName: species.matched_canonical_full_name ?? '(none)',
+                    currentName: species.current_name ?? '(none)'
+                });
+            }
+        }
+    }
+    console.log(res);
+    return res;
 }
 
 interface Props {
     station: StationDetails | null;
+    setSelectedSpecies: (speciesId: string) => void;
 }
 
-const Species = ({ station }: Props) => {
-    const [selectedSpecies, setSelectedSpecies] = React.useState<string>();
-    const speciesDetails = useSpeciesDetails(selectedSpecies);
-
+const Species = ({ station, setSelectedSpecies }: Props) => {
     const [filteredSpecies, setFilteredSpecies] = useState(station?.species ?? []);
     const [input, setInput] = useState('');
 
@@ -55,36 +69,17 @@ const Species = ({ station }: Props) => {
         200
     );
 
-    const filteredSpeciesGroups = useMemo(() => groupSpecies(filteredSpecies), [filteredSpecies]);
+    const filteredSpeciesListItems = useMemo(() => groupSpecies(filteredSpecies), [filteredSpecies]);
 
-    console.log(selectedSpecies, speciesDetails);
+    const containerRef = useRef<HTMLDivElement>();
+    const listRef = useRef<VariableSizeList<SpeciesListItems> | null>(null);
+    useEffect(() => {
+        listRef.current?.scrollTo(0);
+    }, [filteredSpeciesListItems]);
 
     return (
         <>
-            {selectedSpecies && speciesDetails ? (
-                <Box>
-                    <Stack direction="row" spacing={1}>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<Icon baseClassName="icons">chevron_left</Icon>}
-                            onClick={() => {
-                                setSelectedSpecies(undefined);
-                            }}
-                        >
-                            Back to species
-                        </Button>
-                        <DownloadButton
-                            data={speciesDetails}
-                            filename={speciesDetails.matched_canonical_full_name}
-                            message="Download Species"
-                        />
-                    </Stack>
-                    <SpeciesDetails species={speciesDetails} />
-                </Box>
-            ) : null}
-
-            <Stack sx={{ height: '100%', display: selectedSpecies && speciesDetails ? 'none' : 'flex' }}>
+            <Stack sx={{ height: '100%' }}>
                 <TextField
                     fullWidth
                     label="Search field"
@@ -96,29 +91,41 @@ const Species = ({ station }: Props) => {
                     {filteredSpecies.length} Species Matched
                 </Typography>
 
-                <List sx={{ mt: '32px', flex: 'auto', overflow: 'scroll', color: 'white' }}>
-                    {filteredSpeciesGroups.map(({ key, species }) => (
-                        <Box key={key}>
-                            <ListItem
-                                sx={{
-                                    p: 0,
-                                    lineHeight: 1.75,
-                                    color: '#FFFFFF99',
-                                    fontWeight: 600,
-                                    boxShadow: '0px -1px 0px 0px rgba(144, 255, 243, 0.12) inset'
-                                }}
-                            >
-                                {key}
-                            </ListItem>
-                            {species.map((s) => (
+                <Box sx={{ mt: '32px', flex: 'auto', color: 'white' }} ref={containerRef}>
+                    <VariableSizeList
+                        ref={listRef}
+                        height={containerRef.current?.clientHeight ?? 0}
+                        width={containerRef.current?.clientWidth ?? 0}
+                        itemSize={(index) => (filteredSpeciesListItems[index].type === 'group-title' ? 44 : 64)}
+                        itemCount={filteredSpeciesListItems.length}
+                    >
+                        {(props: ListChildComponentProps) => {
+                            const { index, style } = props;
+
+                            const item = filteredSpeciesListItems[index];
+
+                            return item.type === 'group-title' ? (
+                                <ListItem
+                                    sx={{
+                                        p: 0,
+                                        lineHeight: 1.75,
+                                        color: '#FFFFFF99',
+                                        fontWeight: 600,
+                                        boxShadow: '0px -1px 0px 0px rgba(144, 255, 243, 0.12) inset',
+                                        ...style
+                                    }}
+                                >
+                                    {item.title}
+                                </ListItem>
+                            ) : (
                                 <ListItemButton
-                                    key={s.record_id}
-                                    sx={{ p: 0 }}
-                                    onClick={() => setSelectedSpecies(s.id)}
+                                    key={item.id}
+                                    sx={{ p: 0, ...style }}
+                                    onClick={() => setSelectedSpecies(item.id)}
                                 >
                                     <ListItem sx={{ py: '8px', px: '25px' }}>
                                         <Box>
-                                            <Typography>{s.matched_canonical_full_name ?? '(none)'}</Typography>
+                                            <Typography>{item.challengerName}</Typography>
                                             <Typography
                                                 variant="caption"
                                                 noWrap
@@ -128,15 +135,15 @@ const Species = ({ station }: Props) => {
                                                     textOverflow: 'ellipsis'
                                                 }}
                                             >
-                                                {s.current_name ?? '(none)'}
+                                                {item.currentName}
                                             </Typography>
                                         </Box>
                                     </ListItem>
                                 </ListItemButton>
-                            ))}
-                        </Box>
-                    ))}
-                </List>
+                            );
+                        }}
+                    </VariableSizeList>
+                </Box>
             </Stack>
         </>
     );

@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
 import InsetMap from './InsetMap';
-import StationDetail from './StationDetail';
+import StationDetail from './StationDetailView';
 import StationsList from './StationList';
 
 const LeftSidebar = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -16,6 +16,7 @@ interface Props {
 const Text = ({ station }: Props) => {
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const iframeUrl = station ? station.hathitrust_urls[0] : '';
+
     useEffect(() => {
         setIframeLoaded(false);
     }, [iframeUrl]);
