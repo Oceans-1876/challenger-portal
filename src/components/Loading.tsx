@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import { SxProps } from '@mui/material';
 
-const Loading = (): JSX.Element => (
+const Loading: FC<{ sx?: SxProps }> = ({ sx }) => (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <CircularProgress />
+        <CircularProgress sx={sx} />
     </Box>
 );
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -7,6 +7,7 @@ import { Button } from '@mui/material';
 import { OpenInNewOutlined } from '@mui/icons-material';
 import hathiTrustLogoSvg from '../../images/hathi_trust.svg';
 import Loading from '../Loading';
+import { theme } from '../../theme';
 
 interface Props {
     station: StationDetails | null;
@@ -14,8 +15,10 @@ interface Props {
 
 const Text = ({ station }: Props) => {
     const [iframeLoaded, setIframeLoaded] = useState(false);
-
-    if (!station) return null;
+    const iframeUrl = station ? station.hathitrust_urls[0] : '';
+    useEffect(() => {
+        setIframeLoaded(false);
+    }, [iframeUrl]);
 
     return (
         <Stack sx={{ height: '100%' }}>
@@ -37,7 +40,8 @@ const Text = ({ station }: Props) => {
             <Button
                 size="large"
                 variant="explore-card-focus"
-                href={station.hathitrust_urls[0]}
+                disabled={!station}
+                href={iframeUrl}
                 target="_blank"
                 rel="noreferrer,nofollow"
                 sx={{ flex: 'none', my: '32px', mx: 'auto' }}
@@ -46,18 +50,20 @@ const Text = ({ station }: Props) => {
                 <Typography sx={{ mx: '12px' }}>Read in HathiTrust</Typography>
                 <OpenInNewOutlined />
             </Button>
-            <Box
-                onLoad={() => setIframeLoaded(true)}
-                sx={{
-                    display: iframeLoaded ? 'block' : 'none',
-                    flex: 'auto',
-                    border: 'none'
-                }}
-                component="iframe"
-                src={`${station.hathitrust_urls[0]}`}
-                title={`Station ${station.name} - HathiTrust`}
-            />
-            {iframeLoaded ? null : <Loading />}
+            {station ? (
+                <Box
+                    onLoad={() => setIframeLoaded(true)}
+                    sx={{
+                        display: iframeLoaded ? 'block' : 'none',
+                        flex: 'auto',
+                        border: 'none'
+                    }}
+                    component="iframe"
+                    src={`${station.hathitrust_urls[0]}`}
+                    title={`Station ${station.name} - HathiTrust`}
+                />
+            ) : null}
+            {iframeLoaded ? null : <Loading sx={{ color: theme.palette.explore.secondary }} />}
         </Stack>
     );
 };

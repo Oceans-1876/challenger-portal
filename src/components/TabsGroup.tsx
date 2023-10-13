@@ -69,15 +69,9 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
                 return (
                     <Box
                         sx={{
-                            'flex': 1,
-                            'overflow': 'scroll',
-                            'py': '32px',
-                            '&::-webkit-scrollbar': {
-                                display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
-                            },
-                            '&-ms-overflow-style:': {
-                                display: 'none' // Hide the scrollbar for IE
-                            }
+                            flex: 1,
+                            overflow: 'scroll',
+                            py: '32px'
                         }}
                         key={label}
                         hidden={activeTab !== label}
