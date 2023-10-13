@@ -1,103 +1,61 @@
-import React from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
+import React, { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Icon from '@mui/material/Icon';
-import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { Button } from '@mui/material';
+import { OpenInNewOutlined } from '@mui/icons-material';
+import hathiTrustLogoSvg from '../../images/hathi_trust.svg';
+import Loading from '../Loading';
 
 interface Props {
     station: StationDetails;
 }
 
 const Text = ({ station }: Props) => {
-    const [selectedHathiTrustUrl, setSelectedHathiTrustUrl] = React.useState<string | null>(null);
+    const [iframeLoaded, setIframeLoaded] = useState(false);
 
     return (
-        <Stack spacing={2}>
-            <Alert severity="warning">
-                <Typography variant="subtitle2">
-                    This text is from the scanned reports of <i>HMS Challenger</i> available at&nbsp;
-                    <Link
-                        href="https://catalog.hathitrust.org/Record/001473257"
-                        target="_blank"
-                        rel="noreferrer,nofollow"
-                    >
-                        HathiTrust
-                    </Link>
-                    .&nbsp;The text format and structure is as it appears in the OCRed document.
-                </Typography>
+        <Stack sx={{ height: '100%' }}>
+            <Alert
+                severity="warning"
+                sx={{
+                    'background': '#000000E5',
+                    'color': '#FFDCA8',
+                    'fontWeight': 400!,
+                    '& .MuiAlert-icon': {
+                        color: '#FFDCA8',
+                        alignItems: 'center'
+                    }
+                }}
+            >
+                This text is from the scanned reports of HMS Challenger available at HathiTrust. The text format and
+                structure is as it appears in the OCRed document.
             </Alert>
-            <Accordion square disableGutters>
-                <AccordionSummary expandIcon={<Icon baseClassName="icons">expand_more</Icon>}>
-                    <Typography>See in HathiTrust</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <List dense disablePadding>
-                        {station.hathitrust_urls.map((url, idx) => (
-                            <ListItemButton
-                                key={url}
-                                dense
-                                disableGutters
-                                onClick={() => setSelectedHathiTrustUrl(url)}
-                            >
-                                <ListItemText primary={`Part ${idx + 1}`} />
-                            </ListItemButton>
-                        ))}
-                    </List>
-                    {selectedHathiTrustUrl ? (
-                        <Dialog
-                            PaperProps={{
-                                sx: { alignItems: 'center', height: '100%' }
-                            }}
-                            fullWidth
-                            maxWidth={false}
-                            open
-                            onClose={() => setSelectedHathiTrustUrl(null)}
-                        >
-                            <DialogTitle>
-                                Station {station.name} - HathiTrust&nbsp;
-                                <Link href={selectedHathiTrustUrl} target="_blank" rel="noreferrer,nofollow">
-                                    <IconButton>
-                                        <Icon baseClassName="icons">launch</Icon>
-                                    </IconButton>
-                                </Link>
-                                <IconButton
-                                    sx={{
-                                        position: 'absolute',
-                                        right: 8,
-                                        top: 8
-                                    }}
-                                    onClick={() => setSelectedHathiTrustUrl(null)}
-                                >
-                                    <Icon baseClassName="icons">close</Icon>
-                                </IconButton>
-                            </DialogTitle>
-                            <DialogContent sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                                <Box
-                                    sx={{ width: 'calc(100% - 64px)', height: 'calc(100% - 64px)' }}
-                                    component="iframe"
-                                    src={`${selectedHathiTrustUrl}%3Bui=embed`}
-                                    title={`Station ${station.name} - HathiTrust`}
-                                />
-                            </DialogContent>
-                        </Dialog>
-                    ) : null}
-                </AccordionDetails>
-            </Accordion>
-            <Typography sx={{ whiteSpace: 'break-spaces' }} variant="body1" component="pre">
-                {station.text}
-            </Typography>
+            <Button
+                size="large"
+                variant="explore-card-focus"
+                href={station.hathitrust_urls[0]}
+                target="_blank"
+                rel="noreferrer,nofollow"
+                sx={{ flex: 'none', my: '32px', mx: 'auto' }}
+            >
+                <Box sx={{ width: 16, height: 16, background: `url(${hathiTrustLogoSvg})` }} />
+                <Typography sx={{ mx: '12px' }}>Read in HathiTrust</Typography>
+                <OpenInNewOutlined />
+            </Button>
+            <Box
+                onLoad={() => setIframeLoaded(true)}
+                sx={{
+                    display: iframeLoaded ? 'block' : 'none',
+                    flex: 'auto',
+                    border: 'none'
+                }}
+                component="iframe"
+                src={`${station.hathitrust_urls[0]}`}
+                title={`Station ${station.name} - HathiTrust`}
+            />
+            {iframeLoaded ? null : <Loading />}
         </Stack>
     );
 };

@@ -72,8 +72,13 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 selectedStation: action.station
             };
         case 'updateStationDetails':
-            state.stationsObject[action.station.name] = action.station;
-            return state;
+            return {
+                ...state,
+                stationsObject: {
+                    ...state.stationsObject,
+                    [action.station.name]: action.station
+                }
+            };
         case 'updateAllSpecies':
             return {
                 ...state,

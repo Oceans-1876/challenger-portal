@@ -49,6 +49,15 @@ const Species = ({ station }: Props) => {
                             <ListItem>{matched_canonical_full_name}</ListItem>
                         </ListItemButton>
                     ))}
+                    <Stack direction="column" spacing={2} sx={{ padding: 1 }}>
+                        <Stack direction="row" spacing={1} justifyContent="space-between">
+                            <DownloadButton
+                                data={station.species}
+                                filename={`Station-${station.name}-Species`}
+                                message="Download All Species"
+                            />
+                        </Stack>
+                    </Stack>
                 </List>
             ) : (
                 <Alert severity="info">{`Currently there are no records of any Species for Station ${station.name} in the database.`}</Alert>

@@ -6,27 +6,21 @@ import { DataActionDispatcherContext, DataStateContext } from '../store/contexts
 export const useStationDetails = (stationName?: string): StationDetails | null => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
     const { stationsObject } = React.useContext(DataStateContext);
-    const [stationDetails, setStationDetails] = React.useState<StationDetails | null>(null);
+
+    const stationDetails = stationName ? stationsObject[stationName] ?? null : null;
 
     React.useEffect(() => {
-        if (stationName) {
-            if (stationsObject[stationName]) {
-                setStationDetails(stationsObject[stationName]);
-            } else {
-                getData<StationDetails>(
-                    `stations/${stationName}`,
-                    (data) => {
-                        data.species.sort((a, b) => {
-                            return a.matched_canonical_full_name.localeCompare(b.matched_canonical_full_name);
-                        });
-                        setStationDetails(data);
-                        dataActionDispatcher({ type: 'updateStationDetails', station: data });
-                    },
-                    () => undefined
-                );
-            }
-        } else {
-            setStationDetails(null);
+        if (stationName && !stationsObject[stationName]) {
+            getData<StationDetails>(
+                `stations/${stationName}`,
+                (data) => {
+                    data.species.sort((a, b) => {
+                        return a.matched_canonical_full_name.localeCompare(b.matched_canonical_full_name);
+                    });
+                    dataActionDispatcher({ type: 'updateStationDetails', station: data });
+                },
+                () => undefined
+            );
         }
     }, [stationName]);
 

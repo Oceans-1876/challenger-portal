@@ -120,11 +120,18 @@ export const themeOptions = {
                         'backgroundColor': palette.explore.secondary,
                         'color': palette.explore.mainTransparent,
                         '&:active, &:hover': {
-                            backgroundColor: palette.explore.secondary,
+                            backgroundColor: '#90fff3aa', // we need a design for this color
                             color: palette.explore.mainTransparent
                         },
                         'height': '30px',
                         'borderRadius': '15px'
+                    }
+                },
+                {
+                    props: { size: 'large' },
+                    style: {
+                        height: 42,
+                        borderRadius: '21px'
                     }
                 }
             ]

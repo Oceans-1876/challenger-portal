@@ -1,151 +1,111 @@
 import React from 'react';
-import Collapse from '@mui/material/Collapse';
-import Icon from '@mui/material/Icon';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
 
 import { TemperatureUnits, LengthUnits } from 'convert-units';
 import { DataStateContext } from '../../store/contexts';
 import { decimalFormat } from '../../utils/format';
-import RenderUnit from '../RenderUnit';
+import convertUnit from '../../utils/convertUnits';
 import { depthUnitMap, tempUnitMap } from '../UnitPreferencesDialog';
+import Field from './Field';
+import { PublicOutlined, StraightenOutlined, ThermostatOutlined, WaterOutlined } from '@mui/icons-material';
 
 interface Props {
     station: StationDetails;
 }
 
 const Environment = ({ station }: Props) => {
-    const [showWaterTempArDepths, setShowWaterTempArDepths] = React.useState(true);
     const { tempToUnit, depthToUnit } = React.useContext(DataStateContext);
-    const tempFromUnit = 'F';
+    const tempFromUnit = 'C'; // ? Should this be 'C'?
     const depthFromUnit = 'fathom';
 
+    if (!station) return null;
+
     return (
-        <List>
-            <ListItem>
-                <ListItemText primary={<Typography variant="h6">Temperature</Typography>} />
-            </ListItem>
-            <List disablePadding dense>
-                <ListItem sx={{ pl: 4 }}>
-                    <b>Surface ({tempToUnit === 'C' ? 'C' : 'F'}):&nbsp;</b>
-                    {station.surface_temp_c ? (
-                        <>
-                            <RenderUnit
-                                from={tempFromUnit as TemperatureUnits}
-                                to={tempToUnit as TemperatureUnits}
-                                value={station.surface_temp_c}
-                                precision={3}
-                            />
-                            {'\u00b0'}
-                        </>
-                    ) : (
-                        '-'
-                    )}
-                </ListItem>
-                <ListItem sx={{ pl: 4 }}>
-                    <b>Bottom Water ({tempToUnit === 'C' ? 'C' : 'F'}):&nbsp;</b>
-                    {station.bottom_water_temp_c ? (
-                        <>
-                            <RenderUnit
-                                from={tempFromUnit as TemperatureUnits}
-                                to={tempToUnit as TemperatureUnits}
-                                value={station.bottom_water_temp_c}
-                                precision={3}
-                            />
-                            {'\u00b0'}
-                        </>
-                    ) : (
-                        '-'
-                    )}
-                </ListItem>
-            </List>
-            <ListItem>
-                <Typography variant="h6">Depth:&nbsp;</Typography>
-                {station.depth_fathoms ? (
-                    <>
-                        <RenderUnit
-                            from={depthFromUnit as LengthUnits}
-                            to={depthToUnit as LengthUnits}
-                            value={station.depth_fathoms}
-                            precision={1}
-                        />
-                        {` ${depthUnitMap[depthToUnit]}`}
-                    </>
-                ) : (
-                    '-'
-                )}
-            </ListItem>
-            <ListItem>
-                <ListItemText primary={<Typography variant="h6">Specific gravity</Typography>} />
-            </ListItem>
-            <List disablePadding dense>
-                <ListItem sx={{ pl: 4 }}>
-                    <b>Surface:&nbsp;</b>
-                    {station.specific_gravity_at_surface ? decimalFormat(station.specific_gravity_at_surface, 3) : '-'}
-                </ListItem>
-                <ListItem sx={{ pl: 4 }}>
-                    <b>Bottom:&nbsp;</b>
-                    {station.specific_gravity_at_bottom ? decimalFormat(station.specific_gravity_at_bottom, 3) : '-'}
-                </ListItem>
-            </List>
-            <ListItemButton onClick={() => setShowWaterTempArDepths(!showWaterTempArDepths)}>
-                <ListItemText primary={<Typography variant="h6">Water temperature at depths</Typography>} />
-                {showWaterTempArDepths ? <Icon>expand_less</Icon> : <Icon>expand_more</Icon>}
-            </ListItemButton>
-            <Collapse in={showWaterTempArDepths} timeout="auto" unmountOnExit>
-                <List disablePadding dense>
-                    <TableContainer component={ListItem}>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Depth ({depthUnitMap[depthToUnit]})</TableCell>
-                                    <TableCell align="center">Temperature ({tempUnitMap[tempToUnit]})</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {Object.entries(station.water_temp_c_at_depth_fathoms).map(([depth, temp]) => {
-                                    if (!temp) {
-                                        return null;
-                                    }
-                                    return (
-                                        <TableRow
-                                            key={depth}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell align="center" component="th" scope="row">
-                                                <RenderUnit
-                                                    from={depthFromUnit as LengthUnits}
-                                                    to={depthToUnit as LengthUnits}
-                                                    value={Number(depth)}
-                                                    precision={1}
-                                                />
-                                            </TableCell>
-                                            <TableCell align="center" component="th" scope="row">
-                                                <RenderUnit
-                                                    from={tempFromUnit as TemperatureUnits}
-                                                    to={tempToUnit as TemperatureUnits}
-                                                    value={temp}
-                                                    precision={3}
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </List>
-            </Collapse>
-        </List>
+        <>
+            <Field
+                title="Temperature"
+                properties={{
+                    [`Surface (${tempToUnit === 'C' ? 'C' : 'F'})`]: station.surface_temp_c
+                        ? convertUnit(
+                              tempFromUnit as TemperatureUnits,
+                              tempToUnit as TemperatureUnits,
+                              station.surface_temp_c,
+                              3
+                          ) + '\u00b0'
+                        : '-',
+                    [`Bottom Water (${tempToUnit === 'C' ? 'C' : 'F'})`]: station.bottom_water_temp_c
+                        ? convertUnit(
+                              tempFromUnit as TemperatureUnits,
+                              tempToUnit as TemperatureUnits,
+                              station.bottom_water_temp_c,
+                              3
+                          ) + '\u00b0'
+                        : '-'
+                }}
+                IconComponent={ThermostatOutlined}
+            />
+            <Field
+                title="Depth"
+                content={
+                    station.depth_fathoms
+                        ? `${convertUnit(
+                              depthFromUnit as LengthUnits,
+                              depthToUnit as LengthUnits,
+                              station.depth_fathoms,
+                              1
+                          )} ${depthUnitMap[depthToUnit]}`
+                        : '-'
+                }
+                IconComponent={StraightenOutlined}
+            />
+
+            <Field
+                title="Specific gravity"
+                properties={{
+                    Surface: station.specific_gravity_at_surface
+                        ? decimalFormat(station.specific_gravity_at_surface, 3)
+                        : '-',
+                    Bottom: station.specific_gravity_at_bottom
+                        ? decimalFormat(station.specific_gravity_at_bottom, 3)
+                        : '-'
+                }}
+                IconComponent={PublicOutlined}
+            />
+
+            <Field
+                title="Water temperature at depths"
+                table={{
+                    columns: [
+                        {
+                            label: `Depth (${depthUnitMap[depthToUnit]})`,
+                            key: 'depth'
+                        },
+                        {
+                            label: `Temperature (${tempUnitMap[tempToUnit]})`,
+                            key: 'temp'
+                        }
+                    ],
+                    rows: Object.entries(station.water_temp_c_at_depth_fathoms).flatMap(([depth, temp]) =>
+                        temp
+                            ? {
+                                  depth: convertUnit(
+                                      depthFromUnit as LengthUnits,
+                                      depthToUnit as LengthUnits,
+                                      Number(depth),
+                                      1
+                                  ),
+                                  temp: convertUnit(
+                                      tempFromUnit as TemperatureUnits,
+                                      tempToUnit as TemperatureUnits,
+                                      temp,
+                                      3
+                                  )
+                              }
+                            : []
+                    )
+                }}
+                IconComponent={WaterOutlined}
+            />
+        </>
     );
 };
 

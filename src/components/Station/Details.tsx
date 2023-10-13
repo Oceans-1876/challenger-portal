@@ -1,49 +1,27 @@
 import React from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Typography from '@mui/material/Typography';
+import { PlaceOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
+import Field from './Field';
 
 interface Props {
     station: StationDetails;
 }
 
 const Details = ({ station }: Props) => (
-    <List>
-        <ListItem>
-            <Typography variant="h6">Date:&nbsp;</Typography>
-            {station.date}
-        </ListItem>
-        <ListItem>
-            <Typography variant="h6">Location:&nbsp;</Typography>
-            {station.location}
-        </ListItem>
-        <List disablePadding dense>
-            <ListItem sx={{ pl: 4 }}>
-                <b>Place:&nbsp;</b>
-                {station.place || '-'}
-            </ListItem>
-            <ListItem sx={{ pl: 4 }}>
-                <b>Water body:&nbsp;</b>
-                {station.water_body}
-            </ListItem>
-            <ListItem sx={{ pl: 4 }}>
-                <b>Sea area:&nbsp;</b>
-                {station.sea_area || '-'}
-            </ListItem>
-            <ListItem sx={{ pl: 4 }}>
-                <b>FAO Area:&nbsp;</b>
-                {station.fao_area}
-            </ListItem>
-        </List>
-        <ListItem>
-            <Typography variant="h6">Gear:&nbsp;</Typography>
-            {station.gear || '-'}
-        </ListItem>
-        <ListItem>
-            <Typography variant="h6">Sediment sample:&nbsp;</Typography>
-            {station.sediment_sample || '-'}
-        </ListItem>
-    </List>
+    <>
+        <Field
+            title="Location"
+            content={station.location}
+            properties={{
+                'Place': station.place,
+                'Water Body': station.water_body,
+                'Sea Area': station.sea_area,
+                'FAO Area': station.fao_area
+            }}
+            IconComponent={PlaceOutlined}
+        />
+        <Field title="Gear" content={station.gear} IconComponent={SettingsOutlined} />
+        <Field title="Sediment Sample" content={station.sediment_sample} IconComponent={ScienceOutlined} />
+    </>
 );
 
 export default Details;
