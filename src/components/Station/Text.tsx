@@ -9,11 +9,13 @@ import hathiTrustLogoSvg from '../../images/hathi_trust.svg';
 import Loading from '../Loading';
 
 interface Props {
-    station: StationDetails;
+    station: StationDetails | null;
 }
 
 const Text = ({ station }: Props) => {
     const [iframeLoaded, setIframeLoaded] = useState(false);
+
+    if (!station) return null;
 
     return (
         <Stack sx={{ height: '100%' }}>

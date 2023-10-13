@@ -50,6 +50,7 @@ const StationDetail = () => {
                     direction="row"
                     sx={{
                         my: '8px',
+                        height: 28,
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '16px'
@@ -64,49 +65,44 @@ const StationDetail = () => {
                             fontWeight: 500
                         }}
                     >
-                        Station {selectedStationDetails?.name}
+                        Station {selectedStation?.name}
                     </Typography>
-                    {selectedStationDetails ? (
-                        <Button
-                            size="small"
-                            variant="explore-card-focus"
-                            href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                                JSON.stringify(selectedStationDetails, null, 4)
-                            )}`}
-                            download={`Station-${selectedStationDetails.name}-details.json`}
-                            sx={{ px: 0 }}
-                        >
-                            <FileDownloadOutlined />
-                            <ArrowDropDownOutlined />
-                        </Button>
-                    ) : null}
+                    <Button
+                        disabled={!selectedStationDetails}
+                        size="small"
+                        variant="explore-card-focus"
+                        href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                            JSON.stringify(selectedStationDetails, null, 4)
+                        )}`}
+                        download={`Station-${selectedStationDetails?.name}-details.json`}
+                        sx={{ px: 0 }}
+                    >
+                        <FileDownloadOutlined />
+                        <ArrowDropDownOutlined />
+                    </Button>
                 </Stack>
-                {selectedStationDetails ? (
-                    <TabsGroup
-                        sx={{ flex: '1' }}
-                        initialPanel="Station"
-                        panels={[
-                            {
-                                Panel: <StationDetails station={selectedStationDetails} />,
-                                label: 'Station'
-                            },
-                            {
-                                Panel: <StationEnvironment station={selectedStationDetails} />,
-                                label: 'Environment'
-                            },
-                            {
-                                Panel: <StationSpecies station={selectedStationDetails} />,
-                                label: 'Species'
-                            },
-                            {
-                                Panel: <StationText station={selectedStationDetails} />,
-                                label: 'Text'
-                            }
-                        ]}
-                    />
-                ) : (
-                    <Loading />
-                )}
+                <TabsGroup
+                    sx={{ flex: '1' }}
+                    initialPanel="Station"
+                    panels={[
+                        {
+                            Panel: <StationDetails station={selectedStationDetails} />,
+                            label: 'Station'
+                        },
+                        {
+                            Panel: <StationEnvironment station={selectedStationDetails} />,
+                            label: 'Environment'
+                        },
+                        {
+                            Panel: <StationSpecies station={selectedStationDetails} />,
+                            label: 'Species'
+                        },
+                        {
+                            Panel: <StationText station={selectedStationDetails} />,
+                            label: 'Text'
+                        }
+                    ]}
+                />
             </Stack>
         </Box>
     );

@@ -85,8 +85,13 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 allSpeciesList: action.species
             };
         case 'updateSpeciesDetails':
-            state.allSpeciesObject[action.species.id] = action.species;
-            return state;
+            return {
+                ...state,
+                allSpeciesObject: {
+                    ...state.allSpeciesObject,
+                    [action.species.id]: action.species
+                }
+            };
         case 'updateTempToUnit':
             setUnitPreferences({
                 Temp: action.unit,

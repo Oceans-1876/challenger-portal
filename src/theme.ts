@@ -136,6 +136,40 @@ export const themeOptions = {
                 }
             ]
         },
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    input: {
+                        color: 'white'
+                    },
+                    label: {
+                        'color': '#FFFFFF99',
+                        '&.Mui-focused': {
+                            color: palette.explore.secondary
+                        }
+                    }
+                }
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: palette.explore.unselectedSecondary
+                    },
+                    '&:hover': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    },
+                    '&.Mui-focused': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    }
+                }
+            }
+        },
         MuiAutocomplete: {
             styleOverrides: {
                 listbox: {

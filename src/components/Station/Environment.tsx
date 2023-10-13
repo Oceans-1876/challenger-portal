@@ -9,7 +9,7 @@ import Field from './Field';
 import { PublicOutlined, StraightenOutlined, ThermostatOutlined, WaterOutlined } from '@mui/icons-material';
 
 interface Props {
-    station: StationDetails;
+    station: StationDetails | null;
 }
 
 const Environment = ({ station }: Props) => {
@@ -17,14 +17,12 @@ const Environment = ({ station }: Props) => {
     const tempFromUnit = 'C'; // ? Should this be 'C'?
     const depthFromUnit = 'fathom';
 
-    if (!station) return null;
-
     return (
         <>
             <Field
                 title="Temperature"
                 properties={{
-                    [`Surface (${tempToUnit === 'C' ? 'C' : 'F'})`]: station.surface_temp_c
+                    [`Surface (${tempToUnit === 'C' ? 'C' : 'F'})`]: station?.surface_temp_c
                         ? convertUnit(
                               tempFromUnit as TemperatureUnits,
                               tempToUnit as TemperatureUnits,
@@ -32,7 +30,7 @@ const Environment = ({ station }: Props) => {
                               3
                           ) + '\u00b0'
                         : '-',
-                    [`Bottom Water (${tempToUnit === 'C' ? 'C' : 'F'})`]: station.bottom_water_temp_c
+                    [`Bottom Water (${tempToUnit === 'C' ? 'C' : 'F'})`]: station?.bottom_water_temp_c
                         ? convertUnit(
                               tempFromUnit as TemperatureUnits,
                               tempToUnit as TemperatureUnits,
@@ -46,7 +44,7 @@ const Environment = ({ station }: Props) => {
             <Field
                 title="Depth"
                 content={
-                    station.depth_fathoms
+                    station?.depth_fathoms
                         ? `${convertUnit(
                               depthFromUnit as LengthUnits,
                               depthToUnit as LengthUnits,
@@ -61,10 +59,10 @@ const Environment = ({ station }: Props) => {
             <Field
                 title="Specific gravity"
                 properties={{
-                    Surface: station.specific_gravity_at_surface
+                    Surface: station?.specific_gravity_at_surface
                         ? decimalFormat(station.specific_gravity_at_surface, 3)
                         : '-',
-                    Bottom: station.specific_gravity_at_bottom
+                    Bottom: station?.specific_gravity_at_bottom
                         ? decimalFormat(station.specific_gravity_at_bottom, 3)
                         : '-'
                 }}
@@ -84,7 +82,7 @@ const Environment = ({ station }: Props) => {
                             key: 'temp'
                         }
                     ],
-                    rows: Object.entries(station.water_temp_c_at_depth_fathoms).flatMap(([depth, temp]) =>
+                    rows: Object.entries(station?.water_temp_c_at_depth_fathoms ?? {}).flatMap(([depth, temp]) =>
                         temp
                             ? {
                                   depth: convertUnit(
