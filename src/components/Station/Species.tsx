@@ -131,7 +131,7 @@ const Species = ({ station }: Props) => {
                         ) : null
                     }}
                     fullWidth
-                    label="Search field"
+                    label="Search Species"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 />
