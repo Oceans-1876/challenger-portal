@@ -96,8 +96,8 @@ const SpeciesDetailView: FC = () => {
                     title="Classifications"
                     table={{
                         columns: [
-                            { key: 'name', label: 'Classification path' },
-                            { key: 'rank', label: 'Classification ranks' }
+                            { key: 'name', label: 'Classification Path' },
+                            { key: 'rank', label: 'Classification Ranks' }
                         ],
                         rows: classificationPath
                     }}
@@ -143,7 +143,7 @@ const SpeciesDetailView: FC = () => {
                     <Field
                         title="Other Synonymous Species"
                         table={{
-                            columns: [{ key: 'link', label: 'Species Names' }],
+                            columns: [{ key: 'link', label: 'Scientific Names' }],
                             rows: speciesDetails.species_synonyms.map((sp) => ({
                                 link: (
                                     <Button

@@ -57,7 +57,7 @@ const Environment = ({ station }: Props) => {
             />
 
             <Field
-                title="Specific gravity"
+                title="Specific Gravity"
                 properties={{
                     Surface: station?.specific_gravity_at_surface
                         ? decimalFormat(station.specific_gravity_at_surface, 3)
@@ -70,7 +70,7 @@ const Environment = ({ station }: Props) => {
             />
 
             <Field
-                title="Water temperature at depths"
+                title="Water Temperature at Depths"
                 table={{
                     columns: [
                         {
