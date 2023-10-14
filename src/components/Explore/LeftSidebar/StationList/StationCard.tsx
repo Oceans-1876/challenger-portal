@@ -106,39 +106,35 @@ const StationCard: FC<Props> = ({ station }) => {
                                 fontSize: 14
                             }}
                         >
-                            {station.location}
+                            {station.location ?? '-'}
                         </Typography>
                     </Box>
                 </Stack>
 
-                {station.gear ? (
-                    <Stack direction="row" sx={{ mt: '10px' }}>
-                        <SettingsOutlined
-                            sx={{ height: 18, verticalAlign: 'middle', fontSize: 14, color: '#FFFFFF99' }}
-                        />
-                        <Box sx={{ ml: '4px' }}>
-                            <Typography
-                                sx={{
-                                    color: '#FFFFFF99',
-                                    fontFamily: 'Roboto',
-                                    fontSize: 12
-                                }}
-                            >
-                                Gear
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    ml: '4px',
-                                    color: 'white',
-                                    fontFamily: 'Roboto',
-                                    fontSize: 14
-                                }}
-                            >
-                                {station.gear}
-                            </Typography>
-                        </Box>
-                    </Stack>
-                ) : null}
+                <Stack direction="row" sx={{ mt: '10px' }}>
+                    <SettingsOutlined sx={{ height: 18, verticalAlign: 'middle', fontSize: 14, color: '#FFFFFF99' }} />
+                    <Box sx={{ ml: '4px' }}>
+                        <Typography
+                            sx={{
+                                color: '#FFFFFF99',
+                                fontFamily: 'Roboto',
+                                fontSize: 12
+                            }}
+                        >
+                            Gear
+                        </Typography>
+                        <Typography
+                            sx={{
+                                ml: '4px',
+                                color: 'white',
+                                fontFamily: 'Roboto',
+                                fontSize: 14
+                            }}
+                        >
+                            {station.gear ?? '-'}
+                        </Typography>
+                    </Box>
+                </Stack>
 
                 <Stack direction="row" sx={{ mt: '10px' }}>
                     <ScienceOutlined sx={{ height: 18, verticalAlign: 'middle', fontSize: 14, color: '#FFFFFF99' }} />
@@ -160,7 +156,7 @@ const StationCard: FC<Props> = ({ station }) => {
                                 fontSize: 14
                             }}
                         >
-                            {station.sediment_sample}
+                            {station.sediment_sample ?? '-'}
                         </Typography>
                     </Box>
                 </Stack>

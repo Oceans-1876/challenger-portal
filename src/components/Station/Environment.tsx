@@ -7,6 +7,7 @@ import convertUnit from '../../utils/convertUnits';
 import { depthUnitMap, tempUnitMap } from '../UnitPreferencesDialog';
 import Field from '../Field';
 import { PublicOutlined, StraightenOutlined, ThermostatOutlined, WaterOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
 
 interface Props {
     station: StationDetails | null;
@@ -18,7 +19,18 @@ const Environment = ({ station }: Props) => {
     const depthFromUnit = 'fathom';
 
     return (
-        <>
+        <Box
+            sx={{
+                'height': '100%',
+                'overflowY': 'scroll',
+                '&::-webkit-scrollbar': {
+                    display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                },
+                '&-ms-overflow-style:': {
+                    display: 'none' // Hide the scrollbar for IE
+                }
+            }}
+        >
             <Field
                 title="Temperature"
                 properties={{
@@ -103,7 +115,7 @@ const Environment = ({ station }: Props) => {
                 }}
                 IconComponent={WaterOutlined}
             />
-        </>
+        </Box>
     );
 };
 

@@ -3,11 +3,10 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
 import InsetMap from './InsetMap';
-import DetailView from './DetailView';
+import DetailView, { DETAIL_VIEW_WIDTH } from './DetailView';
 import StationsList from './StationList';
 import { DataStateContext } from '../../../store/contexts';
 
-const DETAIL_VIEW_WIDTH = 478;
 const MARGIN = 10;
 
 const LeftSidebar = () => {
@@ -27,7 +26,7 @@ const LeftSidebar = () => {
                 sx={{
                     position: 'relative',
                     zIndex: -1,
-                    transform: `translate(${selectedStation ? 0 : -(DETAIL_VIEW_WIDTH + MARGIN)}px, 0)`,
+                    transform: `translateX(${selectedStation ? 0 : -(DETAIL_VIEW_WIDTH + MARGIN)}px)`,
                     transition: 'all 0.2s ease-in-out'
                 }}
                 direction="row"

@@ -22,7 +22,7 @@ const Text = ({ station }: Props) => {
     }, [iframeUrl]);
 
     return (
-        <Stack sx={{ height: '100%' }}>
+        <Stack sx={{ height: '100%', pt: '16px' }}>
             <Alert
                 severity="warning"
                 sx={{

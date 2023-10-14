@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Button, Chip, Stack, capitalize } from '@mui/material';
 import { ArrowBackOutlined, FileDownloadOutlined, ScienceOutlined } from '@mui/icons-material';
@@ -6,7 +6,6 @@ import Field from '../../Field';
 import { theme } from '../../../theme';
 import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
 import { useSpeciesDetails } from '../../../utils/hooks';
-import Loading from '../../Loading';
 
 type Classification = {
     rank: string;
@@ -37,8 +36,6 @@ const SpeciesDetailView: FC = () => {
         speciesDetails?.classification_ranks ?? ''
     );
 
-    if (!speciesDetails) return <Loading />;
-
     return (
         <Stack sx={{ height: '100%', alignItems: 'start' }}>
             <Button
@@ -55,7 +52,20 @@ const SpeciesDetailView: FC = () => {
                 <Typography sx={{ ml: '16px', fontWeight: 500 }}>Species</Typography>
             </Button>
 
-            <Box sx={{ mt: '32px', flex: 'auto', alignSelf: 'stretch', overflow: 'scroll' }}>
+            <Box
+                sx={{
+                    'mt': '32px',
+                    'flex': 'auto',
+                    'alignSelf': 'stretch',
+                    'overflow': 'scroll',
+                    '&::-webkit-scrollbar': {
+                        display: 'none' // Hide the scrollbar for WebKit browsers (Chrome, Safari, Edge, etc.)
+                    },
+                    '&-ms-overflow-style:': {
+                        display: 'none' // Hide the scrollbar for IE
+                    }
+                }}
+            >
                 <Stack direction="row" sx={{ gap: '16px' }}>
                     <Typography sx={{ color: 'white', fontSize: '20px', fontWeight: 500 }}>
                         {speciesDetails?.matched_canonical_full_name}
@@ -104,7 +114,7 @@ const SpeciesDetailView: FC = () => {
                     IconComponent={ScienceOutlined}
                 />
 
-                {speciesDetails.species_common_names.length ? (
+                {speciesDetails?.species_common_names.length ? (
                     <Field
                         title="Common Names"
                         table={{

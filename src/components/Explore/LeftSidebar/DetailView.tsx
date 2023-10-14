@@ -8,10 +8,14 @@ import { theme } from '../../../theme';
 import { CloseOutlined } from '@mui/icons-material';
 import SpeciesDetailView from './SpeciesDetailView';
 import StationDetailView from './StationDetailView';
+import { useSpeciesDetails } from '../../../utils/hooks';
+
+export const DETAIL_VIEW_WIDTH = 478;
 
 const DetailView = () => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const { selectedStation, selectedSpecies } = useContext(DataStateContext);
+    const selectedSpeciesDetails = useSpeciesDetails(selectedSpecies?.id);
 
     return (
         <Stack
@@ -33,7 +37,7 @@ const DetailView = () => {
             </Stack>
 
             {selectedStation ? (
-                <Box sx={{ flex: 'auto', position: 'relative' }}>
+                <Box sx={{ flex: 'auto', position: 'relative', overflow: 'hidden' }}>
                     <Box
                         sx={{
                             position: 'absolute',
@@ -41,8 +45,10 @@ const DetailView = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            visibility: selectedSpecies ? 'visible' : 'hidden',
-                            zIndex: 1
+                            zIndex: 1,
+                            transform: `translateX(${selectedSpeciesDetails ? 0 : DETAIL_VIEW_WIDTH}px)`,
+                            opacity: selectedSpeciesDetails ? 1 : 0,
+                            transition: 'all 0.2s ease-in-out, opacity 0s'
                         }}
                     >
                         <SpeciesDetailView />
@@ -55,8 +61,8 @@ const DetailView = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            visibility: selectedSpecies ? 'hidden' : 'visible',
-                            zIndex: 0
+                            zIndex: 0,
+                            opacity: selectedSpeciesDetails ? 0 : 1
                         }}
                     >
                         <StationDetailView />

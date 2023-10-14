@@ -76,7 +76,6 @@ const TabsGroup = ({ sx, TabIndicatorProps, panels, initialPanel }: Props) => {
                                 right: 0,
                                 top: 0,
                                 bottom: 0,
-                                overflow: 'scroll',
                                 opacity: activeTab === label ? 1 : 0,
                                 zIndex: activeTab === label ? 1 : 0
                             }}
