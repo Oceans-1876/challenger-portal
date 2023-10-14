@@ -69,7 +69,8 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 selectedFaoArea: action.station
                     ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
                     : state.selectedFaoArea,
-                selectedStation: action.station
+                selectedStation: action.station,
+                selectedSpecies: null
             };
         case 'updateStationDetails':
             return {
@@ -91,6 +92,11 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                     ...state.allSpeciesObject,
                     [action.species.id]: action.species
                 }
+            };
+        case 'updateSelectedSpecies':
+            return {
+                ...state,
+                selectedSpecies: action.species
             };
         case 'updateTempToUnit':
             setUnitPreferences({

@@ -83,7 +83,7 @@ export const themeOptions = {
                         'backgroundColor': '#90fff3',
                         'color': '#243c59f2',
                         '&:active, &:hover': {
-                            backgroundColor: '#90fff3'
+                            backgroundColor: '#90fff3' // we need a design for this color
                         },
                         'height': '36px',
                         'borderRadius': '18px'
@@ -96,7 +96,10 @@ export const themeOptions = {
                             backgroundColor: 'transparent !important'
                         },
                         'textTransform': 'none',
-                        'color': '#90fff3'
+                        'color': '#90fff3',
+                        '&:active, &:hover': {
+                            color: '#90fff399'
+                        }
                     }
                 },
                 {

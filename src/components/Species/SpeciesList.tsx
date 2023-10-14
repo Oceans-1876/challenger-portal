@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField';
 
 import { useSpeciesDetails, usePagination } from '../../utils/hooks';
 import Loading from '../Loading';
-import SpeciesDetails from './Details';
+import SpeciesDetails from '../Explore/LeftSidebar/SpeciesDetailView';
 import { getData } from '../../store/api';
 
 interface Props {

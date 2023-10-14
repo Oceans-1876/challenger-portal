@@ -15,6 +15,7 @@ export const dataStateInitialValue: DataState = {
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},
+    selectedSpecies: null,
     tempToUnit: unitPref.Temp,
     depthToUnit: unitPref.Depth
 };

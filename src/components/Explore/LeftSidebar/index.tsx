@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
 import InsetMap from './InsetMap';
-import StationDetail from './StationDetailView';
+import DetailView from './DetailView';
 import StationsList from './StationList';
 
 const LeftSidebar = () => {
@@ -17,7 +17,7 @@ const LeftSidebar = () => {
             }}
         >
             <StationsList />
-            <StationDetail />
+            <DetailView />
             <Box sx={{ mt: '10px', ml: '10px' }}>
                 <InsetMap />
             </Box>

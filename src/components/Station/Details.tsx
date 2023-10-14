@@ -11,7 +11,7 @@ const Details = ({ station }: Props) => {
         <>
             <Field
                 title="Location"
-                content={station?.location ?? '\u00A0'}
+                content={station?.location ?? '-'}
                 properties={{
                     'Place': station?.place,
                     'Water Body': station?.water_body,
@@ -20,12 +20,8 @@ const Details = ({ station }: Props) => {
                 }}
                 IconComponent={PlaceOutlined}
             />
-            <Field title="Gear" content={station?.gear ?? '\u00A0'} IconComponent={SettingsOutlined} />
-            <Field
-                title="Sediment Sample"
-                content={station?.sediment_sample ?? '\u00A0'}
-                IconComponent={ScienceOutlined}
-            />
+            <Field title="Gear" content={station?.gear ?? '-'} IconComponent={SettingsOutlined} />
+            <Field title="Sediment Sample" content={station?.sediment_sample ?? '-'} IconComponent={ScienceOutlined} />
         </>
     );
 };

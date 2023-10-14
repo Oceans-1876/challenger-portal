@@ -10,35 +10,34 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { theme } from '../theme';
 
 type FieldValueDict = Record<string, string | number | undefined>;
+
 type FieldValueTable = {
     columns: { key: string; label: string }[];
-    rows: Record<string, string>[];
+    rows: Record<string, ReactNode>[];
 };
 
 const FieldProperties: FC<{ data: FieldValueDict }> = ({ data }) => {
-    const keys = Object.keys(data);
-    const values = Object.values(data);
     return (
-        <Stack
-            direction="row"
-            sx={{ my: '8px', py: '16px', px: '24px', gap: '16px', background: '#90FFF31F', borderRadius: '12px' }}
-        >
-            <Box sx={{ color: theme.palette.explore.secondaryText }}>
-                {keys.map((key) => (
-                    <Typography key={key} sx={{ fontWeight: 600 }}>
+        <Stack sx={{ my: '8px', py: '16px', px: '24px', background: '#90FFF31F', borderRadius: '12px' }}>
+            {Object.entries(data).map(([key, value]) => (
+                <Stack direction="row" key={key}>
+                    <Typography
+                        sx={{
+                            flex: 'none',
+                            width: '40%',
+                            color: theme.palette.explore.secondaryText,
+                            fontWeight: 600
+                        }}
+                    >
                         {key}
                     </Typography>
-                ))}
-            </Box>
-            <Box sx={{ color: 'white', fontWeight: 600 }}>
-                {values.map((value, i) => (
-                    <Typography key={keys[i]}>{value}&nbsp;</Typography>
-                ))}
-            </Box>
+                    <Typography sx={{ color: 'white', fontWeight: 400 }}>{value}</Typography>
+                </Stack>
+            ))}
         </Stack>
     );
 };
@@ -81,7 +80,7 @@ const FieldTable: FC<{ table: FieldValueTable }> = ({ table }) => (
 type Props = {
     title: string;
     IconComponent: SvgIconComponent;
-    content?: string;
+    content?: ReactNode;
     properties?: FieldValueDict;
     table?: FieldValueTable;
 };
@@ -89,18 +88,18 @@ type Props = {
 const Field: FC<Props> = ({ title, IconComponent, content, properties, table }) => {
     return (
         <>
-            <Box sx={{ my: '16px' }}>
+            <Box sx={{ mt: '32px' }}>
                 <Stack
                     direction="row"
                     sx={{ height: 28, color: theme.palette.explore.secondaryText, fontSize: '16px' }}
                 >
                     <IconComponent sx={{ width: '32px' }} />
-                    <Typography sx={{ fontWeight: 600 }}>{title}:</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>{title}</Typography>
                 </Stack>
-                <Typography sx={{ ml: '32px', color: 'white', fontSize: '16px', fontWeight: 400 }}>
-                    {content}
-                </Typography>
             </Box>
+            {content ? (
+                <Box sx={{ ml: '32px', color: 'white', fontSize: '16px', fontWeight: 400 }}>{content}</Box>
+            ) : null}
             {properties ? <FieldProperties data={properties} /> : null}
             {table ? <FieldTable table={table} /> : null}
         </>

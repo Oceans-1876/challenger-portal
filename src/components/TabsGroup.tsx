@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
+import Tabs, { TabsOwnProps } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import type { SxProps } from '@mui/system';
@@ -9,6 +9,7 @@ import { Stack } from '@mui/material';
 
 interface Props {
     sx?: SxProps;
+    TabIndicatorProps: TabsOwnProps['TabIndicatorProps'];
     panels: Array<{
         Panel: React.ReactNode;
         label: string;
@@ -16,7 +17,7 @@ interface Props {
     initialPanel?: string;
 }
 
-const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
+const TabsGroup = ({ sx, TabIndicatorProps, panels, initialPanel }: Props) => {
     const [activeTab, setActiveTab] = React.useState<string>();
 
     React.useEffect(() => {
@@ -35,15 +36,9 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
     }
 
     return (
-        <Stack
-            sx={{
-                zIndex: 1,
-                minHeight: 0, // to allow the box to shrink past its content height
-                ...sx
-            }}
-        >
+        <Stack sx={{ zIndex: 1, ...sx }}>
             <Tabs
-                TabIndicatorProps={{ style: { background: theme.palette.explore.secondary } }}
+                TabIndicatorProps={TabIndicatorProps}
                 centered
                 value={activeTabIsInPanels ? activeTab : false}
                 onChange={(_e, newActiveTab) => setActiveTab(newActiveTab)}
@@ -65,21 +60,33 @@ const TabsGroup = ({ sx, panels, initialPanel }: Props) => {
                 ))}
             </Tabs>
 
-            {panels.map(({ Panel, label }) => {
-                return (
-                    <Box
-                        sx={{
-                            flex: 1,
-                            overflow: 'scroll',
-                            py: '32px'
-                        }}
-                        key={label}
-                        hidden={activeTab !== label}
-                    >
-                        {Panel}
-                    </Box>
-                );
-            })}
+            <Box
+                sx={{
+                    flex: 1,
+                    py: '32px',
+                    position: 'relative'
+                }}
+            >
+                {panels.map(({ Panel, label }) => {
+                    return (
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                overflow: 'scroll',
+                                opacity: activeTab === label ? 1 : 0,
+                                zIndex: activeTab === label ? 1 : 0
+                            }}
+                            key={label}
+                        >
+                            {Panel}
+                        </Box>
+                    );
+                })}
+            </Box>
         </Stack>
     );
 };
