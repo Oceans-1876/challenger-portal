@@ -16,11 +16,8 @@ const DetailView = () => {
     return (
         <Stack
             sx={{
-                display: selectedStation ? 'flex' : 'none',
-                width: 478,
+                height: '100%',
                 p: '32px',
-                boxSizing: 'border-box',
-                zIndex: 1,
                 background: theme.palette.explore.selected,
                 pointerEvents: 'all'
             }}
