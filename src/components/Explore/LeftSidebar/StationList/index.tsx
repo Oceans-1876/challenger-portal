@@ -77,34 +77,57 @@ const StationsList = () => {
                             }
                         }}
                     >
-                        <Stack direction="row" sx={{ height: 82 }}>
+                        <Stack direction="row" sx={{}}>
                             {filteredStations.map((group) => {
                                 const isActive = group === selectedGroup;
                                 return (
                                     <Box
-                                        ref={isActive ? activeFaoAreaMenuItemRef : null}
-                                        key={group.faoArea.code}
                                         sx={{
-                                            opacity: isActive ? 1 : 0.3,
-                                            flex: 'none',
-                                            height: 82,
-                                            width: 82,
-                                            mr: '8px',
-                                            borderRadius: '12px',
-                                            border: `2px solid ${theme.palette.explore.secondary}`,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            cursor: 'pointer'
-                                        }}
-                                        onClick={() => {
-                                            dataActionDispatcher({
-                                                type: 'updateSelectedFaoArea',
-                                                faoArea: isActive ? null : group.faoArea
-                                            });
+                                            'color': theme.palette.explore.secondary,
+                                            'opacity': isActive ? 1 : 0.3,
+                                            '&:hover': {
+                                                opacity: 0.7
+                                            }
                                         }}
                                     >
-                                        <RegionIcon size={62} faoArea={group.faoArea} />
+                                        <Box
+                                            ref={isActive ? activeFaoAreaMenuItemRef : null}
+                                            key={group.faoArea.code}
+                                            sx={{
+                                                flex: 'none',
+                                                height: 82,
+                                                width: 82,
+                                                mr: '8px',
+                                                borderRadius: '12px',
+                                                border: `2px solid ${theme.palette.explore.secondary}`,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer'
+                                            }}
+                                            onClick={() => {
+                                                dataActionDispatcher({
+                                                    type: 'updateSelectedFaoArea',
+                                                    faoArea: isActive ? null : group.faoArea
+                                                });
+                                            }}
+                                        >
+                                            <RegionIcon size={62} faoArea={group.faoArea} />
+                                        </Box>
+                                        <Box sx={{ mt: '4px' }}>
+                                            {group.faoArea.name.split(',').map((s) => (
+                                                <Typography
+                                                    key={s}
+                                                    sx={{
+                                                        textAlign: 'center',
+                                                        fontSize: '10px',
+                                                        lineHeight: 1
+                                                    }}
+                                                >
+                                                    {s}
+                                                </Typography>
+                                            ))}
+                                        </Box>
                                     </Box>
                                 );
                             })}
