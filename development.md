@@ -8,7 +8,7 @@ It uses Webpack to manage module bundles and assets.
 All high-level development configurations (e.g. typescript, babel, and eslint) are in their own dedicated files in project root.
 
 The project has a `pre-commit` hook that prevents committing changes that violate typing and linting configs.
-To check if the code passes the checks, run `npm run lint` and `npx tsc`. Running `npm run lint:fix` will try to fix the issues that can be resolved automatically.
+To check if the code passes the checks, run `npm run lint` and `npx tsc --noEmit`. Running `npm run lint:fix` will try to fix the issues that can be resolved automatically.
 
 ### Webpack
 
