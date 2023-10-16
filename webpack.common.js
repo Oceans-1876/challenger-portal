@@ -28,13 +28,13 @@ module.exports = {
             }
             return `js/${pathData.chunk.name}-${pathData.chunk.hash}.js`;
         },
+        assetModuleFilename: 'files/[name]-[hash].[ext]',
         crossOriginLoading: 'anonymous'
     },
 
     module: {
         rules: [
             {
-                // Use babel-loader for ts, tsx, js, and jsx files
                 test: /\.[tj]sx?$/,
                 exclude: /node_modules/,
                 use: 'ts-loader'
@@ -53,31 +53,16 @@ module.exports = {
                 ]
             },
             {
-                test: /\.svg$/,
-                loader: 'file-loader'
-            },
-            {
-                type: 'javascript/auto',
                 test: /\.(geo)?json$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: 'files/[name]-[hash].[ext]'
-                        }
-                    }
-                ]
+                type: 'asset/resource'
             },
             {
-                test: /\.(jpg|jpeg|png|eot|ttf|woff|woff2)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: 'files/[name]-[hash].[ext]'
-                        }
-                    }
-                ]
+                test: /\.(jpg|jpeg|png|svg)$/,
+                type: 'asset'
+            },
+            {
+                test: /\.(eot|ttf|woff|woff2)$/,
+                type: 'asset/resource'
             }
         ]
     },
