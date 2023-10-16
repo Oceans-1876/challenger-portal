@@ -1,6 +1,6 @@
 import React from 'react';
 import { PlaceOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
-import Field from '../Field';
+import Field from '@app/components/Field';
 
 interface Props {
     station: StationDetails | null;

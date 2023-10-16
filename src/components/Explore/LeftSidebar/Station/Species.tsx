@@ -1,15 +1,15 @@
-import React, { CSSProperties, FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import Stack from '@mui/material/Stack';
 
-import { useDebounce } from '../../utils/hooks';
+import { useDebounce } from '../../../../utils/hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import { getData } from '../../store/api';
 import { ListChildComponentProps, VariableSizeList } from 'react-window';
-import { DataActionDispatcherContext } from '../../store/contexts';
+import { DataActionDispatcherContext } from '../../../../store/contexts';
 import { CloseOutlined } from '@mui/icons-material';
-import { theme } from '../../theme';
+import { theme } from '../../../../theme';
+import axios, { AxiosResponse } from 'axios';
 
 const SECTION_TITLE_HEIGHT = 44;
 const DATA_ITEM_HEIGHT = 60;
@@ -75,13 +75,12 @@ const Species = ({ station }: Props) => {
     useDebounce(
         () => {
             if (input) {
-                getData<SpeciesSummary[]>(
-                    `species/fuzzymatch/?query_str=${input}`,
-                    (data) => {
-                        setFilteredSpecies(data);
-                    },
-                    () => undefined
-                );
+                axios
+                    .get<SearchExpressionGroup, AxiosResponse<SpeciesSummary[]>>(
+                        `${window.API_PATH}/species/fuzzymatch/?query_str=${input}&station=${station?.name}`
+                    )
+                    .then((resp) => setFilteredSpecies(resp.data))
+                    .catch(console.error);
             } else {
                 setFilteredSpecies(station?.species ?? []);
             }

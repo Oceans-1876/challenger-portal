@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { TemperatureUnits, LengthUnits } from 'convert-units';
-import { DataStateContext } from '../../store/contexts';
-import { decimalFormat } from '../../utils/format';
-import convertUnit from '../../utils/convertUnits';
-import { depthUnitMap, tempUnitMap } from '../UnitPreferencesDialog';
-import Field from '../Field';
+import { DataStateContext } from '../../../../store/contexts';
+import { decimalFormat } from '../../../../utils/format';
+import convertUnit from '../../../../utils/convertUnits';
+import { depthUnitMap, tempUnitMap } from '../../../UnitPreferencesDialog';
+import Field from '../../../Field';
 import { PublicOutlined, StraightenOutlined, ThermostatOutlined, WaterOutlined } from '@mui/icons-material';
 import { Box } from '@mui/material';
 

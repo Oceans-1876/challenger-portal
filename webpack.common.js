@@ -37,7 +37,7 @@ module.exports = {
                 // Use babel-loader for ts, tsx, js, and jsx files
                 test: /\.[tj]sx?$/,
                 exclude: /node_modules/,
-                use: 'babel-loader'
+                use: 'ts-loader'
             },
             {
                 test: /\.(s[ac]ss|css)$/,
@@ -84,7 +84,10 @@ module.exports = {
 
     resolve: {
         modules: ['node_modules', 'src'],
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '@app': path.resolve(__dirname, 'src/')
+        }
     },
 
     plugins: [

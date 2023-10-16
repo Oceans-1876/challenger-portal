@@ -1,13 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import { Dayjs } from 'dayjs';
 
-export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
+export const getData = <T>(endpoint: string, success: (data: T) => void, err?: (error: Error | AxiosError) => void) => {
     return axios
         .get(`${window.API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
         .catch((error) => {
             console.error(error);
-            err(error);
+            err?.(error);
         });
 };
 
@@ -17,7 +17,7 @@ export const searchStations = (
 ) => {
     const expressions: Array<SearchExpression | SearchExpressionGroup> = [];
 
-    const addExpression = (column_name: string, operator: string, values: (Dayjs | string | null)[]) => {
+    const addExpression = (column_name: string, operator: string, values: (Dayjs | string | number | null)[]) => {
         if (column_name === 'date') {
             if (values[0] && values[1]) {
                 // start_date and end_date expressions should be combined with AND,

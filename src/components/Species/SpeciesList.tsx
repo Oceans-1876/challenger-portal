@@ -121,7 +121,7 @@ const SpeciesList = ({ species_list }: Props) => {
                         >
                             Back
                         </Button>
-                        <SpeciesDetails species={speciesDetails} />
+                        <SpeciesDetails />
                     </Stack>
                 ) : (
                     <>
