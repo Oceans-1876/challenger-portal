@@ -9,7 +9,7 @@ import { ListChildComponentProps, VariableSizeList } from 'react-window';
 import { DataActionDispatcherContext } from '../../../../store/contexts';
 import { CloseOutlined } from '@mui/icons-material';
 import { theme } from '../../../../theme';
-import axios, { AxiosResponse } from 'axios';
+import { getData } from '@app/store/api';
 
 const SECTION_TITLE_HEIGHT = 44;
 const DATA_ITEM_HEIGHT = 60;
@@ -75,12 +75,7 @@ const Species = ({ station }: Props) => {
     useDebounce(
         () => {
             if (input) {
-                axios
-                    .get<SearchExpressionGroup, AxiosResponse<SpeciesSummary[]>>(
-                        `${window.API_PATH}/species/fuzzymatch/?query_str=${input}&station=${station?.name}`
-                    )
-                    .then((resp) => setFilteredSpecies(resp.data))
-                    .catch(console.error);
+                getData(`species/fuzzymatch/?query_str=${input}&station=${station?.name}`, setFilteredSpecies);
             } else {
                 setFilteredSpecies(station?.species ?? []);
             }
