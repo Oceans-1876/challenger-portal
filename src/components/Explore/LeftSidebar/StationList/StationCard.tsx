@@ -1,9 +1,9 @@
 import { Box, Button, Card, Chip, Divider, Stack, Typography } from '@mui/material';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import { LocationOnOutlined, ScienceOutlined, SettingsOutlined } from '@mui/icons-material';
-import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
-import { theme } from '../../../../theme';
-import { requestScrollIntoView } from '../../../../utils/scrollIntoView';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
+import { theme } from '@app/theme';
+import { requestScrollIntoView } from '@app/utils/scrollIntoView';
 
 type Props = {
     station: StationSummary;

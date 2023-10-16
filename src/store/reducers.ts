@@ -1,5 +1,5 @@
-import { createJourneyPathFromStationPoints } from '../components/Map/utils';
-import { setUnitPreferences } from '../utils/localStorage';
+import { createJourneyPathFromStationPoints } from '@app/components/Map/utils';
+import { setUnitPreferences } from '@app/utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {

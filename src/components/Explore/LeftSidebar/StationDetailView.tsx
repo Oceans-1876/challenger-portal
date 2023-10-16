@@ -3,14 +3,14 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { DataStateContext } from '../../../store/contexts';
-import { useStationDetails } from '../../../utils/hooks';
-import TabsGroup from '../../TabsGroup';
+import { DataStateContext } from '@app/store/contexts';
+import { useStationDetails } from '@app/utils/hooks';
+import TabsGroup from '@app/components/TabsGroup';
 import StationDetails from './Station/Details';
 import StationEnvironment from './Station/Environment';
 import StationSpecies from './Station/Species';
 import StationText from './Station/Text';
-import { theme } from '../../../theme';
+import { theme } from '@app/theme';
 import { ArrowDropDownOutlined, FileDownloadOutlined } from '@mui/icons-material';
 
 const StationDetailView: FC = () => {

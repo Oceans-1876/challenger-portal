@@ -2,10 +2,10 @@ import React, { FC, useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Button, Chip, Stack, capitalize } from '@mui/material';
 import { ArrowBackOutlined, FileDownloadOutlined, ScienceOutlined } from '@mui/icons-material';
-import Field from '../../Field';
-import { theme } from '../../../theme';
-import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
-import { useSpeciesDetails } from '../../../utils/hooks';
+import Field from '@app/components/Field';
+import { theme } from '@app/theme';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
+import { useSpeciesDetails } from '@app/utils/hooks';
 
 type Classification = {
     rank: string;

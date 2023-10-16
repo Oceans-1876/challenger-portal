@@ -10,10 +10,10 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-import { useSpeciesDetails, usePagination } from '../../utils/hooks';
-import Loading from '../Loading';
-import SpeciesDetails from '../Explore/LeftSidebar/SpeciesDetailView';
-import { getData } from '../../store/api';
+import { useSpeciesDetails, usePagination } from '@app/utils/hooks';
+import Loading from '@app/components/Loading';
+import SpeciesDetails from './Details';
+import { getData } from '@app/store/api';
 
 interface Props {
     species_list: SpeciesSummary[];
@@ -121,7 +121,7 @@ const SpeciesList = ({ species_list }: Props) => {
                         >
                             Back
                         </Button>
-                        <SpeciesDetails />
+                        <SpeciesDetails species={speciesDetails} />
                     </Stack>
                 ) : (
                     <>

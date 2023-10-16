@@ -1,4 +1,4 @@
-import { theme } from '../../theme';
+import { theme } from '@app/theme';
 
 export const layerStyles: { [group: string]: { [state: string]: Partial<maplibregl.LayerSpecification> } } = {
     stations: {

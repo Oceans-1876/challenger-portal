@@ -2,10 +2,10 @@ import React, { FC, useContext, useEffect, useRef } from 'react';
 import maplibre from 'maplibre-gl';
 import { Box } from '@mui/material';
 import * as turf from '@turf/turf';
-import { IS_WEBGL_SUPPORTED, runWhenReady } from '../../Map/utils';
-import { theme } from '../../../theme';
-import { MapContext, MapStateContext } from '../../../store/contexts';
-import { BASEMAPS, INITIAL_BASEMAP } from '../basemapConfig';
+import { IS_WEBGL_SUPPORTED, runWhenReady } from '@app/components/Map/utils';
+import { theme } from '@app/theme';
+import { MapContext, MapStateContext } from '@app/store/contexts';
+import { BASEMAPS, INITIAL_BASEMAP } from '@app/components/Explore/basemapConfig';
 
 const InsetMap: FC = () => {
     const insetMapContainerRef = useRef<HTMLDivElement>(null);

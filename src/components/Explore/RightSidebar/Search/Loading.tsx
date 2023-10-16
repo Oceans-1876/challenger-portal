@@ -1,6 +1,6 @@
 import { CircularProgress, Modal } from '@mui/material';
 import React, { FC } from 'react';
-import { theme } from '../../../../theme';
+import { theme } from '@app/theme';
 
 const Loading: FC<{ open: boolean }> = ({ open }) => {
     return (

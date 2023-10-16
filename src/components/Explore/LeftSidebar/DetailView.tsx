@@ -3,12 +3,12 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import { DataActionDispatcherContext, DataStateContext } from '../../../store/contexts';
-import { theme } from '../../../theme';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
+import { theme } from '@app/theme';
 import { CloseOutlined } from '@mui/icons-material';
 import SpeciesDetailView from './SpeciesDetailView';
 import StationDetailView from './StationDetailView';
-import { useSpeciesDetails } from '../../../utils/hooks';
+import { useSpeciesDetails } from '@app/utils/hooks';
 
 export const DETAIL_VIEW_WIDTH = 478;
 

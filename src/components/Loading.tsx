@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { SxProps } from '@mui/material';
-import { theme } from '../theme';
+import { theme } from '@app/theme';
 
 const Loading: FC<{ sx?: SxProps }> = ({ sx }) => (
     <Box

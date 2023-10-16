@@ -1,7 +1,7 @@
 import { Box, FormControlLabel, Radio } from '@mui/material';
 import React, { FC, useContext } from 'react';
-import { MapActionDispatcherContext, MapStateContext } from '../../../../store/contexts';
-import { theme } from '../../../../theme';
+import { MapActionDispatcherContext, MapStateContext } from '@app/store/contexts';
+import { theme } from '@app/theme';
 
 type Props = {
     basemapId: string;

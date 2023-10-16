@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 
-import { DataActionDispatcherContext, DataStateContext } from '../store/contexts';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 
 interface Props {
     open: boolean;

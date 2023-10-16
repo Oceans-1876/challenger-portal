@@ -4,7 +4,7 @@ import Tabs, { TabsOwnProps } from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import type { SxProps } from '@mui/system';
-import { theme } from '../theme';
+import { theme } from '@app/theme';
 import { Stack } from '@mui/material';
 
 interface Props {

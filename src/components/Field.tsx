@@ -11,7 +11,7 @@ import {
     Typography
 } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import { theme } from '../theme';
+import { theme } from '@app/theme';
 
 type FieldValueDict = Record<string, string | number | undefined>;
 

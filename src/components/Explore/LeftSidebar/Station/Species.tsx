@@ -3,12 +3,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import Stack from '@mui/material/Stack';
 
-import { useDebounce } from '../../../../utils/hooks';
+import { useDebounce } from '@app/utils/hooks';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { ListChildComponentProps, VariableSizeList } from 'react-window';
-import { DataActionDispatcherContext } from '../../../../store/contexts';
+import { DataActionDispatcherContext } from '@app/store/contexts';
 import { CloseOutlined } from '@mui/icons-material';
-import { theme } from '../../../../theme';
+import { theme } from '@app/theme';
 import { getData } from '@app/store/api';
 
 const SECTION_TITLE_HEIGHT = 44;

@@ -2,12 +2,12 @@ import React, { FC, ReactNode, useContext, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 
 import { Stack, Typography } from '@mui/material';
-import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
-import { theme } from '../../../../theme';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
+import { theme } from '@app/theme';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';
-import { requestScrollIntoView } from '../../../../utils/scrollIntoView';
+import { requestScrollIntoView } from '@app/utils/scrollIntoView';
 
 const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
     return (

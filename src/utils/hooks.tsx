@@ -1,7 +1,7 @@
 import React, { DependencyList } from 'react';
 
-import { getData } from '../store/api';
-import { DataActionDispatcherContext, DataStateContext } from '../store/contexts';
+import { getData } from '@app/store/api';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 
 export const useStationDetails = (stationName?: string): StationDetails | null => {
     const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
