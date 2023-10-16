@@ -1,13 +1,14 @@
 import React, { FC, ReactNode, useContext, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 
-import { Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { theme } from '@app/theme';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';
 import { requestScrollIntoView } from '@app/utils/scrollIntoView';
+import { ArrowBackOutlined } from '@mui/icons-material';
 
 const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
     return (
@@ -56,6 +57,7 @@ const StationsList = () => {
             sx={{
                 width: 324,
                 p: '32px',
+                pb: '40px',
                 pointerEvents: 'auto',
                 background: theme.palette.explore.mainTransparent,
                 backdropFilter: 'blur(4px)'
@@ -86,7 +88,7 @@ const StationsList = () => {
                                             'color': theme.palette.explore.secondary,
                                             'opacity': isActive ? 1 : 0.3,
                                             '&:hover': {
-                                                opacity: 0.7
+                                                opacity: 1
                                             }
                                         }}
                                     >
@@ -108,7 +110,7 @@ const StationsList = () => {
                                             onClick={() => {
                                                 dataActionDispatcher({
                                                     type: 'updateSelectedFaoArea',
-                                                    faoArea: isActive ? null : group.faoArea
+                                                    faoArea: group.faoArea
                                                 });
                                             }}
                                         >
@@ -133,6 +135,7 @@ const StationsList = () => {
                             })}
                         </Stack>
                     </Box>
+
                     <Typography sx={{ my: '16px', fontSize: '12px', color: theme.palette.explore.secondaryText }}>
                         {selectedGroup.stations.length} station matches
                     </Typography>
@@ -142,6 +145,26 @@ const StationsList = () => {
                             <StationCard key={station.name} station={station} />
                         ))}
                     </Scroll>
+
+                    <Button
+                        variant="explore-text"
+                        sx={{
+                            margin: '4px',
+                            position: 'absolute',
+                            left: 0,
+                            bottom: 0,
+                            color: theme.palette.explore.secondary
+                        }}
+                        onClick={() => {
+                            dataActionDispatcher({
+                                type: 'updateSelectedFaoArea',
+                                faoArea: null
+                            });
+                        }}
+                        startIcon={<ArrowBackOutlined />}
+                    >
+                        Back
+                    </Button>
                 </Stack>
             ) : (
                 <Stack sx={{ height: '100%' }}>
