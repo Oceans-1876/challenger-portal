@@ -12,8 +12,8 @@ import TextField from '@mui/material/TextField';
 
 import { useSpeciesDetails, usePagination } from '@app/utils/hooks';
 import Loading from '@app/components/Loading';
-import SpeciesDetails from './Details';
 import { getData } from '@app/store/api';
+import SpeciesDetails from './Details';
 
 interface Props {
     species_list: SpeciesSummary[];

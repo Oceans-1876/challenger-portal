@@ -35,20 +35,20 @@ const Environment = ({ station }: Props) => {
                 title="Temperature"
                 properties={{
                     [`Surface (${tempToUnit === 'C' ? 'C' : 'F'})`]: station?.surface_temp_c
-                        ? convertUnit(
+                        ? `${convertUnit(
                               tempFromUnit as TemperatureUnits,
                               tempToUnit as TemperatureUnits,
                               station.surface_temp_c,
                               3
-                          ) + '\u00b0'
+                          )}\u00b0`
                         : '-',
                     [`Bottom Water (${tempToUnit === 'C' ? 'C' : 'F'})`]: station?.bottom_water_temp_c
-                        ? convertUnit(
+                        ? `${convertUnit(
                               tempFromUnit as TemperatureUnits,
                               tempToUnit as TemperatureUnits,
                               station.bottom_water_temp_c,
                               3
-                          ) + '\u00b0'
+                          )}\u00b0`
                         : '-'
                 }}
                 IconComponent={ThermostatOutlined}
@@ -94,24 +94,26 @@ const Environment = ({ station }: Props) => {
                             key: 'temp'
                         }
                     ],
-                    rows: Object.entries(station?.water_temp_c_at_depth_fathoms ?? {}).flatMap(([depth, temp]) =>
-                        temp
-                            ? {
-                                  depth: convertUnit(
-                                      depthFromUnit as LengthUnits,
-                                      depthToUnit as LengthUnits,
-                                      Number(depth),
-                                      1
-                                  ),
-                                  temp: convertUnit(
-                                      tempFromUnit as TemperatureUnits,
-                                      tempToUnit as TemperatureUnits,
-                                      temp,
-                                      3
-                                  )
-                              }
-                            : []
-                    )
+                    rows: Object.entries(station?.water_temp_c_at_depth_fathoms ?? {}).flatMap(([_depth, _temp]) => {
+                        if (!_temp) return [];
+                        const depth = convertUnit(
+                            depthFromUnit as LengthUnits,
+                            depthToUnit as LengthUnits,
+                            Number(_depth),
+                            1
+                        );
+                        const temp = convertUnit(
+                            tempFromUnit as TemperatureUnits,
+                            tempToUnit as TemperatureUnits,
+                            _temp,
+                            3
+                        );
+                        return {
+                            key: depth + temp,
+                            depth,
+                            temp
+                        };
+                    })
                 }}
                 IconComponent={WaterOutlined}
             />

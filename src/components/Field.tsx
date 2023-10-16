@@ -17,7 +17,10 @@ type FieldValueDict = Record<string, string | number | undefined>;
 
 type FieldValueTable = {
     columns: { key: string; label: string }[];
-    rows: Record<string, ReactNode>[];
+    rows: Array<{
+        key: string | number;
+        [k: string]: ReactNode;
+    }>;
 };
 
 const FieldProperties: FC<{ data: FieldValueDict }> = ({ data }) => {
@@ -65,8 +68,8 @@ const FieldTable: FC<{ table: FieldValueTable }> = ({ table }) => (
                 </TableRow>
             </TableHead>
             <TableBody>
-                {table.rows.map((row, i) => (
-                    <TableRow key={i} sx={{ background: '#0' }}>
+                {table.rows.map((row) => (
+                    <TableRow key={row.key} sx={{ background: '#0' }}>
                         {table.columns.map((column) => (
                             <TableCell key={column.key}>{row[column.key]}</TableCell>
                         ))}

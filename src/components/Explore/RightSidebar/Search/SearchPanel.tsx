@@ -2,9 +2,9 @@ import { Box, Button, Divider, MenuItem, Select, Stack } from '@mui/material';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { CloseOutlined } from '@mui/icons-material';
 import { theme } from '@app/theme';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import GeneralSearch from './GeneralSearch';
 import AdvancedSearch from './AdvancedSearch';
-import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 
 type SearchType = 'general' | 'advanced';
 

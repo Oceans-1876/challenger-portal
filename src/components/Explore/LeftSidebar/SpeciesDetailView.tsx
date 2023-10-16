@@ -8,6 +8,7 @@ import { DataActionDispatcherContext, DataStateContext } from '@app/store/contex
 import { useSpeciesDetails } from '@app/utils/hooks';
 
 type Classification = {
+    key: string;
     rank: string;
     name: string;
 };
@@ -21,6 +22,7 @@ function getClassificationPath(pathStr: string, ranksStr: string): Classificatio
     const path = pathStr.split('|').map((s) => s || '-');
     const ranks = ranksStr.split('|').map((s) => s || '-');
     return path.map((name, i) => ({
+        key: ranks[i] + name,
         rank: capitalize(ranks[i]),
         name: capitalize(name)
     }));
@@ -123,7 +125,11 @@ const SpeciesDetailView: FC = () => {
                                 { key: 'name', label: 'Name' }
                             ],
                             rows: speciesDetails
-                                ? speciesDetails.species_common_names.map(({ language, name }) => ({ language, name }))
+                                ? speciesDetails.species_common_names.map(({ language, name }) => ({
+                                      key: language + name,
+                                      language,
+                                      name
+                                  }))
                                 : []
                         }}
                         IconComponent={ScienceOutlined}
@@ -155,6 +161,7 @@ const SpeciesDetailView: FC = () => {
                         table={{
                             columns: [{ key: 'link', label: 'Scientific Names' }],
                             rows: speciesDetails.species_synonyms.map((sp) => ({
+                                key: sp.id,
                                 link: (
                                     <Button
                                         sx={{ p: 0 }}

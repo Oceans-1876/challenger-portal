@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import { Button, Stack, Typography } from '@mui/material';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { theme } from '@app/theme';
+import { requestScrollIntoView } from '@app/utils/scrollIntoView';
+import { ArrowBackOutlined } from '@mui/icons-material';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';
-import { requestScrollIntoView } from '@app/utils/scrollIntoView';
-import { ArrowBackOutlined } from '@mui/icons-material';
 
 const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
     return (
@@ -79,11 +79,12 @@ const StationsList = () => {
                             }
                         }}
                     >
-                        <Stack direction="row" sx={{}}>
+                        <Stack direction="row">
                             {filteredStations.map((group) => {
                                 const isActive = group === selectedGroup;
                                 return (
                                     <Box
+                                        key={group.faoArea.code}
                                         sx={{
                                             'color': theme.palette.explore.secondary,
                                             'opacity': isActive ? 1 : 0.3,

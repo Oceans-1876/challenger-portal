@@ -28,7 +28,7 @@ const Text = ({ station }: Props) => {
                 sx={{
                     'background': '#000000E5',
                     'color': '#FFDCA8',
-                    'fontWeight': 400!,
+                    'fontWeight': 400,
                     '& .MuiAlert-icon': {
                         color: '#FFDCA8',
                         alignItems: 'center'

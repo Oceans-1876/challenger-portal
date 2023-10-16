@@ -4,8 +4,8 @@ import { LocationOnOutlined } from '@mui/icons-material';
 import * as turf from '@turf/turf';
 import { DataActionDispatcherContext } from '@app/store/contexts';
 import { theme } from '@app/theme';
-import RegionIcon from './RegionIcon';
 import { formatLatitude, formatLongitude } from '@app/utils/format';
+import RegionIcon from './RegionIcon';
 
 type Props = {
     stationGroup: StationGroup;

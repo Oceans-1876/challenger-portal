@@ -6,9 +6,9 @@ import Typography from '@mui/material/Typography';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { theme } from '@app/theme';
 import { CloseOutlined } from '@mui/icons-material';
+import { useSpeciesDetails } from '@app/utils/hooks';
 import SpeciesDetailView from './SpeciesDetailView';
 import StationDetailView from './StationDetailView';
-import { useSpeciesDetails } from '@app/utils/hooks';
 
 export const DETAIL_VIEW_WIDTH = 478;
 

@@ -2,10 +2,10 @@ import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
+import { DataStateContext } from '@app/store/contexts';
 import InsetMap from './InsetMap';
 import DetailView, { DETAIL_VIEW_WIDTH } from './DetailView';
 import StationsList from './StationList';
-import { DataStateContext } from '@app/store/contexts';
 
 const MARGIN = 10;
 
