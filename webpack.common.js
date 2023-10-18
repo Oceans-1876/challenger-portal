@@ -28,16 +28,16 @@ module.exports = {
             }
             return `js/${pathData.chunk.name}-${pathData.chunk.hash}.js`;
         },
+        assetModuleFilename: 'files/[name]-[hash].[ext]',
         crossOriginLoading: 'anonymous'
     },
 
     module: {
         rules: [
             {
-                // Use babel-loader for ts, tsx, js, and jsx files
                 test: /\.[tj]sx?$/,
                 exclude: /node_modules/,
-                use: 'babel-loader'
+                use: 'ts-loader'
             },
             {
                 test: /\.(s[ac]ss|css)$/,
@@ -53,38 +53,26 @@ module.exports = {
                 ]
             },
             {
-                test: /\.svg$/,
-                loader: 'svg-inline-loader'
-            },
-            {
-                type: 'javascript/auto',
                 test: /\.(geo)?json$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: 'files/[name]-[hash].[ext]'
-                        }
-                    }
-                ]
+                type: 'asset/resource'
             },
             {
-                test: /\.(jpg|jpeg|png|eot|ttf|woff|woff2)$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: 'files/[name]-[hash].[ext]'
-                        }
-                    }
-                ]
+                test: /\.(jpg|jpeg|png|svg)$/,
+                type: 'asset'
+            },
+            {
+                test: /\.(eot|ttf|woff|woff2)$/,
+                type: 'asset/resource'
             }
         ]
     },
 
     resolve: {
         modules: ['node_modules', 'src'],
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        alias: {
+            '@app': path.resolve(__dirname, 'src/')
+        }
     },
 
     plugins: [

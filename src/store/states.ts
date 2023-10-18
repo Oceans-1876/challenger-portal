@@ -1,4 +1,4 @@
-import { getUnitPreferences } from '../utils/localStorage';
+import { getUnitPreferences } from '@app/utils/localStorage';
 
 const unitPref = getUnitPreferences();
 
@@ -15,6 +15,7 @@ export const dataStateInitialValue: DataState = {
     selectedStation: null,
     allSpeciesList: [],
     allSpeciesObject: {},
+    selectedSpecies: null,
     tempToUnit: unitPref.Temp,
     depthToUnit: unitPref.Depth
 };

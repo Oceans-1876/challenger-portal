@@ -1,5 +1,5 @@
-import { createJourneyPathFromStationPoints } from '../components/Map/utils';
-import { setUnitPreferences } from '../utils/localStorage';
+import { createJourneyPathFromStationPoints } from '@app/components/Map/utils';
+import { setUnitPreferences } from '@app/utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
@@ -69,19 +69,35 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
                 selectedFaoArea: action.station
                     ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
                     : state.selectedFaoArea,
-                selectedStation: action.station
+                selectedStation: action.station,
+                selectedSpecies: null
             };
         case 'updateStationDetails':
-            state.stationsObject[action.station.name] = action.station;
-            return state;
+            return {
+                ...state,
+                stationsObject: {
+                    ...state.stationsObject,
+                    [action.station.name]: action.station
+                }
+            };
         case 'updateAllSpecies':
             return {
                 ...state,
                 allSpeciesList: action.species
             };
         case 'updateSpeciesDetails':
-            state.allSpeciesObject[action.species.id] = action.species;
-            return state;
+            return {
+                ...state,
+                allSpeciesObject: {
+                    ...state.allSpeciesObject,
+                    [action.species.id]: action.species
+                }
+            };
+        case 'updateSelectedSpecies':
+            return {
+                ...state,
+                selectedSpecies: action.species
+            };
         case 'updateTempToUnit':
             setUnitPreferences({
                 Temp: action.unit,

@@ -1,12 +1,12 @@
 import React, { useReducer, useRef } from 'react';
 
 import { Box, Stack } from '@mui/material';
+import { MapActionDispatcherContext, MapContext, MapStateContext } from '@app/store/contexts';
+import { mapReducers } from '@app/store/reducers';
 import Map from './Map';
 import RightSidebar from './RightSidebar';
 import LeftSidebar from './LeftSidebar';
 import Navbar from './Navbar';
-import { MapActionDispatcherContext, MapContext, MapStateContext } from '../../store/contexts';
-import { mapReducers } from '../../store/reducers';
 
 const Explore = (): JSX.Element => {
     const [mapState, mapStateDispatcher] = useReducer(mapReducers, { activeBasemap: '' });

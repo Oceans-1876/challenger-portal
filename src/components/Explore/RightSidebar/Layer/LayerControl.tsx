@@ -1,13 +1,13 @@
 import { Box, Button, Divider, Grid, Slider, Stack, Typography } from '@mui/material';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { CloseOutlined, Opacity } from '@mui/icons-material';
-import { theme } from '../../../../theme';
+import { theme } from '@app/theme';
+import mapPreviewSimple from '@app/images/layer_simple.png';
+import mapPreviewSatellite from '@app/images/layer_satellite.png';
+import mapPreviewMonochrome from '@app/images/layer_monochrome.png';
+import { MapContext } from '@app/store/contexts';
+import { runWhenReady } from '@app/components/Map/utils';
 import BasemapOption from './BasemapOption';
-import mapPreviewSimple from '../../../../images/layer_simple.png';
-import mapPreviewSatellite from '../../../../images/layer_satellite.png';
-import mapPreviewMonochrome from '../../../../images/layer_monochrome.png';
-import { MapContext } from '../../../../store/contexts';
-import { runWhenReady } from '../../../Map/utils';
 
 type Props = {
     onClose: () => void;

@@ -83,7 +83,7 @@ export const themeOptions = {
                         'backgroundColor': '#90fff3',
                         'color': '#243c59f2',
                         '&:active, &:hover': {
-                            backgroundColor: '#90fff3'
+                            backgroundColor: '#90fff3' // we need a design for this color
                         },
                         'height': '36px',
                         'borderRadius': '18px'
@@ -96,7 +96,10 @@ export const themeOptions = {
                             backgroundColor: 'transparent !important'
                         },
                         'textTransform': 'none',
-                        'color': '#90fff3'
+                        'color': '#90fff3',
+                        '&:active, &:hover': {
+                            color: '#90fff399'
+                        }
                     }
                 },
                 {
@@ -120,14 +123,55 @@ export const themeOptions = {
                         'backgroundColor': palette.explore.secondary,
                         'color': palette.explore.mainTransparent,
                         '&:active, &:hover': {
-                            backgroundColor: palette.explore.secondary,
+                            backgroundColor: '#90fff3aa', // we need a design for this color
                             color: palette.explore.mainTransparent
                         },
                         'height': '30px',
                         'borderRadius': '15px'
                     }
+                },
+                {
+                    props: { size: 'large' },
+                    style: {
+                        height: 42,
+                        borderRadius: '21px'
+                    }
                 }
             ]
+        },
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    input: {
+                        color: 'white'
+                    },
+                    label: {
+                        'color': '#FFFFFF99',
+                        '&.Mui-focused': {
+                            color: palette.explore.secondary
+                        }
+                    }
+                }
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: palette.explore.unselectedSecondary
+                    },
+                    '&:hover': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    },
+                    '&.Mui-focused': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    }
+                }
+            }
         },
         MuiAutocomplete: {
             styleOverrides: {

@@ -9,12 +9,12 @@ import {
     MapStateContext,
     MapContext,
     MapActionDispatcherContext
-} from '../../store/contexts';
-import { layerStyles, mapStyle } from '../Map/styles';
-import { getFeatureBounds, loadStationIcons, runWhenReady } from '../Map/utils';
-import Map from '../Map';
+} from '@app/store/contexts';
+import { layerStyles, mapStyle } from '@app/components/Map/styles';
+import { getFeatureBounds, loadStationIcons, runWhenReady } from '@app/components/Map/utils';
+import Map from '@app/components/Map';
 
-import faoAreasUrl from '../../files/fao_areas.geojson';
+import faoAreasUrl from '@app/files/fao_areas.geojson';
 import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
 
 const MAX_ZOOM = 6;

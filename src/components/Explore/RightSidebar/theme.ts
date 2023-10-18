@@ -1,5 +1,5 @@
 import { SxProps } from '@mui/material';
-import { theme } from '../../../theme';
+import { theme } from '@app/theme';
 
 export const chipStyleOverride: SxProps = {
     ml: '8px',

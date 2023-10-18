@@ -11,9 +11,7 @@ import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-// import UnitPreferencesDialog from '../UnitPreferencesDialog';
-
-import { theme } from '../../theme';
+import { theme } from '@app/theme';
 
 export const headerHeight = 64;
 
@@ -132,9 +130,6 @@ const Navbar: FC = () => {
                             {item.title}
                         </Button>
                     ))}
-                    {/* <Button variant="text" size="small" onClick={openPreferencesDialog} sx={{ color: 'white' }}>
-                            Preferences
-                        </Button> */}
                 </Box>
                 <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                     <IconButton onClick={handleMobileMenuOpen}>

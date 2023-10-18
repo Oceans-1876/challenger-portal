@@ -48,6 +48,11 @@ interface UpdateSpeciesDetails {
     species: SpeciesDetails;
 }
 
+interface UpdateSelectedSpecies {
+    type: 'updateSelectedSpecies';
+    species: SpeciesSummary | null;
+}
+
 interface UpdateTempToUnit {
     type: 'updateTempToUnit';
     unit: string;
@@ -74,6 +79,7 @@ type DataAction =
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
+    | UpdateSelectedSpecies
     | loadFAOAreas
     | CacheFAOAreaIcons;
 

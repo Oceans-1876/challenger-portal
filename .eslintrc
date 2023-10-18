@@ -34,6 +34,15 @@
           ".ts",
           ".tsx"
         ]
+      },
+      "alias": {
+        "map": [
+          ["@app", "./src"]
+        ],
+        "extensions": [
+          ".ts",
+          ".tsx"
+        ]
       }
     }
   },
@@ -102,6 +111,12 @@
       "error",
       {
         "props": false
+      }
+    ],
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
       }
     ],
     "no-underscore-dangle": "off",

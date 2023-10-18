@@ -2,9 +2,9 @@ import React, { FC, useContext, useEffect, useRef } from 'react';
 import maplibre, { LngLatBounds } from 'maplibre-gl';
 import { Box } from '@mui/material';
 import * as turf from '@turf/turf';
-import { IS_WEBGL_SUPPORTED } from '../../../Map/utils';
-import { theme } from '../../../../theme';
-import { DataActionDispatcherContext, DataStateContext } from '../../../../store/contexts';
+import { IS_WEBGL_SUPPORTED } from '@app/components/Map/utils';
+import { theme } from '@app/theme';
+import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 
 type Props = {
     faoArea: FAOArea;

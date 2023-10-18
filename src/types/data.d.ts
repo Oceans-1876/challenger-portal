@@ -112,6 +112,7 @@ declare global {
         selectedStation: StationSummary | null; // station name
         allSpeciesList: SpeciesSummary[];
         allSpeciesObject: { [matched_canonical_full_name: string]: SpeciesDetails };
+        selectedSpecies: SpeciesSummary | null;
         tempToUnit: string;
         depthToUnit: string;
     }

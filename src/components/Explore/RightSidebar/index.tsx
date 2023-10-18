@@ -2,7 +2,7 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { FC, useCallback, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, LayersOutlined } from '@mui/icons-material';
-import { theme } from '../../../theme';
+import { theme } from '@app/theme';
 import SearchPanel from './Search/SearchPanel';
 import LayerControl from './Layer/LayerControl';
 

@@ -2,10 +2,10 @@ import { Box, Button, Card, Divider, Stack, Typography } from '@mui/material';
 import React, { FC, useContext } from 'react';
 import { LocationOnOutlined } from '@mui/icons-material';
 import * as turf from '@turf/turf';
-import { DataActionDispatcherContext } from '../../../../store/contexts';
-import { theme } from '../../../../theme';
+import { DataActionDispatcherContext } from '@app/store/contexts';
+import { theme } from '@app/theme';
+import { formatLatitude, formatLongitude } from '@app/utils/format';
 import RegionIcon from './RegionIcon';
-import { formatLatitude, formatLongitude } from '../../../../utils/format';
 
 type Props = {
     stationGroup: StationGroup;
