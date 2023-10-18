@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Autocomplete, Box, Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Chip, Collapse, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { theme } from '@app/theme';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { useDebounce } from '@app/utils/hooks';
@@ -35,6 +35,7 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
     const speciesDefaultRanks = useMemo(() => new Map(allSpeciesList.map((s, rank) => [s.id, rank])), [allSpeciesList]);
 
+    const [showAlert, setShowAlert] = useState<boolean>(false);
     const [speciesFilter, setSpeciesFilter] = useState<SpeciesSummary[]>([]);
     const [speciesFilterInput, setSpeciesFilterInput] = useState('');
     const [speciesFilterOptionRanks, setSpeciesFilterOptionRanks] = useState<Map<string, number>>(speciesDefaultRanks);
@@ -109,11 +110,15 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
         searchStations(searchExpr, (stations) => {
             clearTimeout(timerRef.current);
             setLoading(false);
-            dataActionDispatcher({
-                type: 'updateFilteredStations',
-                stations
-            });
-            onClose();
+            if (stations.length === 0) {
+                setShowAlert(true);
+            } else {
+                dataActionDispatcher({
+                    type: 'updateFilteredStations',
+                    stations
+                });
+                onClose();
+            }
         });
     }, [searchType, speciesFilter, stationFilter, faoAreaFilter, onClose]);
 
@@ -158,7 +163,10 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
                         options={allSpeciesList}
                         filterOptions={(options) =>
                             options
-                                .filter((option) => speciesFilterOptionRanks.has(option.id))
+                                .filter((option) => {
+                                    // console.log(option)
+                                    return speciesFilterOptionRanks.has(option.id)
+                                })
                                 .sort((a, b) => {
                                     return (
                                         (speciesFilterOptionRanks.get(a.id) ?? 0) -
@@ -262,7 +270,15 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
                     />
                 )}
             </Box>
-
+            <Collapse in={showAlert}>
+                <Alert
+                    severity="info"
+                    onClose={() => setShowAlert(false)}
+                  sx={{ mt: 4 }}
+                >
+                  No stations found matching the search criteria.
+                </Alert>
+            </Collapse>
             <Stack
                 direction="row"
                 sx={{
