@@ -276,14 +276,10 @@ const AdvancedSearch: FC<Props> = ({ toggle, onClose }) => {
                     onChange={setEndDate}
                 />
             </Stack>
-            
+
             <Collapse in={showAlert}>
-                <Alert
-                    severity="info"
-                    onClose={() => setShowAlert(false)}
-                  sx={{ mt: 4 }}
-                >
-                  No stations found matching the search criteria.
+                <Alert severity="info" onClose={() => setShowAlert(false)} sx={{ mt: 4 }}>
+                    No stations found matching the search criteria.
                 </Alert>
             </Collapse>
 

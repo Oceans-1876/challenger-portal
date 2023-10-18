@@ -1,5 +1,17 @@
 import React, { FC, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Autocomplete, Box, Button, Chip, Collapse, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
+import {
+    Alert,
+    Autocomplete,
+    Box,
+    Button,
+    Chip,
+    Collapse,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+    Stack,
+    TextField
+} from '@mui/material';
 import { theme } from '@app/theme';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { useDebounce } from '@app/utils/hooks';
@@ -165,7 +177,7 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
                             options
                                 .filter((option) => {
                                     // console.log(option)
-                                    return speciesFilterOptionRanks.has(option.id)
+                                    return speciesFilterOptionRanks.has(option.id);
                                 })
                                 .sort((a, b) => {
                                     return (
@@ -272,15 +284,11 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
             </Box>
 
             <Collapse in={showAlert}>
-                <Alert
-                    severity="info"
-                    onClose={() => setShowAlert(false)}
-                  sx={{ mt: 4 }}
-                >
-                  No stations found matching the search criteria.
+                <Alert severity="info" onClose={() => setShowAlert(false)} sx={{ mt: 4 }}>
+                    No stations found matching the search criteria.
                 </Alert>
             </Collapse>
-            
+
             <Stack
                 direction="row"
                 sx={{
