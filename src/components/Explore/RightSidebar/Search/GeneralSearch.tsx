@@ -270,6 +270,7 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
                     />
                 )}
             </Box>
+
             <Collapse in={showAlert}>
                 <Alert
                     severity="info"
@@ -279,6 +280,7 @@ const GeneralSearch: FC<Props> = ({ toggle, onClose }) => {
                   No stations found matching the search criteria.
                 </Alert>
             </Collapse>
+            
             <Stack
                 direction="row"
                 sx={{
