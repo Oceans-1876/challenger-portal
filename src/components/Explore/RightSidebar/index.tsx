@@ -1,7 +1,11 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React, { FC, useCallback, useState } from 'react';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { KeyboardDoubleArrowLeftOutlined, KeyboardDoubleArrowRightOutlined, LayersOutlined } from '@mui/icons-material';
+import {
+    KeyboardDoubleArrowLeftOutlined,
+    KeyboardDoubleArrowRightOutlined,
+    LayersOutlined,
+    SearchOutlined
+} from '@mui/icons-material';
 import { theme } from '@app/theme';
 import SearchPanel from './Search/SearchPanel';
 import LayerControl from './Layer/LayerControl';
@@ -48,7 +52,7 @@ const RightSidebar: FC = () => {
                         textTransform: 'none'
                     }}
                 >
-                    <FilterListIcon />
+                    <SearchOutlined />
                     {expanded ? <Typography ml="12px">Filter</Typography> : null}
                 </Button>
                 <Button
