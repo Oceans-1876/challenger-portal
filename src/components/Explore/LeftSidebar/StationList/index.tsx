@@ -200,7 +200,7 @@ const StationsList = () => {
                             }}
                             startIcon={<CloseOutlined />}
                         >
-                            Clear
+                            Clear Filter
                         </Button>
                     ) : null}
                 </Stack>
