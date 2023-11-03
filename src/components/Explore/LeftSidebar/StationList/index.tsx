@@ -1,11 +1,11 @@
-import React, { FC, ReactNode, useContext, useEffect, useRef } from 'react';
+import React, { FC, ReactNode, useContext, useEffect, useMemo, useRef } from 'react';
 import Box from '@mui/material/Box';
 
 import { Button, Stack, Typography } from '@mui/material';
 import { DataActionDispatcherContext, DataStateContext } from '@app/store/contexts';
 import { theme } from '@app/theme';
 import { requestScrollIntoView } from '@app/utils/scrollIntoView';
-import { ArrowBackOutlined } from '@mui/icons-material';
+import { ArrowBackOutlined, CloseOutlined } from '@mui/icons-material';
 import RegionCard from './RegionCard';
 import RegionIcon from './RegionIcon';
 import StationCard from './StationCard';
@@ -32,7 +32,12 @@ const Scroll: FC<{ children: ReactNode }> = ({ children }) => {
 
 const StationsList = () => {
     const dataActionDispatcher = useContext(DataActionDispatcherContext);
-    const { filteredStations, selectedFaoArea } = useContext(DataStateContext);
+    const { filteredStations, selectedFaoArea, allStationsList } = useContext(DataStateContext);
+
+    const filteredStationCount = useMemo(
+        () => filteredStations.reduce((cnt, group) => cnt + group.stations.length, 0),
+        [filteredStations]
+    );
 
     const selectedGroup = filteredStations.find((g) => g.faoArea.code === selectedFaoArea?.code) ?? null;
 
@@ -177,6 +182,27 @@ const StationsList = () => {
                             <RegionCard key={group.faoArea.code} stationGroup={group} />
                         ))}
                     </Scroll>
+                    {filteredStationCount < allStationsList.length ? (
+                        <Button
+                            variant="explore-text"
+                            sx={{
+                                margin: '4px',
+                                position: 'absolute',
+                                left: 0,
+                                bottom: 0,
+                                color: theme.palette.explore.secondary
+                            }}
+                            onClick={() => {
+                                dataActionDispatcher({
+                                    type: 'updateFilteredStations',
+                                    stations: allStationsList
+                                });
+                            }}
+                            startIcon={<CloseOutlined />}
+                        >
+                            Clear
+                        </Button>
+                    ) : null}
                 </Stack>
             )}
         </Box>
