@@ -2,6 +2,7 @@
 
 ## [1.0.0]
 
+- Chris Navarro (@navarroc)
 - Rashmil Panchani (@Rashmil-1999)
 - Wenqi He (@GalMunGral)
 
