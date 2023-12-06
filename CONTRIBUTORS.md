@@ -1,14 +1,7 @@
 # Contributors
 
-## [1.0.0]
-
-- Chris Navarro (@navarroc)
-- Rashmil Panchani (@Rashmil-1999)
-- Wenqi He (@GalMunGral)
-
-## [0.1.0]
-
-- Chris Navarro (@navarroc)
-- Dhruv Mehta (@dhruvmehtadm)
-- Kaveh Karimi-Asli (@ka7eh)
-- Rashmil Panchani (@Rashmil-1999)
+- Chris Navarro
+- Dhruv Mehta
+- Kaveh Karimi-Asli
+- Rashmil Panchani
+- Wenqi He
