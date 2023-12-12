@@ -1,13 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import { Dayjs } from 'dayjs';
 
-export const getData = <T>(endpoint: string, success: (data: T) => void, err: (error: Error | AxiosError) => void) => {
-    axios
+export const getData = <T>(endpoint: string, success: (data: T) => void, err?: (error: Error | AxiosError) => void) => {
+    return axios
         .get(`${window.API_PATH}/${endpoint}`)
         .then(({ data }) => success(data))
         .catch((error) => {
-            console.error();
-            err(error);
+            console.error(error);
+            err?.(error);
         });
 };
 
@@ -17,16 +17,33 @@ export const searchStations = (
 ) => {
     const expressions: Array<SearchExpression | SearchExpressionGroup> = [];
 
-    const addExpression = (column_name: string, operator: string, values: (Dayjs | string | null)[]) => {
+    const addExpression = (column_name: string, operator: string, values: (Dayjs | string | number | null)[]) => {
         if (column_name === 'date') {
-            if (values[0]) {
+            if (values[0] && values[1]) {
+                // start_date and end_date expressions should be combined with AND,
+                // `date >= start_state OR date <= end_state` doesn't make any sense, because it's always true.
+                expressions.push({
+                    join: 'AND',
+                    expressions: [
+                        {
+                            column_name,
+                            search_term: values[0],
+                            operator: 'ge'
+                        },
+                        {
+                            column_name,
+                            search_term: values[1],
+                            operator: 'le'
+                        }
+                    ]
+                } as SearchExpressionGroup);
+            } else if (values[0]) {
                 expressions.push({
                     column_name,
                     search_term: values[0],
                     operator: 'ge'
                 } as SearchExpression);
-            }
-            if (values[1]) {
+            } else if (values[1]) {
                 expressions.push({
                     column_name,
                     search_term: values[1],
@@ -42,7 +59,7 @@ export const searchStations = (
                             column_name,
                             search_term: value,
                             operator
-                        } as SearchExpression)
+                        }) as SearchExpression
                 )
             });
         } else if (values.length === 1) {
@@ -61,14 +78,17 @@ export const searchStations = (
         const data =
             expressions.length > 1
                 ? {
-                      join: 'AND',
+                      join: searchExpressions.join ?? 'AND',
                       expressions
                   }
                 : expressions[0];
 
         axios
-            .post(`${window.API_PATH}/stations/search/`, data)
+            .post(`${window.API_PATH}/stations/search/?order_by=order`, data)
             .then((resp) => success(resp.data))
             .catch(console.error);
+    } else {
+        // TODO: handle empty filter list on backend
+        getData<StationSummary[]>('stations/all/?order_by=order', success, () => undefined);
     }
 };

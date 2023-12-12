@@ -6,14 +6,17 @@ interface SearchExpression {
     min_string_similarity?: number;
 }
 
+type BooleanOperator = 'AND' | 'OR';
+
 interface SearchExpressionGroup {
-    join: 'AND' | 'OR';
+    join: BooleanOperator;
     expressions: Array<SearchExpression | SearchExpressionGroup>;
 }
 
 interface StationSearchExpressions {
+    join?: BooleanOperator;
     stationNames: string[];
-    faoAreas: string[];
+    faoAreas: number[];
     species: string[];
     dates: (import('dayjs').Dayjs | null)[];
 }

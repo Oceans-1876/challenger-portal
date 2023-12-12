@@ -1,39 +1,102 @@
-import { createJourneyPathFromStationPoints, getFeatureBounds } from '../components/Map/utils';
-import { setUnitPreferences } from '../utils/localStorage';
+import { createJourneyPathFromStationPoints } from '@app/components/Map/utils';
+import { setUnitPreferences } from '@app/utils/localStorage';
 
 export const dataReducers = (state: DataState, action: DataAction): DataState => {
     switch (action.type) {
-        case 'updateStations': {
+        case 'loadFAOAreas':
+            return {
+                ...state,
+                faoAreas: action.faoAreas
+            };
+        case 'cacheFAOAreaIcons': {
+            return {
+                ...state,
+                faoAreaIcons: {
+                    ...state.faoAreaIcons,
+                    [action.faoArea]: action.base64Encoded
+                }
+            };
+        }
+        case 'loadStations': {
             const journeyPath = createJourneyPathFromStationPoints(
                 action.stations.map((station) => station.coordinates)
             ); // Expects stations to be sorted by date
             return {
                 ...state,
                 journeyPath,
-                stationsBounds: getFeatureBounds(journeyPath),
-                stationsList: action.stations
+                allStationsList: action.stations,
+                filteredStations: groupStationsByFaoArea(action.stations, state.faoAreas)
+            };
+        }
+        case 'updateFilteredStations': {
+            const stationGroups = groupStationsByFaoArea(action.stations, state.faoAreas);
+            return {
+                ...state,
+                filteredStations: stationGroups,
+                selectedFaoArea: null,
+                focusedStation: null,
+                selectedStation: null
+            };
+        }
+        case 'updateSelectedFaoArea': {
+            return {
+                ...state,
+                selectedFaoArea: action.faoArea,
+                focusedStation: null,
+                selectedStation: null
+            };
+        }
+        case 'updateFocusedStation': {
+            return {
+                ...state,
+                /**
+                 * Update selected FAO area when a station is selected,
+                 * but don't unset FAO area when the station is deselected
+                 */
+                selectedFaoArea: action.station
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
+                    : state.selectedFaoArea,
+                focusedStation: action.station
             };
         }
         case 'updateSelectedStation':
             return {
                 ...state,
-                selectedStation: action.station
+                /**
+                 * Update selected FAO area when a station is selected,
+                 * but don't unset FAO area when the station is deselected
+                 */
+                selectedFaoArea: action.station
+                    ? state.faoAreas.find((area) => area.code === action.station?.fao_area) ?? null
+                    : state.selectedFaoArea,
+                selectedStation: action.station,
+                selectedSpecies: null
             };
         case 'updateStationDetails':
-            state.stationsObject[action.station.name] = action.station;
-            return state;
+            return {
+                ...state,
+                stationsObject: {
+                    ...state.stationsObject,
+                    [action.station.name]: action.station
+                }
+            };
         case 'updateAllSpecies':
             return {
                 ...state,
                 allSpeciesList: action.species
             };
         case 'updateSpeciesDetails':
-            state.allSpeciesObject[action.species.id] = action.species;
-            return state;
-        case 'updateFAOAreas':
             return {
                 ...state,
-                faoAreas: action.faoAreas
+                allSpeciesObject: {
+                    ...state.allSpeciesObject,
+                    [action.species.id]: action.species
+                }
+            };
+        case 'updateSelectedSpecies':
+            return {
+                ...state,
+                selectedSpecies: action.species
             };
         case 'updateTempToUnit':
             setUnitPreferences({
@@ -57,43 +120,32 @@ export const dataReducers = (state: DataState, action: DataAction): DataState =>
     throw Error(`Received invalid action: ${action}`);
 };
 
-export const filterReducers = (state: FilterState, action: FilterAction): FilterState => {
+export const mapReducers = (state: MapState, action: MapAction): MapState => {
     switch (action.type) {
-        case 'updateFilterCount':
+        case 'updateBaseMap':
             return {
                 ...state,
-                filterCount: action.count
-            };
-        case 'updateFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: action.species
-            };
-        case 'addToFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: Array.from(new Set([...state.filteredSpecies, ...action.species]))
-            };
-        case 'removeFromFilteredSpecies':
-            return {
-                ...state,
-                filteredSpecies: state.filteredSpecies.filter((speciesId) => !action.species.includes(speciesId))
-            };
-        case 'updateFilteredStations':
-            return {
-                ...state,
-                filteredStations: action.stations
-            };
-        case 'updateFilteredFAOAreas':
-            return {
-                ...state,
-                filteredFAOAreas: action.faoAreas
-            };
-        case 'updateFilterDates':
-            return {
-                ...state,
-                filterDates: action.dates
+                activeBasemap: action.id
             };
     }
     throw Error(`Received invalid action: ${action}`);
 };
+
+function groupStationsByFaoArea(stations: StationSummary[] | null, allFaoAreas: FAOArea[]): StationGroup[] {
+    const groups: {
+        [faoAreaCode: string]: {
+            faoArea: FAOArea;
+            stations: StationSummary[];
+        };
+    } = {};
+    stations?.forEach((station) => {
+        if (!groups[station.fao_area]) {
+            groups[station.fao_area] = {
+                faoArea: allFaoAreas.find((area) => area.code === station.fao_area) ?? allFaoAreas[0],
+                stations: []
+            };
+        }
+        groups[station.fao_area].stations.push(station);
+    });
+    return Object.values(groups);
+}

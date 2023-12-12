@@ -30,6 +30,16 @@
           "node_modules"
         ],
         "extensions": [
+          ".js",
+          ".ts",
+          ".tsx"
+        ]
+      },
+      "alias": {
+        "map": [
+          ["@app", "./src"]
+        ],
+        "extensions": [
           ".ts",
           ".tsx"
         ]
@@ -96,10 +106,17 @@
         "ignoreEOLComments": true
       }
     ],
+    "no-nested-ternary": "off",
     "no-param-reassign": [
       "error",
       {
         "props": false
+      }
+    ],
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
       }
     ],
     "no-underscore-dangle": "off",

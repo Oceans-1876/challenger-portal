@@ -1,4 +1,63 @@
-import { createTheme } from '@mui/material/styles';
+import { PaletteOptions, ThemeOptions, createTheme } from '@mui/material/styles';
+
+declare module '@mui/material/styles' {
+    type ExplorePaletteKey =
+        | 'main'
+        | 'mainTransparent'
+        | 'mainDark'
+        | 'selected'
+        | 'unselectedSecondary'
+        | 'selectedSecondary'
+        | 'secondary'
+        | 'highlight'
+        | 'divider'
+        | 'mainText'
+        | 'secondaryText';
+    interface Palette {
+        explore: Record<ExplorePaletteKey, string>;
+    }
+    /* eslint no-shadow: "off" */
+    interface PaletteOptions {
+        explore: Record<ExplorePaletteKey, string>;
+    }
+}
+
+declare module '@mui/material/Button' {
+    interface ButtonPropsVariantOverrides {
+        'explore-text': true;
+        'explore-contained': true;
+        'explore-card': true;
+        'explore-card-focus': true;
+    }
+}
+
+const palette: PaletteOptions = {
+    primary: {
+        dark: '#002e2c',
+        main: '#024654',
+        light: '#035e7b',
+        contrastText: '#fff'
+    },
+    secondary: {
+        dark: '#e3e7af',
+        main: '#a2a77f',
+        light: '#eff1c5',
+        contrastText: '#fff'
+    },
+    explore: {
+        main: '#1d3346',
+        mainTransparent: '#1d3346bf',
+        mainDark: '#040F20E5',
+        selected: '#243c59f2',
+        selectedSecondary: '#89f3e94d',
+        unselectedSecondary: '#8af8ed4d',
+        secondary: '#90fff3',
+        highlight: '#ffff00',
+        divider: '#90fff380',
+        mainText: '#ffffff',
+        secondaryText: '#ffffff99'
+    }
+};
 
 export const themeOptions = {
     breakpoints: {
@@ -10,24 +69,161 @@ export const themeOptions = {
             xl: 1536
         }
     },
-    palette: {
-        primary: {
-            dark: '#002e2c',
-            main: '#024654',
-            light: '#035e7b',
-            contrastText: '#fff'
-        },
-        secondary: {
-            dark: '#e3e7af',
-            main: '#a2a77f',
-            light: '#eff1c5',
-            contrastText: '#fff'
-        }
-    },
+    palette,
     typography: {
         fontFamily: ['Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'].join(',')
+    },
+    components: {
+        MuiButton: {
+            variants: [
+                {
+                    props: { variant: 'explore-contained' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': '#90fff3',
+                        'color': '#243c59f2',
+                        '&:active, &:hover': {
+                            backgroundColor: '#90fff3' // we need a design for this color
+                        },
+                        'height': '36px',
+                        'borderRadius': '18px'
+                    }
+                },
+                {
+                    props: { variant: 'explore-text' },
+                    style: {
+                        '&.MuiButton-root:hover': {
+                            backgroundColor: 'transparent !important'
+                        },
+                        'textTransform': 'none',
+                        'color': '#90fff3',
+                        '&:active, &:hover': {
+                            color: '#90fff399'
+                        }
+                    }
+                },
+                {
+                    props: { variant: 'explore-card' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.divider,
+                        'color': 'white',
+                        '&:active, &:hover': {
+                            backgroundColor: palette.explore.secondary,
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
+                    }
+                },
+                {
+                    props: { variant: 'explore-card-focus' },
+                    style: {
+                        'textTransform': 'none',
+                        'backgroundColor': palette.explore.secondary,
+                        'color': palette.explore.mainTransparent,
+                        '&:active, &:hover': {
+                            backgroundColor: '#90fff3aa', // we need a design for this color
+                            color: palette.explore.mainTransparent
+                        },
+                        'height': '30px',
+                        'borderRadius': '15px'
+                    }
+                },
+                {
+                    props: { size: 'large' },
+                    style: {
+                        height: 42,
+                        borderRadius: '21px'
+                    }
+                }
+            ]
+        },
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    input: {
+                        color: 'white'
+                    },
+                    label: {
+                        'color': '#FFFFFF99',
+                        '&.Mui-focused': {
+                            color: palette.explore.secondary
+                        }
+                    }
+                }
+            }
+        },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                root: {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: palette.explore.unselectedSecondary
+                    },
+                    '&:hover': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    },
+                    '&.Mui-focused': {
+                        '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: palette.explore.secondary
+                        }
+                    }
+                }
+            }
+        },
+        MuiAutocomplete: {
+            styleOverrides: {
+                listbox: {
+                    'color': 'white',
+                    'background': '#1d3346',
+                    '.MuiAutocomplete-option': {
+                        '&.Mui-focused': {
+                            backgroundColor: palette.explore.selectedSecondary
+                        },
+                        '&[aria-selected="true"]': {
+                            backgroundColor: palette.explore.selectedSecondary
+                        },
+                        '&.Mui-focused[aria-selected="true"]': {
+                            backgroundColor: palette.explore.selectedSecondary
+                        }
+                    }
+                }
+            }
+        },
+        MuiSlider: {
+            styleOverrides: {
+                root: {
+                    color: palette.explore.secondary
+                }
+            }
+        },
+        MuiFormControlLabel: {
+            styleOverrides: {
+                root: {
+                    '.MuiTypography-root': {
+                        color: palette.explore.secondaryText,
+                        fontFamily: 'Roboto',
+                        fontSize: 14,
+                        fontWeight: 500,
+                        textTransform: 'capitalize'
+                    }
+                }
+            }
+        },
+        MuiRadio: {
+            styleOverrides: {
+                root: {
+                    'color': palette.explore.secondary,
+                    '&.Mui-checked': {
+                        color: palette.explore.secondary
+                    }
+                }
+            }
+        }
     }
-};
+} as ThemeOptions;
 
 export const theme = createTheme(themeOptions);
 

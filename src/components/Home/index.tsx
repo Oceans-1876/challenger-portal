@@ -143,9 +143,6 @@ const Home = (): JSX.Element => (
                 >
                     Explore Voyage
                 </Typography>
-                <Typography sx={{ color: '#eee', textDecorationLine: 'none', p: 1 }} component="a" variant="subtitle1">
-                    Analysis
-                </Typography>
                 <Typography
                     sx={{ color: '#90FFF3', textDecorationLine: 'none', p: 1 }}
                     component="a"

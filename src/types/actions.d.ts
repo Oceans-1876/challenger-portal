@@ -1,8 +1,33 @@
-interface UpdateStations {
-    type: 'updateStations';
+interface loadFAOAreas {
+    type: 'loadFAOAreas';
+    faoAreas: FAOArea[];
+}
+
+interface CacheFAOAreaIcons {
+    type: 'cacheFAOAreaIcons';
+    faoArea: number; // code
+    base64Encoded: string; // rendered icon
+}
+
+interface LoadStations {
+    type: 'loadStations';
     stations: StationSummary[];
 }
 
+interface UpdateFilteredStations {
+    type: 'updateFilteredStations';
+    stations: StationSummary[] | null;
+}
+
+interface UpdateSelectedFaoArea {
+    type: 'updateSelectedFaoArea';
+    faoArea: FAOArea | null;
+}
+
+interface UpdateFocusedStation {
+    type: 'updateFocusedStation';
+    station: StationSummary | null;
+}
 interface UpdateSelectedStation {
     type: 'updateSelectedStation';
     station: StationSummary | null;
@@ -23,44 +48,9 @@ interface UpdateSpeciesDetails {
     species: SpeciesDetails;
 }
 
-interface UpdateFAOAreas {
-    type: 'updateFAOAreas';
-    faoAreas: FAOArea[];
-}
-
-interface UpdateFilterCount {
-    type: 'updateFilterCount';
-    count: number | null;
-}
-
-interface UpdateFilteredSpecies {
-    type: 'updateFilteredSpecies';
-    species: string[];
-}
-
-interface AddToFilteredSpecies {
-    type: 'addToFilteredSpecies';
-    species: string[];
-}
-
-interface RemoveFromFilteredSpecies {
-    type: 'removeFromFilteredSpecies';
-    species: string[];
-}
-
-interface UpdateFilteredStations {
-    type: 'updateFilteredStations';
-    stations: string[];
-}
-
-interface UpdateFilteredFAOAreas {
-    type: 'updateFilteredFAOAreas';
-    faoAreas: string[];
-}
-
-interface UpdateFilterDates {
-    type: 'updateFilterDates';
-    dates: (import('dayjs').Dayjs | null)[];
+interface UpdateSelectedSpecies {
+    type: 'updateSelectedSpecies';
+    species: SpeciesSummary | null;
 }
 
 interface UpdateTempToUnit {
@@ -73,21 +63,24 @@ interface UpdateDepthToUnit {
     unit: string;
 }
 
+interface UpdateBasemap {
+    type: 'updateBaseMap';
+    id: string;
+}
+
 type DataAction =
     | UpdateTempToUnit
     | UpdateDepthToUnit
-    | UpdateStations
+    | LoadStations
+    | UpdateFilteredStations
+    | UpdateSelectedFaoArea
+    | UpdateFocusedStation
     | UpdateSelectedStation
     | UpdateStationDetails
     | UpdateAllSpecies
     | UpdateSpeciesDetails
-    | UpdateFAOAreas;
+    | UpdateSelectedSpecies
+    | loadFAOAreas
+    | CacheFAOAreaIcons;
 
-type FilterAction =
-    | UpdateFilterCount
-    | UpdateFilteredSpecies
-    | AddToFilteredSpecies
-    | RemoveFromFilteredSpecies
-    | UpdateFilteredStations
-    | UpdateFilteredFAOAreas
-    | UpdateFilterDates;
+type MapAction = UpdateBasemap;

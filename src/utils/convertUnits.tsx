@@ -1,4 +1,3 @@
-import React from 'react';
 import configureMeasurements, {
     temperature,
     TemperatureSystems,
@@ -8,7 +7,7 @@ import configureMeasurements, {
     LengthUnits
 } from 'convert-units';
 
-import { decimalFormat } from '../utils/format';
+import { decimalFormat } from './format';
 
 // Measures: The names of the measures being used
 type Measures = 'length' | 'temperature';
@@ -22,17 +21,9 @@ const convert = configureMeasurements<Measures, Systems, Units>({
     temperature
 });
 
-interface Props {
-    from: Units;
-    to: Units; // eslint-disable-line @typescript-eslint/no-explicit-any
-    value: number;
-    precision: number;
-}
-
-const RenderUnit = ({ from, to, value, precision }: Props) => {
+const convertUnit = (from: Units, to: Units, value: number, precision: number): string => {
     const new_value: number = convert(value).from(from).to(to);
-
-    return <>{decimalFormat(new_value, precision)}</>;
+    return decimalFormat(new_value, precision);
 };
 
-export default RenderUnit;
+export default convertUnit;

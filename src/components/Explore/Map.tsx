@@ -1,36 +1,67 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import type { Point } from 'geojson';
 
-import { searchStations } from '../../store/api';
+import { MapLayerEventType } from 'maplibre-gl';
 import {
     DataStateContext,
     DataActionDispatcherContext,
-    FilterStateContext,
-    FilterActionDispatcherContext
-} from '../../store/contexts';
-import { layerStyles, mapStyle } from '../Map/styles';
-import { directionArrow, getFeatureBounds, pulsingDot } from '../Map/utils';
-import Map from '../Map';
+    MapStateContext,
+    MapContext,
+    MapActionDispatcherContext
+} from '@app/store/contexts';
+import { layerStyles, mapStyle } from '@app/components/Map/styles';
+import { getFeatureBounds, loadStationIcons, runWhenReady } from '@app/components/Map/utils';
+import Map from '@app/components/Map';
 
-import faoAreasUrl from '../../files/fao_areas.geojson';
+import faoAreasUrl from '@app/files/fao_areas.geojson';
+import { BASEMAPS, INITIAL_BASEMAP } from './basemapConfig';
+
+const MAX_ZOOM = 6;
+const BASE_PADDING = 100;
+const APPBAR_H = 64;
+const LEFT_PANEL_W = 324;
+const INSET_MAP_EXTRA_W = 226;
+const DETAIL_W = 478;
+const RIGHT_TOOLBAR_W = 48;
+const MAP_CONTROL_EXTRA = 32;
 
 const ExploreMap = (): JSX.Element => {
-    const dataActionDispatcher = React.useContext(DataActionDispatcherContext);
-    const { journeyPath, stationsBounds, stationsList, selectedStation } = React.useContext(DataStateContext);
-    const filterActionDispatcher = React.useContext(FilterActionDispatcherContext);
-    const { filteredSpecies, filteredStations, filteredFAOAreas, filterDates } = React.useContext(FilterStateContext);
-    const selectedStationRef = React.useRef<StationSummary | null>(null);
+    const dataActionDispatcher = useContext(DataActionDispatcherContext);
+    const { journeyPath, selectedStation, filteredStations, selectedFaoArea } = useContext(DataStateContext);
 
-    const mapRef = React.useRef<maplibregl.Map>();
-    const [isMapLoaded, setIsMapLoaded] = React.useState(false);
+    const [isMapLoaded, setIsMapLoaded] = useState(false);
+
+    const mapRef = useContext(MapContext);
+    const mapActionDispatch = useContext(MapActionDispatcherContext);
+    const { activeBasemap } = useContext(MapStateContext);
+
+    useEffect(() => {
+        const map = mapRef.current;
+        if (map) {
+            runWhenReady(map, () => {
+                BASEMAPS.forEach(({ id }) => {
+                    map.setLayoutProperty(id, 'visibility', id === activeBasemap ? 'visible' : 'none');
+                });
+            });
+        }
+    }, [activeBasemap]);
 
     const onMapLoad = (map: maplibregl.Map) => {
-        // Add a pulsing dot image to the map to be used for selected station
-        pulsingDot(map, 100);
+        loadStationIcons(map);
 
-        // Add direction arrow to the map to be used for journey path
-        directionArrow(map);
+        // Add basemaps
+        BASEMAPS.forEach(({ id, tiles, sourceExtraParams, layerExtraParams }) => {
+            map.addSource(id, {
+                ...sourceExtraParams,
+                type: 'raster',
+                tiles
+            });
+            map.addLayer({ ...layerExtraParams, id, source: id, type: 'raster' });
+            map.setLayoutProperty(id, 'visibility', id === INITIAL_BASEMAP ? 'visible' : 'none');
+        });
+
+        mapActionDispatch({ type: 'updateBaseMap', id: INITIAL_BASEMAP });
 
         // Add FAO Areas
         map.addSource('faoAreas', {
@@ -63,12 +94,6 @@ const ExploreMap = (): JSX.Element => {
             source: 'journey'
         } as maplibregl.LineLayerSpecification);
 
-        map.addLayer({
-            ...layerStyles.journeyPath.direction,
-            id: 'journey-direction',
-            source: 'journey'
-        } as maplibregl.SymbolLayerSpecification);
-
         // Both `stations` and `clustered-stations` sources hold the same data.
         // For performance reasons, it is better to use separate sources and hide or show
         // their layers depending on the status of filtered stations.
@@ -78,8 +103,9 @@ const ExploreMap = (): JSX.Element => {
                 type: 'FeatureCollection',
                 features: []
             },
-            cluster: false, // FIXME - Temporarily disable clustering because it is broken with some server configurations.
-            clusterMinPoints: 5
+            cluster: true,
+            clusterMinPoints: 3,
+            clusterRadius: 120
         });
 
         map.addSource('stations', {
@@ -90,13 +116,29 @@ const ExploreMap = (): JSX.Element => {
             }
         });
 
+        // The layer for selected station
+        map.addLayer({
+            ...layerStyles.stations.selected,
+            id: 'stations-selected',
+            source: 'stations',
+            filter: ['==', 'name', '']
+        } as maplibregl.CircleLayerSpecification);
+
         // The layer for single stations in clustered mode
         map.addLayer({
             ...layerStyles.stations.default,
             id: 'clustered-stations-single',
             source: 'clustered-stations',
-            filter: ['!', ['has', 'point_count']]
+            filter: ['!has', 'point_count']
         } as maplibregl.CircleLayerSpecification);
+
+        // The layer for station names in clustered mode
+        map.addLayer({
+            ...layerStyles.stations.name,
+            id: 'clustered-stations-single-name',
+            source: 'clustered-stations',
+            filter: ['!has', 'point_count']
+        } as maplibregl.SymbolLayerSpecification);
 
         // The layer for clustered stations in clustered mode
         map.addLayer({
@@ -111,24 +153,6 @@ const ExploreMap = (): JSX.Element => {
             id: 'clustered-stations-count',
             source: 'clustered-stations'
         } as maplibregl.SymbolLayerSpecification);
-
-        // The default stations layer in unclustered mode
-        map.addLayer({
-            ...layerStyles.stations.default,
-            id: 'stations',
-            source: 'stations',
-            layout: {
-                visibility: 'none'
-            }
-        } as maplibregl.CircleLayerSpecification);
-
-        // The layer for selected station
-        map.addLayer({
-            ...layerStyles.stations.selected,
-            id: 'stations-selected',
-            source: 'stations',
-            filter: ['==', 'name', '']
-        } as maplibregl.CircleLayerSpecification);
 
         // Zoom to and expand the clicked cluster
         map.on('click', 'clustered-stations-multi', (e) => {
@@ -150,7 +174,7 @@ const ExploreMap = (): JSX.Element => {
         });
 
         // Use pointer cursor on hover for the following layers
-        ['stations', 'clustered-stations-single', 'clustered-stations-multi'].forEach((layerName) => {
+        ['clustered-stations-single', 'clustered-stations-multi'].forEach((layerName) => {
             // Change the cursor to a pointer when the mouse is over the layer layer.
             map.on('mouseenter', layerName, () => {
                 map.getCanvas().style.cursor = 'pointer';
@@ -167,14 +191,35 @@ const ExploreMap = (): JSX.Element => {
     };
 
     React.useEffect(() => {
+        const map = mapRef.current;
+        if (map && isMapLoaded) {
+            const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
+            if (journeySource) {
+                journeySource.setData({
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: journeyPath
+                    }
+                });
+            }
+        }
+    }, [journeyPath, isMapLoaded]);
+
+    React.useEffect(() => {
         // When map is ready and stationsList change, update the data for `stations` and `clustered-stations`
         const map = mapRef.current;
         if (map && isMapLoaded) {
+            const visibleStations = selectedFaoArea
+                ? filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code)?.stations ?? []
+                : filteredStations.flatMap((g) => g.stations);
+
             const stationsSource = map.getSource('stations') as maplibregl.GeoJSONSource;
             if (stationsSource) {
                 stationsSource.setData({
                     type: 'FeatureCollection',
-                    features: stationsList.map((stationProps) => ({
+                    features: visibleStations.map((stationProps) => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -184,11 +229,12 @@ const ExploreMap = (): JSX.Element => {
                     }))
                 });
             }
+
             const clusteredStationsSource = map.getSource('clustered-stations') as maplibregl.GeoJSONSource;
             if (clusteredStationsSource) {
                 clusteredStationsSource.setData({
                     type: 'FeatureCollection',
-                    features: stationsList.map((stationProps) => ({
+                    features: visibleStations.map((stationProps) => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -203,114 +249,95 @@ const ExploreMap = (): JSX.Element => {
                     }))
                 });
             }
-            map.fitBounds(stationsBounds);
 
-            const journeySource = map.getSource('journey') as maplibregl.GeoJSONSource;
-            if (journeySource) {
-                journeySource.setData({
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'LineString',
-                        coordinates: journeyPath
-                    }
-                });
-            }
             // Update selected station on click on the following layers
-            ['stations', 'clustered-stations-single'].forEach((layerName) => {
-                map.on('click', layerName, (e) => {
-                    if (e.features && e.features[0]) {
-                        const feature = e.features[0];
-                        const stationProperties = feature.properties as StationSummary;
-                        let newSelectedStation =
-                            stationProperties.name === selectedStationRef.current?.name ? null : stationProperties;
-                        if (newSelectedStation) {
-                            const index: number = stationsList.findIndex(
-                                ({ name }) => newSelectedStation?.name === name
-                            );
-                            newSelectedStation = stationsList[index];
-                        }
-                        dataActionDispatcher({
-                            type: 'updateSelectedStation',
-                            station: newSelectedStation
-                        });
-                        selectedStationRef.current = newSelectedStation;
+            const eventListener = (e: MapLayerEventType['click']) => {
+                if (e.features && e.features[0]) {
+                    const feature = e.features[0];
+                    const stationProperties = feature.properties as StationSummary;
+                    let newSelectedStation =
+                        stationProperties.name === selectedStation?.name ? null : stationProperties;
+                    if (newSelectedStation) {
+                        newSelectedStation =
+                            visibleStations.find(({ name }) => newSelectedStation?.name === name) ?? null;
                     }
-                });
+                    dataActionDispatcher({
+                        type: 'updateSelectedStation',
+                        station: newSelectedStation
+                    });
+                }
+            };
+            ['clustered-stations-single'].forEach((layerName) => {
+                map.on('click', layerName, eventListener);
             });
+            return () => {
+                ['clustered-stations-single'].forEach((layerName) => {
+                    map.off('click', layerName, eventListener);
+                });
+            };
         }
-    }, [stationsList, isMapLoaded]);
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
+    }, [filteredStations, selectedFaoArea, selectedStation, isMapLoaded]);
 
     React.useEffect(() => {
         // Update the filter on `stations-selected` when selected station changes
         const map = mapRef.current;
         if (map && isMapLoaded) {
-            map.setFilter('stations-selected', ['==', 'name', selectedStation ? selectedStation.name : '']);
+            map.setFilter('stations-selected', ['==', 'name', selectedStation?.name ?? '']);
             if (selectedStation) {
-                map.flyTo({ center: [selectedStation.coordinates[0], selectedStation.coordinates[1]], zoom: 6 });
-            }
-        }
-    }, [selectedStation, isMapLoaded]);
-
-    React.useEffect(() => {
-        // Update visible stations when the given dependencies change
-        const map = mapRef.current;
-        if (map && isMapLoaded) {
-            if (
-                filteredStations.length ||
-                filteredFAOAreas.length ||
-                filteredSpecies.length ||
-                filterDates[0] !== null ||
-                filterDates[1] !== null
-            ) {
-                searchStations(
-                    {
-                        stationNames: filteredStations,
-                        faoAreas: filteredFAOAreas,
-                        species: filteredSpecies,
-                        dates: filterDates
-                    },
-                    (stations) => {
-                        map.setFilter('stations', ['in', 'name', ...stations.map((station) => station.name)]);
-                        // Move the map to filtered stations
-                        if (stations.length === 1) {
-                            map.flyTo({
-                                center: stations[0].coordinates,
-                                zoom: 6
-                            });
-                        } else {
-                            const bounds = getFeatureBounds(
-                                stations.map(({ coordinates }) => coordinates) as LineCoordinates
-                            );
-                            if (!bounds.isEmpty()) {
-                                map.fitBounds(bounds, { padding: 50 });
-                            }
-                        }
-
-                        if (selectedStation && !stations.find(({ name }) => name === selectedStation.name)) {
-                            dataActionDispatcher({ type: 'updateSelectedStation', station: null });
-                        }
-                        filterActionDispatcher({ type: 'updateFilterCount', count: stations.length });
+                map.easeTo({
+                    center: [selectedStation.coordinates[0], selectedStation.coordinates[1]],
+                    zoom: 8,
+                    duration: 1000,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + DETAIL_W, // left panel width + detail panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
                     }
-                );
+                });
+            } else if (selectedFaoArea) {
+                const stationGroup = filteredStations.find((g) => g.faoArea.code === selectedFaoArea.code);
+                if (!stationGroup)
+                    throw new Error('[Invalid State]: FAO Area must be selected from filtered stations!');
 
-                ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
-                    (layerName) => {
-                        map.setLayoutProperty(layerName, 'visibility', 'none');
-                    }
+                const coordinates = stationGroup.stations.map((s) => s.coordinates);
+                const maxLng = Math.max(...coordinates.map((c) => c[0]));
+                const minLng = Math.min(...coordinates.map((c) => c[0]));
+                const bounds = getFeatureBounds(
+                    coordinates.map(([lng, lat]) => [maxLng - minLng > 180 && lng > 180 ? lng - 360 : lng, lat])
                 );
-                map.setLayoutProperty('stations', 'visibility', 'visible');
+                map.setPadding({ left: 0, right: 0, top: 0, bottom: 0 });
+                map.fitBounds(bounds, {
+                    maxZoom: MAX_ZOOM,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + INSET_MAP_EXTRA_W, // left panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
+                    }
+                });
             } else {
-                ['clustered-stations-single', 'clustered-stations-multi', 'clustered-stations-count'].forEach(
-                    (layerName) => {
-                        map.setLayoutProperty(layerName, 'visibility', 'visible');
-                    }
+                const coordinates = filteredStations.flatMap((g) => g.stations.map((s) => s.coordinates));
+                const maxLng = Math.max(...coordinates.map((c) => c[0]));
+                const minLng = Math.min(...coordinates.map((c) => c[0]));
+                const bounds = getFeatureBounds(
+                    coordinates.map(([lng, lat]) => [maxLng - minLng > 180 && lng > 180 ? lng - 360 : lng, lat])
                 );
-                map.setLayoutProperty('stations', 'visibility', 'none');
-                filterActionDispatcher({ type: 'updateFilterCount', count: null });
+                map.setPadding({ left: 0, right: 0, top: 0, bottom: 0 });
+                map.fitBounds(bounds, {
+                    maxZoom: MAX_ZOOM,
+                    padding: {
+                        left: BASE_PADDING + LEFT_PANEL_W + INSET_MAP_EXTRA_W, // left panel width
+                        right: BASE_PADDING + RIGHT_TOOLBAR_W + MAP_CONTROL_EXTRA, // right toolbar width
+                        top: BASE_PADDING + APPBAR_H, // appbar height
+                        bottom: BASE_PADDING + MAP_CONTROL_EXTRA
+                    }
+                });
             }
         }
-    }, [filteredStations, filteredFAOAreas, filteredSpecies, isMapLoaded, filterDates]);
+    }, [selectedFaoArea, selectedStation, filteredStations, isMapLoaded]);
 
     return (
         <Map
@@ -322,59 +349,6 @@ const ExploreMap = (): JSX.Element => {
             attribution
             help
             navigation
-            basemaps={{
-                basemaps: [
-                    {
-                        id: 'World_Ocean_Base',
-                        tiles: [
-                            'https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution:
-                                '&#169; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors.'
-                        }
-                    },
-                    {
-                        id: 'World_Imagery',
-                        tiles: [
-                            'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-                        }
-                    },
-                    {
-                        id: 'Carto',
-                        tiles: [
-                            'https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
-                            'https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png'
-                        ],
-                        sourceExtraParams: {
-                            tileSize: 256,
-                            attribution: '&#169; <a href="https://www.carto.com">Carto</a>'
-                        }
-                    }
-                ],
-                initialBasemap: 'World_Ocean_Base',
-                expandDirection: 'top'
-            }}
-            LayersControlProps={[
-                {
-                    id: 'faoAreas',
-                    label: 'FAO Areas',
-                    initialOpacity: 0.5,
-                    attribution: {
-                        text: 'FAO, 2020. FAO Statistical Areas for Fishery Purposes. In: FAO Fisheries and Aquaculture Department [online]. Rome. [Cited 2021]',
-                        url: 'https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/ac02a460-da52-11dc-9d70-0017f293bd28'
-                    },
-                    style: layerStyles.faoAreas.default,
-                    opacityType: 'line'
-                }
-            ]}
             onLoad={onMapLoad}
         />
     );
