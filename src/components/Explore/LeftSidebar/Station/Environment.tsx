@@ -15,7 +15,8 @@ interface Props {
 
 const Environment = ({ station }: Props) => {
     const { tempToUnit, depthToUnit } = React.useContext(DataStateContext);
-    const tempFromUnit = 'C'; // ? Should this be 'C'?
+    const tempFromUnit = 'C';
+    const tempDepthFromUnit = 'F';
     const depthFromUnit = 'fathom';
 
     return (
@@ -103,7 +104,7 @@ const Environment = ({ station }: Props) => {
                             1
                         );
                         const temp = convertUnit(
-                            tempFromUnit as TemperatureUnits,
+                            tempDepthFromUnit as TemperatureUnits,
                             tempToUnit as TemperatureUnits,
                             _temp,
                             3
