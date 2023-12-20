@@ -1,6 +1,6 @@
 {
   "name": "challenger-portal",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "repository": "https://github.com/Oceans-1876/challenger-portal",
   "main": "src/app.tsx",
