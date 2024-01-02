@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Error in displaying temperatures at depths in station details. [#96](https://github.com/Oceans-1876/challenger-portal/issues/97)
+- Error in displaying temperatures at depths in station details. [#97](https://github.com/Oceans-1876/challenger-portal/issues/97)
 
 ## [1.0.0] - 2023-12-04
 
